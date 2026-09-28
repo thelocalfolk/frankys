@@ -6,8 +6,9 @@
 
   Order of preference on product pages:
     1. The collection the shopper came from (/collections/x/products/y).
-    2. The first link in the "collection-pills" menu that contains this product
-       (i.e. its main category range).
+    2. The first of Franky's main category ranges (same list as the collection
+       pills) that contains this product. Keep category_handles below in sync with
+       the "Collection pills" setting on the collection templates.
     3. The first collection that isn't a merchandising / colour collection.
 
   @param {object} [product]
@@ -21,9 +22,10 @@
   elsif product
     assign product_handles = product.collections | map: 'handle'
 
-    for link in linklists['collection-pills'].links
-      if link.type == 'collection_link' and product_handles contains link.object.handle
-        assign result = link.object.handle
+    assign category_handles = 'placemats,napkins,tablecloths,cutlery,utensils,baking-cooking-tools,tea-towels,cushions,throws,bath' | split: ','
+    for category_handle in category_handles
+      if product_handles contains category_handle
+        assign result = category_handle
         break
       endif
     endfor
