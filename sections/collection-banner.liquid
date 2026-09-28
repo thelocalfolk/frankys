@@ -15,20 +15,33 @@
 
 <div {% if section.settings.allow_transparent_header and layout != 'plain' %}allow-transparent-header{% endif %} class="color-scheme color-scheme--{{ color_scheme.id }}">
   {%- capture quick_navigation -%}
-    {%- if section.settings.quick_navigation_menu.links.size > 0 -%}
-      {% assign alignment = section.settings.content_position | split: 'place-self-' | last | split: '-' | last %}
+    {% assign alignment = section.settings.content_position | split: 'place-self-' | last | split: '-' | last %}
 
-      {%- comment -%}FRANKY'S (TLF) P8: optional text-only "pills" style{%- endcomment -%}
-      {%- assign quick_navigation_pills = false -%}
-      {%- if section.settings.quick_navigation_style == 'pills' -%}
-        {%- assign quick_navigation_pills = true -%}
-      {%- endif -%}
-
-      <nav aria-label="{{ section.settings.quick_navigation_menu.title | escape }}">
-      <ul class="collection-quick-navigation {% if quick_navigation_pills %}collection-quick-navigation--pills{% endif %} {% if layout == 'plain' %}justify-{{ alignment }}{% else %}collection-quick-navigation--padded{% endif %} unstyled-list scroll-area bleed">
+    {%- if section.settings.quick_navigation_collections != blank -%}
+      {%- comment -%}
+        FRANKY'S (TLF) P8: collection pills pulled straight from collections picked in the
+        theme editor (no menu needed). Takes priority over the menu below.
+      {%- endcomment -%}
+      <nav aria-label="Shop by range">
+        <ul class="collection-quick-navigation collection-quick-navigation--pills {% if layout == 'plain' %}justify-{{ alignment }}{% else %}collection-quick-navigation--padded{% endif %} unstyled-list scroll-area bleed">
+          {%- for pill_collection in section.settings.quick_navigation_collections -%}
+            {%- assign pill_is_current = false -%}
+            {%- if pill_collection.handle == collection.handle -%}
+              {%- assign pill_is_current = true -%}
+            {%- endif -%}
+            <li>
+              <a href="{{ pill_collection.url }}" class="collection-quick-navigation__item {% if pill_is_current %}is-selected{% endif %}" {% if pill_is_current %}aria-current="page"{% endif %}>
+                <span class="subheading">{{- pill_collection.title -}}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- elsif section.settings.quick_navigation_menu.links.size > 0 -%}
+      <ul class="collection-quick-navigation {% if layout == 'plain' %}justify-{{ alignment }}{% else %}collection-quick-navigation--padded{% endif %} unstyled-list scroll-area bleed">
         {%- for link in section.settings.quick_navigation_menu.links -%}
           <li>
-            <a href="{{ link.url }}" class="collection-quick-navigation__item {% if link.active %}is-selected{% endif %} group" {% if link.active %}aria-current="page"{% endif %}>
+            <a href="{{ link.url }}" class="collection-quick-navigation__item {% if link.active %}is-selected{% endif %} group">
               {%- liquid
                 case link.type
                   when 'article_link', 'collection_link'
@@ -39,7 +52,7 @@
                 endcase
               -%}
               
-              {%- if quick_navigation_image != blank and quick_navigation_pills == false -%}
+              {%- if quick_navigation_image != blank -%}
                 <div class="overflow-hidden rounded-full">
                   {{- quick_navigation_image | image_url: width: quick_navigation_image.width, height: quick_navigation_image.width, crop: 'center' | image_tag: loading: 'lazy', sizes: '80px', widths: '80,160,240', class: 'zoom-image group-hover:zoom' -}}
                 </div>
@@ -50,7 +63,6 @@
           </li>
         {%- endfor -%}
       </ul>
-      </nav>
     {%- endif -%}
   {%- endcapture -%}
 
@@ -328,14 +340,11 @@
       "info": "t:sections.collection_banner.quick_navigation_menu_info"
     },
     {
-      "type": "select",
-      "id": "quick_navigation_style",
-      "label": "Quick navigation style",
-      "options": [
-        { "value": "images", "label": "Images" },
-        { "value": "pills", "label": "Pills (text only)" }
-      ],
-      "default": "images"
+      "type": "collection_list",
+      "id": "quick_navigation_collections",
+      "label": "Collection pills",
+      "info": "Franky's: shows these collections as text pills, with the current one highlighted. Used instead of the menu when set.",
+      "limit": 20
     }
   ]
 }
