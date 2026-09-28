@@ -42,7 +42,7 @@
                     <tbody class="order-summary__body">
                       {%- for line_item in cart.items -%}
                         <tr>
-                          <td>{%- render 'line-item', line_item: line_item, show_line_price: true, hide_unit_price: true, show_quantity_selector: true -%}</td>
+                          <td>{%- render 'line-item', line_item: line_item, show_line_price: true, hide_unit_price: true, show_quantity_selector: true, show_low_stock: true -%}</td>
 
                           <td class="text-center">
                             <line-item>

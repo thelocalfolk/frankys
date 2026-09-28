@@ -1,0 +1,73 @@
+{%- comment -%}
+  FRANKY'S (TLF) — Priority 8: breadcrumbs.
+  Home › Collection            (collection pages)
+  Home › Collection › Product  (product pages)
+  The collection on product pages is chosen by snippets/breadcrumb-collection-handle.liquid.
+{%- endcomment -%}
+{%- liquid
+  assign crumb_collection = nil
+
+  capture crumb_handle
+    render 'breadcrumb-collection-handle', product: product, collection: collection
+  endcapture
+  assign crumb_handle = crumb_handle | strip
+
+  if crumb_handle != blank
+    assign crumb_collection = collections[crumb_handle]
+  endif
+-%}
+
+{%- if request.page_type == 'product' or request.page_type == 'collection' -%}
+  <div class="color-scheme color-scheme--{{ section.settings.color_scheme.id }}">
+    <nav class="breadcrumbs container" aria-label="Breadcrumb">
+      <ol class="breadcrumbs__list unstyled-list text-xs">
+        <li class="breadcrumbs__item">
+          <a href="{{ routes.root_url }}" class="breadcrumbs__link">{{ 'general.home' | t }}</a>
+        </li>
+
+        {%- if crumb_collection -%}
+          <li class="breadcrumbs__item">
+            {%- if request.page_type == 'collection' -%}
+              <span class="breadcrumbs__current" aria-current="page">{{ crumb_collection.title }}</span>
+            {%- else -%}
+              <a href="{{ crumb_collection.url }}" class="breadcrumbs__link">{{ crumb_collection.title }}</a>
+            {%- endif -%}
+          </li>
+        {%- endif -%}
+
+        {%- if request.page_type == 'product' -%}
+          <li class="breadcrumbs__item">
+            <span class="breadcrumbs__current" aria-current="page">{{ product.title }}</span>
+          </li>
+        {%- endif -%}
+      </ol>
+    </nav>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "class": "shopify-section--breadcrumbs",
+  "enabled_on": {
+    "templates": ["product", "collection"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "On product pages the middle link is the collection the shopper came from, otherwise the product's first collection in the \"collection-pills\" menu."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:global.colors.scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumbs"
+    }
+  ]
+}
+{% endschema %}

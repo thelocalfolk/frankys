@@ -159,7 +159,7 @@
             {%- comment -%}LINE ITEMS{%- endcomment -%}
 
             {%- for line_item in cart.items -%}
-              {%- render 'line-item', line_item: line_item, show_line_price: true, hide_unit_price: true, show_quantity_selector: true -%}
+              {%- render 'line-item', line_item: line_item, show_line_price: true, hide_unit_price: true, show_quantity_selector: true, show_low_stock: true -%}
             {%- endfor -%}
 
             {%- comment -%}MATCHING-ROW (below line items, above cross-sell){%- endcomment -%}
@@ -509,6 +509,16 @@
                   -%}
                 </div>
 
+                {%- comment -%}FRANKY'S (TLF) P9: returns promise, one line under the checkout button{%- endcomment -%}
+                {%- if section.settings.returns_text != blank -%}
+                  <p class="cart-returns-promise text-center text-xs">
+                    {%- render 'icon' with 'picto-return', width: 16 -%}
+                    <span>
+                      {{- section.settings.returns_text -}}
+                      {%- if shop.refund_policy.body != blank %} <a href="{{ shop.refund_policy.url }}" class="link text-subdued">{{ section.settings.returns_link_text | default: 'Details' }}</a>{%- endif -%}
+                    </span>
+                  </p>
+                {%- endif -%}
                 {%- if section.settings.show_shipping_text -%}
                   {%- liquid
                     if cart.taxes_included and shop.shipping_policy.body != blank
@@ -635,6 +645,23 @@
       "id": "show_shipping_text",
       "label": "t:sections.cart_drawer.show_shipping_text",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Returns promise"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "returns_text",
+      "label": "Returns promise",
+      "info": "One line shown under the checkout button. Leave blank to hide.",
+      "default": "14-day change-of-mind returns on full-price items."
+    },
+    {
+      "type": "text",
+      "id": "returns_link_text",
+      "label": "Link to returns policy",
+      "default": "Details"
     },
     {
       "type": "checkbox",

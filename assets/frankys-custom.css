@@ -1,0 +1,113 @@
+/* ==========================================================================
+   FRANKY'S — custom styles (The Local Folk)
+   Loaded after theme.css in layout/theme.liquid. Keep theme.css untouched so
+   Stretch updates stay easy; put all Franky's overrides here.
+   ========================================================================== */
+
+/* --- P8: Breadcrumbs ----------------------------------------------------- */
+.breadcrumbs {
+  padding-block: 1rem 0;
+}
+
+.breadcrumbs__list {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.breadcrumbs__list::-webkit-scrollbar {
+  display: none;
+}
+
+.breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  min-width: 0;
+}
+
+.breadcrumbs__item + .breadcrumbs__item::before {
+  content: "/";
+  color: rgb(var(--text-color) / .4);
+}
+
+.breadcrumbs__link {
+  color: rgb(var(--text-color) / .65);
+  text-underline-offset: 3px;
+  transition: color .2s ease;
+}
+
+.breadcrumbs__link:hover,
+.breadcrumbs__link:focus-visible {
+  color: rgb(var(--text-color));
+  text-decoration: underline;
+}
+
+.breadcrumbs__current {
+  color: rgb(var(--text-color));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60vw;
+}
+
+/* --- P8: Collection pills (collection banner quick navigation) ----------- */
+.collection-quick-navigation--pills {
+  column-gap: .5rem;
+  align-items: center;
+  padding-block: 3px;
+}
+
+.collection-quick-navigation--pills .collection-quick-navigation__item {
+  max-width: none;
+  white-space: nowrap;
+  padding: .625rem 1.125rem;
+  border: 1px solid rgb(var(--text-color) / .25);
+  border-radius: 999px;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.collection-quick-navigation--pills .collection-quick-navigation__item:hover,
+.collection-quick-navigation--pills .collection-quick-navigation__item:focus-visible {
+  border-color: rgb(var(--text-color));
+}
+
+.collection-quick-navigation--pills .collection-quick-navigation__item.is-selected {
+  background: rgb(var(--text-color) / .08);
+  border-color: rgb(var(--text-color));
+}
+
+@media screen and (min-width: 700px) {
+  .collection-quick-navigation--pills {
+    column-gap: .625rem;
+  }
+}
+
+/* --- P9: Cart drawer — returns promise + low stock ----------------------- */
+.cart-returns-promise {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .375rem;
+}
+
+.cart-returns-promise svg {
+  flex-shrink: 0;
+}
+
+.line-item__low-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  color: rgb(var(--warning-text));
+}
+
+.line-item__low-stock::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
