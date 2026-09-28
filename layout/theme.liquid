@@ -1,0 +1,168 @@
+<!doctype html>
+
+<html lang="{{ request.locale.iso_code }}" dir="{% render 'direction' %}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0, maximum-scale=5.0">
+
+    <title>{% if page_title == blank %}{{ shop.name }}{% else %}{{ page_title }}{% if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif %}{% endif %}</title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon -%}
+      <link rel="shortcut icon" href="{{ settings.favicon | image_url: width: 96 }}">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180 }}">
+    {%- endif -%}
+
+    {%- unless settings.heading_font.system? -%}
+      <link rel="preload" href="{{ settings.heading_font | font_url }}" as="font" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- unless settings.text_font.system? -%}
+      <link rel="preload" href="{{ settings.text_font | font_url }}" as="font" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- render 'social-meta-tags' -%}
+    {%- render 'microdata-schema' -%}
+    {%- render 'css-variables' -%}
+    {%- render 'js-variables' -%}
+
+    {%- if request.page_type == 'gift_card' -%}
+      <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
+    {%- endif -%}
+
+    <script type="importmap">
+      {%- comment -%}On Safari 16.3 and lower, a polyfill is used to load importmap{%- endcomment -%}
+      {
+        "imports": {
+          "vendor": "{{ 'vendor.min.js' | asset_url }}",
+          "theme": "{{ 'theme.js' | asset_url }}",
+          "photoswipe": "{{ 'photoswipe.min.js' | asset_url }}"
+        }
+      }
+    </script>
+
+    <script type="module" src="{{ 'vendor.min.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'theme.js' | asset_url }}"></script>
+
+    {{ content_for_header }}
+
+    {{- 'theme.css' | asset_url | stylesheet_tag: preload: true -}}
+
+    <script>!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");oaiq("init",{pixelId:"V5jVGKeQMextnM1f8pQVw2",debug:false});</script>
+  </head>
+
+  {% liquid
+    assign features_class = ''
+
+    if settings.image_hover_animation == 'zoom'
+      assign features_class = features_class | append: 'features--zoom-image '
+    elsif settings.image_hover_animation == 'zoom_filter'
+      assign features_class = features_class | append: 'features--zoom-filter-image '
+    endif
+  %}
+
+  <body class="{{ features_class }}">
+    {%- render 'shadow-dom-templates' -%}
+
+    <loading-bar class="loading-bar" aria-hidden="true"></loading-bar>
+
+    <a href="#main" allow-hash-change class="skip-to-content sr-only">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+    {%- comment -%}
+    This placeholder will be filled to screen readers for any kind of announcements
+    {%- endcomment -%}
+    <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+      <span id="status-announcement"></span>
+    </div>
+
+    <div class="sr-only" role="alert" aria-live="assertive" aria-atomic="true">
+      <span id="error-announcement"></span>
+    </div>
+
+    <span id="header-scroll-tracker" style="position: absolute; width: 1px; height: 1px; top: 200px; left: 0;">
+      {%- comment -%}
+        This allows our theme to track when the user has scrolled a given amount of pixels, without relying on a global scroll listener. This helps
+        to improve performance and reduce reflows.
+      {%- endcomment -%}
+    </span>
+    
+    {%- if request.page_type != 'password' -%}
+      {%- sections 'header-group' -%}
+      {%- sections 'overlay-group' -%}
+    {%- endif -%}
+
+    <main id="main" class="anchor {% if request.page_type == 'policy' or request.page_type == 'captcha' %}color-scheme color-scheme--{{ settings.default_color_scheme.id }}{% endif %}">
+      {{ content_for_layout }}
+    </main>
+
+    {%- if request.page_type != 'password' -%}
+      {%- sections 'footer-group' -%}
+    {%- endif -%}
+
+    <x-toast class="toast">
+      {% comment %}Container for notification messages; DO NOT DELETE{% endcomment %}
+    </x-toast>
+  </body>
+</html>
+
+<!-- Begin Shopify-Afterpay JavaScript Snippet (v1.2.1) -->
+{% if cart.currency.iso_code == shop.currency %}
+<script type="text/javascript">
+// Overrides:
+// var afterpay_msg_size = 'sm';  // Can be 'xs', 'sm', 'md' or 'lg'.
+// var afterpay_bold_amount = true;
+// var afterpay_logo_theme = 'colour';  // Can be 'colour', 'black' or 'white'.
+// var afterpay_modal_open_icon = true;
+// var afterpay_hide_upper_limit = false;
+// var afterpay_hide_lower_limit = true;
+// var afterpay_show_if_outside_limits = true;
+
+// var afterpay_product_integration_enabled = true;
+// var afterpay_product_selector = '#product-price-selector';
+// var afterpay_variable_price_fallback = false;
+// var afterpay_variable_price_fallback_selector = '';
+// var afterpay_variable_price_fallback_method = 'mutation';  // Can be 'mutation' or 'interval'.
+
+// var afterpay_cart_integration_enabled = true;
+// var afterpay_cart_static_selector = '#cart-subtotal-selector';
+// var afterpay_variable_subtotal_fallback = false;
+// var afterpay_variable_subtotal_fallback_selector = '';
+// var afterpay_variable_subtotal_fallback_method = 'mutation'; // Can be 'mutation' or 'interval'.
+
+// var afterpay_dynamic_cart_integration_enabled = false;
+// var afterpay_dynamic_cart_selector = '.cart-drawer__footer .totals';
+// var afterpay_dynamic_cart_observer_target = '#CartDrawer';
+
+// var afterpay_footer_logo_enabled = true;
+// var afterpay_footer_logo_format = 'icon';  // Can be 'icon', 'stacked' or 'logo'.
+// var afterpay_footer_logo_theme = 'colour'; // Can be 'colour', 'black' or 'white'.
+// var afterpay_footer_logo_background = 'border';  // Can be 'border' or 'transparent'.
+// var afterpay_footer_logo_container = 'footer ul.payment-icons';
+// var afterpay_footer_logo_template = '<li class="payment-icon"><object data="{logo_path}" type="image/svg+xml"></object></li>';
+
+// Non-editable fields:
+var afterpay_js_language = {{ localization.language.iso_code | slice: 0, 2 | json }};
+var afterpay_js_country = {{ localization.country.iso_code | json }};
+var afterpay_shop_currency = {{ shop.currency | json }};
+var afterpay_cart_currency = {{ cart.currency.iso_code | json }};
+var afterpay_shop_money_format = {{ shop.money_format | json }};
+var afterpay_shop_permanent_domain = {{ shop.permanent_domain | json }};
+var afterpay_theme_name = {{ theme.name | json }};
+var afterpay_product = {{ product | json }};
+var afterpay_product_collections = {{ product.collections | map: 'title' | join: ',' | json }};
+var afterpay_current_variant = {{ product.selected_or_first_available_variant | json }};
+var afterpay_cart_total_price = {{ cart.total_price | json }};
+var afterpay_cart_skus = {{cart.items | map: 'sku' | join: ',' | json }};
+var afterpay_cart_collections = {{cart.items | map: 'product' | map: 'collections' | map: 'title' | uniq | join: ',' | json }};
+var afterpay_js_snippet_version = '1.2.1';
+</script>
+<script type="text/javascript" src="https://static.afterpay.com/shopify-afterpay-javascript.js"></script>
+{% else %}
+<!-- Afterpay disabled: {{ cart.currency.iso_code }} != {{ shop.currency }} -->
+{% endif %}
+<!-- End Shopify-Afterpay JavaScript Snippet (v1.2.1) -->

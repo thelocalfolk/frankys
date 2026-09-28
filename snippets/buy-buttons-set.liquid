@@ -1,0 +1,573 @@
+{%- doc -%}
+  A "buy the set" variant of buy-buttons for a SINGLE product.
+
+  BASE: this file is the theme's current snippets/buy-buttons.liquid, kept structurally intact so
+  future theme updates are easy to diff. Everything stock does, this does. The additions are
+  marked with "SET:" comments throughout.
+
+  The customer picks a set size (4 / 6 / 8 / Custom) and that number becomes the quantity the
+  form submits. Selecting "Custom" slides the preset boxes out and a stepper in, in the same
+  footprint.
+
+  IMPORTANT: this uses the theme's DEFAULT add-to-cart. The submit is a plain theme <product-form>
+  submit — nothing is intercepted, no fetch, no re-submit — so it registers as a normal Shopify
+  add-to-cart and every analytics/pixel/attribution event fires exactly as it does for the
+  standard buy buttons. The only JavaScript writes the chosen quantity into the form and keeps
+  the button's label current.
+
+  GOOGLE MERCHANT CENTRE NOTE: the add button intentionally shows NO dollar total (only the set
+  size, e.g. "Add the set (6)"). A multiplied total like "$108" rendered in the primary buy button
+  can be picked up by Google's landing-page price crawl and flagged as "mismatched product price"
+  against the single-unit price ($18) in your feed. Showing the quantity instead of a price keeps
+  the feature while removing the price-collision. The real unit price still shows in the theme's
+  price block above, and the ProductGroup structured data still reports the correct unit price.
+
+  (Matching-coaster add-ons are intentionally NOT here — they live in a separate section so they
+  can't interfere with this native path.)
+
+  CONFIGURING THIS WITHOUT A THEME-EDITOR PANEL
+  This theme's product section does not accept custom blocks, so there is no settings panel.
+  Every option is set in the "SET: option defaults" block below — edit the defaults there, or
+  override per render with {% render 'buy-buttons-set', product: product, default_set: 8 %}.
+
+  DELIBERATE DEVIATIONS FROM STOCK — all four are required, not accidental:
+    1. The theme's quantity-selector is never rendered. The set picker IS the quantity control;
+       rendering both would post two `quantity` fields in one form and the last would win.
+       show_quantity_selector is accepted for signature parity and ignored.
+    2. The quantity-rules paragraph is shown whenever the product is available, rather than only
+       when show_quantity_selector is true — the customer is choosing a quantity here either way.
+    3. The button row uses a fixed `gap-2` instead of stock's conditional
+       collapse-quantity-selector class, because that class exists to sit a selector flush against
+       the button and there is no selector here.
+    4. form_id is auto-generated when not passed, so multiple instances on one page can't collide.
+
+  @param {object} product - the product from which to show the buttons (if empty, a placeholder is displayed)
+  @param {boolean} [show_payment_button] - if we show or not the dynamic checkout button
+  @param {boolean} [show_gift_card_recipient] - for gift card products, an optional message/email to be sent to the recipient
+  @param {boolean} [show_quantity_selector] - ACCEPTED FOR PARITY, IGNORED (see deviation 1)
+  @param {boolean} [add_quantity_selector_spacing] - accepted for parity with stock, unused
+  @param {string} [atc_button_style] - the style of the add to cart button. Can be "solid" or "outline"
+  @param {string} [atc_button_background] - the background of the ATC button
+  @param {string} [atc_button_text_color] - the color of the ATC button
+  @param {string} [payment_button_background] - the background of the dynamic payment button
+  @param {string} [payment_button_text_color] - the color of the dynamic payment button
+  @param {string} [form_id] - if specified, define the form ID linked to this input
+
+  SET-SPECIFIC PARAMS
+  @param {string} [set_sizes] - comma-separated set sizes. Defaults to "4,6,8"
+  @param {number} [default_set] - preselected set size. Defaults to 6; falls back to the first size if not in set_sizes
+  @param {boolean} [show_custom] - include the "Custom / Any number" option. Defaults to true
+  @param {string} [set_button_label] - base label for the add button. Defaults to "Add the set"
+  @param {string} [set_size_prefix] - label prefix for each preset. Defaults to "Set of "
+  @param {string} [set_subtitles] - comma-separated subtitles, positional against set_sizes
+  @param {string} [custom_title] - label for the custom option. Defaults to "Custom"
+  @param {string} [custom_subtitle] - subtitle for the custom option. Defaults to "Any number"
+  @param {string} [custom_back_label] - label for the back control. Defaults to "Back"
+  @param {string} [set_color_scheme] - colour scheme class suffix. Defaults to '' (inherit the page's scheme)
+{%- enddoc -%}
+
+{%- liquid
+  # SET: assigned up front so the empty-product placeholder below can use it too (deviation 4)
+  if form_id == blank
+    assign form_id = 'buy-buttons-set'
+    if section.id
+      assign form_id = form_id | append: '-' | append: section.id
+    else
+      assign form_id = form_id | append: '-' | append: product.id
+    endif
+  endif
+  assign form_id = form_id | escape
+-%}
+
+{%- if product != blank -%}
+  {%- liquid
+    assign recipient_feature_active = false
+
+    if product.gift_card? and show_gift_card_recipient
+      assign recipient_feature_active = true
+      assign show_payment_button = false
+    endif
+
+    # ---- SET: option defaults — EDIT THESE (this theme has no settings panel) ----
+    assign default_set = default_set | default: 6
+    assign atc_button_style = atc_button_style | default: 'solid'
+    assign show_custom = show_custom | default: true, allow_false: true
+    assign set_button_label = set_button_label | default: 'Add the set'
+    assign set_size_prefix = set_size_prefix | default: 'Set of '
+    assign custom_title = custom_title | default: 'Custom'
+    assign custom_subtitle = custom_subtitle | default: 'Any number'
+    assign custom_back_label = custom_back_label | default: 'Back'
+    # SET: default to '' so the picker INHERITS the product page's colour scheme (matches the
+    # real Add to Cart button). Pass a scheme explicitly only if you want the block to contrast.
+    assign set_color_scheme = set_color_scheme | default: ''
+
+    # strip all spaces once, so every entry is clean without a per-item strip
+    assign set_sizes = set_sizes | default: '4,6,8' | remove: ' '
+    assign set_sizes_list = set_sizes | split: ','
+
+    # guarantee exactly one preset is checked, even if default_set isn't in the list
+    assign default_set_str = default_set | append: ''
+    unless set_sizes_list contains default_set_str
+      assign default_set_str = set_sizes_list.first
+    endunless
+    assign default_set = default_set_str | plus: 0
+
+    assign subtitles_list = set_subtitles | split: ','
+
+    assign option_count = set_sizes_list.size
+    if show_custom
+      assign option_count = option_count | plus: 1
+    endif
+
+    # SET: radios are excluded from the POST via a form attribute that points at no form, and
+    # namespaced per instance so two pickers on one page can't share a radio group.
+    assign set_radio_name = 'set_size-' | append: form_id
+    assign set_radio_form = form_id | append: '-ui'
+
+    # ---- Quantity rules: same computation as stock, hoisted so the set UI can honour them ----
+    assign current_variant = product.selected_or_first_available_variant
+    assign quantity_rules = ''
+
+    if current_variant.quantity_rule.min > 1
+      assign rule = 'product.quantity.minimum_of' | t: min: current_variant.quantity_rule.min
+      assign quantity_rules = quantity_rules | append: ' / ' | append: rule
+    endif
+
+    if current_variant.quantity_rule.max != nil
+      assign rule = 'product.quantity.maximum_of' | t: max: current_variant.quantity_rule.max
+      assign quantity_rules = quantity_rules | append: ' / ' | append: rule
+    endif
+
+    if current_variant.quantity_rule.increment > 1
+      assign rule = 'product.quantity.increment_of' | t: step: current_variant.quantity_rule.increment
+      assign quantity_rules = quantity_rules | append: ' / ' | append: rule
+    endif
+
+    assign qty_min = current_variant.quantity_rule.min | default: 1
+    assign qty_step = current_variant.quantity_rule.increment | default: 1
+    assign qty_max = current_variant.quantity_rule.max
+
+    # ---- SET: build the preset cards once, used by both layouts ---------------
+    capture set_preset_cards
+      assign prefix_escaped = set_size_prefix | escape
+      for size in set_sizes_list
+        assign subtitle = ''
+        if set_subtitles != blank
+          assign subtitle = subtitles_list[forloop.index0] | strip
+        else
+          case size
+            when '4'
+              assign subtitle = 'A pair plus'
+            when '6'
+              assign subtitle = 'Most popular'
+            when '8'
+              assign subtitle = 'Big gatherings'
+          endcase
+        endif
+
+        # Pre-escape into variables. NEVER put `| escape` mid-chain after an append:
+        # Liquid applies filters to the whole accumulated string, so it would escape
+        # the surrounding markup too and print tags as visible text.
+        assign size_escaped = size | escape
+        assign subtitle_escaped = subtitle | escape
+
+        echo '<label class="set-option">'
+        echo '<input type="radio" class="set-option__input" data-set-size name="'
+        echo set_radio_name
+        echo '" form="'
+        echo set_radio_form
+        echo '" value="'
+        echo size_escaped
+        echo '"'
+        if size == default_set_str
+          echo ' checked'
+        endif
+        echo '>'
+        echo '<span class="set-option__card">'
+        echo '<span class="set-option__title">'
+        echo prefix_escaped
+        echo size_escaped
+        echo '</span>'
+        if subtitle != blank
+          echo '<span class="set-option__subtitle text-subdued text-sm">'
+          echo subtitle_escaped
+          echo '</span>'
+        endif
+        echo '</span>'
+        echo '</label>'
+      endfor
+    endcapture
+  -%}
+
+  <product-form>
+    {%- form 'product', product, id: form_id -%}
+      <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+      {% liquid
+        assign button_disabled = false
+
+        if current_variant == nil
+          assign button_disabled = true
+          assign button_content = 'product.general.unavailable_button' | t
+        elsif current_variant.available == false
+          assign button_disabled = true
+          assign button_content = 'product.general.sold_out_button' | t
+        else
+          # Stock's label choice, then SET: append the chosen set SIZE (not a price).
+          if product.template_suffix contains 'pre-order'
+            assign set_base_label = 'product.general.pre_order_button' | t
+          else
+            assign set_base_label = set_button_label
+          endif
+
+          # SET (GMC fix): the button shows the set size, NOT a multiplied dollar total, so Google's
+          # landing-page price crawl can't read e.g. "$108" and flag a price mismatch vs the feed.
+          # JS keeps this in sync using the same "( qty )" format on selection change.
+          capture button_content
+            echo set_base_label
+            echo ' ('
+            echo default_set
+            echo ')'
+          endcapture
+        endif
+      %}
+
+      <div class="v-stack gap-4">
+        {%- if recipient_feature_active -%}
+          <gift-card-recipient class="gift-card-recipient v-stack gap-3">
+            {%- assign checkbox_label = 'gift_card.recipient.checkbox' | t -%}
+            {%- render 'checkbox', label: checkbox_label, name: 'properties[__shopify_send_gift_card_to_recipient]' -%}
+
+            <div class="gift-card-recipient__fields" hidden>
+              <div class="fieldset">
+                {%- liquid
+                  assign recipient_email_label = 'gift_card.recipient.email_label' | t
+                  render 'input', type: 'email', label: recipient_email_label, name: 'properties[Recipient email]', value: form.email, required: true, maxlength: 138
+
+                  assign recipient_name_label = 'gift_card.recipient.name_label' | t
+                  render 'input', label: recipient_name_label, name: 'properties[Recipient name]', value: form.name
+
+                  assign send_on_label = 'gift_card.recipient.send_on_label' | t
+                  render 'input', type: 'date', label: send_on_label, name: 'properties[Send on]', value: form.send_on, pattern: '\d{4}-\d{2}-\d{2}'
+                  render 'input', type: 'hidden', name: 'properties[__shopify_offset]'
+
+                  assign message_label = 'gift_card.recipient.message_label' | t
+                  render 'input', label: message_label, name: 'properties[Message]', value: form.message, multiline: 3, maxlength: 200, show_max_characters_count: true
+                -%}
+              </div>
+            </div>
+          </gift-card-recipient>
+        {%- endif -%}
+
+        <div class="v-stack gap-2">
+          <buy-buttons class="buy-buttons {% if show_payment_button %}buy-buttons--has-dynamic{% endif %}" form="{{ form_id }}">
+            <div class="v-stack gap-2">
+              {%- comment -%}
+                Stock shows this only when the quantity selector is on; here the customer is always
+                choosing a quantity, so it shows whenever the product is available (deviation 2).
+              {%- endcomment -%}
+              {%- if product.available and quantity_rules != blank -%}
+                <p class="text-subdued text-sm">{{ quantity_rules | remove_first: ' / ' | capitalize }}</p>
+              {%- endif -%}
+
+              {%- comment -%}
+                SET: the picker replaces stock's quantity-selector (deviation 1).
+                Per-instance values are passed as inline custom properties so the <style> block
+                below stays static — identical for every instance and safe to repeat.
+              {%- endcomment -%}
+              <set-quantity
+                class="set-quantity v-stack gap-3{% if set_color_scheme != blank %} color-scheme--{{ set_color_scheme | escape }}{% endif %}"
+                style="--set-columns: {{ option_count }}; --set-radius: {{ settings.button_border_radius | default: 8 }}px;"
+              >
+                <script type="application/json" class="set-quantity__config">
+                  {
+                    "defaultSet": {{ default_set }},
+                    "defaultVariantId": "{{ current_variant.id }}",
+                    "defaultPrice": {{ current_variant.price | default: 0 }},
+                    "moneyFormat": {{ shop.money_format | json }},
+                    "qtyMin": {{ qty_min | default: 1 }},
+                    "qtyStep": {{ qty_step | default: 1 }},
+                    "qtyMax": {% if qty_max %}{{ qty_max }}{% else %}null{% endif %},
+                    "variants": {
+                      {%- for v in product.variants -%}
+                        "{{ v.id }}": {{ v.price }}{%- unless forloop.last -%},{%- endunless -%}
+                      {%- endfor -%}
+                    }
+                  }
+                </script>
+
+                {%- comment -%} The set size becomes the quantity the theme submits. {%- endcomment -%}
+                <input type="hidden" name="quantity" value="{{ default_set }}" data-set-quantity>
+
+                <fieldset class="set-quantity__fieldset v-stack gap-2">
+                  <legend class="set-quantity__legend">{{ set_button_label | escape }}</legend>
+
+                  {%- if show_custom -%}
+                    <div class="set-quantity__stack" data-set-switch data-mode="presets">
+                      <div class="set-quantity__layer set-quantity__layer--presets" data-layer="presets">
+                        <div class="set-quantity__options">
+                          {{ set_preset_cards }}
+                          <label class="set-option set-option--custom">
+                            <input type="radio" class="set-option__input" data-set-size name="{{ set_radio_name }}" form="{{ set_radio_form }}" value="custom">
+                            <span class="set-option__card">
+                              <span class="set-option__title">{{ custom_title | escape }}</span>
+                              <span class="set-option__subtitle text-subdued text-sm">{{ custom_subtitle | escape }}</span>
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div class="set-quantity__layer set-quantity__layer--custom" data-layer="custom" inert aria-hidden="true">
+                        <div class="set-quantity__custom-bar">
+                          <button type="button" class="set-quantity__back" data-set-back>
+                            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" aria-hidden="true" focusable="false"><path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>{{ custom_back_label | escape }}</span>
+                          </button>
+                          <div class="set-quantity__stepper" role="group" aria-label="{{ custom_title | escape }}">
+                            <button type="button" class="set-quantity__step" data-set-step="-1" aria-label="{{ 'product.quantity.decrease' | t | default: 'Decrease quantity' | escape }}">&minus;</button>
+                            <input class="set-quantity__custom-input" type="number" inputmode="numeric"
+                                   form="{{ set_radio_form }}"
+                                   min="{{ qty_min | default: 1 }}"
+                                   step="{{ qty_step | default: 1 }}"
+                                   {% if qty_max %}max="{{ qty_max }}"{% endif %}
+                                   value="{{ qty_min | default: 1 }}"
+                                   aria-label="{{ custom_title | escape }}" data-set-custom-input>
+                            <button type="button" class="set-quantity__step" data-set-step="1" aria-label="{{ 'product.quantity.increase' | t | default: 'Increase quantity' | escape }}">+</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {%- else -%}
+                    <div class="set-quantity__options">
+                      {{ set_preset_cards }}
+                    </div>
+                  {%- endif -%}
+                </fieldset>
+
+                {%- comment -%}
+                  Stock's conditional collapse-quantity-selector class exists to sit a selector flush
+                  against the button; with no selector here, a plain gap-2 is correct (deviation 3).
+                {%- endcomment -%}
+                <div class="h-stack custom__buy_button gap-2">
+                  {%- render 'button', content: button_content, type: 'submit', disabled: button_disabled, secondary: show_payment_button, style: atc_button_style, background: atc_button_background, text_color: atc_button_text_color, stretch: true -%}
+                </div>
+              </set-quantity>
+
+              {%- if show_payment_button -%}
+                {{- form | payment_button -}}
+
+                <style>
+                  #{{ form_id }} .shopify-payment-button__button {
+                    {%- if payment_button_background != blank and payment_button_background != 'rgba(0,0,0,0)' -%}
+                      --button-background: {{ payment_button_background.rgb }};
+                    {%- endif -%}
+
+                    {%- if payment_button_text_color != blank and payment_button_text_color != 'rgba(0,0,0,0)' -%}
+                      --button-text-color: {{ payment_button_text_color.rgb }};
+                    {%- endif -%}
+
+                    {%- unless current_variant.available -%}
+                      display: none;
+                    {%- endunless -%}
+                  }
+                </style>
+              {%- endif -%}
+            </div>
+          </buy-buttons>
+        </div>
+      </div>
+    {%- endform -%}
+  </product-form>
+
+  {%- comment -%}
+    ===================== SET: styles =====================
+    Deliberately free of Liquid: per-instance values arrive as inline custom properties on
+    <set-quantity>, so this block is byte-identical for every render and safe to repeat.
+  {%- endcomment -%}
+  <style>
+    .set-quantity {
+      --set-line: color-mix(in srgb, currentColor 15%, transparent);
+      /* SET: match the theme's real buttons. --button-background / --button-text-color are the
+         tokens Stretch's button snippet uses, resolved from the inherited colour scheme.
+         Fallbacks are the scheme's own --text-color / --background (always defined), so it stays
+         theme-coloured even in an edge case rather than dropping to hardcoded black/white. */
+      --set-btn-bg: rgb(var(--button-background, var(--text-color, 20 20 20)));
+      --set-btn-fg: rgb(var(--button-text-color, var(--background, 255 255 255)));
+    }
+
+    .set-quantity__legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    .set-quantity__fieldset { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
+    .set-quantity__options { display: grid; grid-template-columns: repeat(var(--set-columns, 4), minmax(0, 1fr)); gap: .5rem; }
+    @media screen and (max-width: 480px) { .set-quantity__options { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+    .set-option { position: relative; display: block; cursor: pointer; }
+    .set-option__input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .set-option__card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .15rem; text-align: center; min-height: 5.25rem; padding: .75rem .5rem; border: 1px solid var(--set-line, rgba(128,128,128,.25)); border-radius: var(--set-radius, 8px); transition: border-color .15s ease, background-color .15s ease, color .15s ease; }
+    .set-option:hover .set-option__card { border-color: currentColor; }
+    .set-option__input:focus-visible + .set-option__card { outline: 2px solid currentColor; outline-offset: 2px; }
+    .set-option__input:checked + .set-option__card { border-color: transparent; background-color: var(--set-btn-bg); color: var(--set-btn-fg); }
+    .set-option__input:checked + .set-option__card .set-option__subtitle { color: inherit; opacity: .8; }
+    .set-option__title { font-weight: 600; }
+
+    .set-quantity__stack { display: grid; }
+    .set-quantity__layer { grid-area: 1 / 1; transition: opacity .25s ease, transform .25s ease; }
+    .set-quantity__layer--custom { opacity: 0; transform: translateX(12px); pointer-events: none; }
+    .set-quantity__stack[data-mode='custom'] .set-quantity__layer--presets { opacity: 0; transform: translateX(-12px); pointer-events: none; }
+    .set-quantity__stack[data-mode='custom'] .set-quantity__layer--custom { opacity: 1; transform: none; pointer-events: auto; }
+
+    .set-quantity__custom-bar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; height: 100%; min-height: 5.25rem; padding: .5rem 1rem; border: 1px solid var(--set-line, rgba(128,128,128,.25)); border-radius: var(--set-radius, 8px); }
+    .set-quantity__back { display: inline-flex; align-items: center; gap: .25rem; padding: .5rem .25rem; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; opacity: .7; transition: opacity .15s ease; }
+    .set-quantity__back:hover { opacity: 1; }
+    .set-quantity__stepper { display: inline-flex; align-items: center; gap: .25rem; padding: .25rem; border: 1px solid var(--set-line, rgba(128,128,128,.25)); border-radius: 999px; }
+    .set-quantity__step { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border: 0; border-radius: 999px; background: none; color: inherit; font-size: 1.25rem; line-height: 1; cursor: pointer; transition: background-color .15s ease; }
+    .set-quantity__step:hover { background-color: var(--set-line, rgba(128,128,128,.18)); }
+    .set-quantity__step[disabled] { opacity: .35; cursor: not-allowed; }
+    .set-quantity__custom-input { width: 3rem; padding: 0; border: 0; background: none; color: inherit; font: inherit; font-size: 1.125rem; font-weight: 600; text-align: center; -moz-appearance: textfield; appearance: textfield; }
+    .set-quantity__custom-input::-webkit-outer-spin-button, .set-quantity__custom-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    @media (prefers-reduced-motion: reduce) { .set-quantity__layer { transition: opacity .001s linear; transform: none !important; } }
+  </style>
+
+  {%- comment -%} ===================== SET: behaviour ===================== {%- endcomment -%}
+  <script>
+    (function () {
+      if (customElements.get('set-quantity')) return;
+
+      class SetQuantity extends HTMLElement {
+        connectedCallback() {
+          try { this.config = JSON.parse(this.querySelector('.set-quantity__config').textContent); }
+          catch (e) { console.error('[set-quantity] config JSON failed to parse — picker disabled.', e); return; }
+
+          this.form = this.closest('form');
+          this.quantityInput = this.querySelector('[data-set-quantity]');
+          this.button = this.querySelector('[type="submit"]');
+
+          this.stack = this.querySelector('[data-set-switch]');
+          this.presetsLayer = this.querySelector('[data-layer="presets"]');
+          this.customLayer = this.querySelector('[data-layer="custom"]');
+          this.customInput = this.querySelector('[data-set-custom-input]');
+          this.backBtn = this.querySelector('[data-set-back]');
+          this.lastPreset = String(this.config.defaultSet);
+
+          // SET (GMC fix): the button shows the set SIZE, not a price. We find the text node that
+          // holds "Label (qty)" once — matching on the "(" — so updates edit only that node and
+          // never disturb the theme's own button markup (spinner etc.).
+          this.labelNode = null;
+          this.baseLabel = '';
+          if (this.button) {
+            const walker = document.createTreeWalker(this.button, NodeFilter.SHOW_TEXT);
+            let n;
+            while ((n = walker.nextNode())) {
+              if (n.nodeValue && n.nodeValue.indexOf('(') !== -1) {
+                this.labelNode = n;
+                this.baseLabel = n.nodeValue.split('(')[0].trim();
+                break;
+              }
+            }
+            // Fallback: if no "(" found (edge case), use the whole trimmed label as the base.
+            if (!this.labelNode) {
+              const w2 = document.createTreeWalker(this.button, NodeFilter.SHOW_TEXT);
+              let m;
+              while ((m = w2.nextNode())) {
+                if (m.nodeValue && m.nodeValue.trim().length) { this.labelNode = m; this.baseLabel = m.nodeValue.trim(); break; }
+              }
+            }
+          }
+
+          this.addEventListener('change', (e) => { if (e.target.matches('[data-set-size]')) this.onSetChange(); });
+          if (this.customInput) {
+            this.customInput.addEventListener('input', () => this.update());
+            this.customInput.addEventListener('blur', () => { this.customInput.value = this.clampQty(this.customInput.value); this.update(); });
+          }
+          if (this.backBtn) this.backBtn.addEventListener('click', () => this.toPresets());
+          this.querySelectorAll('[data-set-step]').forEach((b) => b.addEventListener('click', () => this.step(parseInt(b.dataset.setStep, 10))));
+
+          // Refresh the displayed set size when the theme changes variant.
+          this.onVariantChange = () => this.update();
+          this.variantEvents = ['variant:change', 'variant:update', 'on:variant:change', 'on:variant:update'];
+          this.variantEvents.forEach((evt) => document.addEventListener(evt, this.onVariantChange));
+
+          this.update();
+        }
+
+        disconnectedCallback() {
+          // Sections re-render on variant change; drop the old listeners so they don't stack up.
+          if (!this.variantEvents) return;
+          this.variantEvents.forEach((evt) => document.removeEventListener(evt, this.onVariantChange));
+        }
+
+        // Respect the variant's Shopify quantity rules so /cart/add can't reject the submit.
+        clampQty(value) {
+          const min = this.config.qtyMin || 1;
+          const step = this.config.qtyStep || 1;
+          const max = this.config.qtyMax;
+          let n = parseInt(value, 10);
+          if (!(n > 0)) n = min;
+          if (n < min) n = min;
+          if (step > 1) n = min + Math.round((n - min) / step) * step;
+          if (n < min) n = min;
+          if (max && n > max) n = min + Math.floor((max - min) / step) * step;
+          return n;
+        }
+
+        setMode(mode) {
+          if (!this.stack) return;
+          this.stack.dataset.mode = mode;
+          const custom = mode === 'custom';
+          if (this.presetsLayer) { this.presetsLayer.inert = custom; this.presetsLayer.setAttribute('aria-hidden', String(custom)); }
+          if (this.customLayer) { this.customLayer.inert = !custom; this.customLayer.setAttribute('aria-hidden', String(!custom)); }
+        }
+        toPresets() {
+          const p = this.querySelector('[data-set-size][value="' + this.lastPreset + '"]') || this.querySelector('[data-set-size]:not([value="custom"])');
+          if (p) p.checked = true;
+          this.setMode('presets'); this.update();
+        }
+        step(delta) {
+          if (!this.customInput) return;
+          const stepBy = (this.config.qtyStep || 1) * delta;
+          this.customInput.value = this.clampQty((parseInt(this.customInput.value, 10) || this.config.qtyMin || 1) + stepBy);
+          this.update();
+        }
+        onSetChange() {
+          const c = this.querySelector('[data-set-size]:checked'); if (!c) return;
+          if (c.value === 'custom') { this.setMode('custom'); }
+          else { this.lastPreset = c.value; this.setMode('presets'); }
+          this.update();
+        }
+
+        getSetSize() {
+          const c = this.querySelector('[data-set-size]:checked');
+          if (!c) return this.clampQty(this.config.defaultSet);
+          if (c.value === 'custom') { return this.clampQty(this.customInput && this.customInput.value); }
+          return this.clampQty(parseInt(c.value, 10) || this.config.defaultSet);
+        }
+        getVariantId() {
+          const el = this.form && this.form.querySelector('input[name="id"]');
+          return (el && el.value) || this.config.defaultVariantId;
+        }
+
+        update() {
+          const qty = this.getSetSize();
+          if (this.quantityInput) this.quantityInput.value = qty;
+
+          // Disable the minus step at the floor, and plus at the ceiling.
+          const min = this.config.qtyMin || 1, max = this.config.qtyMax;
+          const minus = this.querySelector('[data-set-step="-1"]'), plus = this.querySelector('[data-set-step="1"]');
+          if (minus) minus.disabled = qty <= min;
+          if (plus) plus.disabled = !!max && qty >= max;
+
+          // SET (GMC fix): show the chosen set SIZE on the button, never a dollar total.
+          // Editing a text node preserves sibling elements (spinner, icons) inside the button.
+          if (this.labelNode) this.labelNode.nodeValue = this.baseLabel + ' (' + qty + ')';
+        }
+      }
+
+      customElements.define('set-quantity', SetQuantity);
+    })();
+  </script>
+{%- else -%}
+  <buy-buttons class="buy-buttons" template="{{ product.template_suffix | escape }}" form="{{ form_id }}">
+    {%- assign button_content = 'product.general.add_to_cart_button' | t -%}
+    {%- render 'button', content: button_content, type: 'submit', background: atc_button_background, text_color: atc_button_text_color, stretch: true -%}
+  </buy-buttons>
+{%- endif -%}
