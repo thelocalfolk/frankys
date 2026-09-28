@@ -27,12 +27,19 @@ managed at the theme level.
       }
 
       {%- if request.page_type == 'product' -%}
-        {%- if collection -%}
+        {%- comment -%}FRANKY'S (TLF) P8: use the same collection as the visible breadcrumbs{%- endcomment -%}
+        {%- capture schema_crumb_handle -%}{%- render 'breadcrumb-collection-handle', product: product, collection: collection -%}{%- endcapture -%}
+        {%- assign schema_crumb_handle = schema_crumb_handle | strip -%}
+        {%- assign schema_crumb_collection = nil -%}
+        {%- if schema_crumb_handle != blank -%}
+          {%- assign schema_crumb_collection = collections[schema_crumb_handle] -%}
+        {%- endif -%}
+        {%- if schema_crumb_collection -%}
           ,{
             "@type": "ListItem",
             "position": 2,
-            "name": {{ collection.title | json }},
-            "item": "{{ shop.url }}{{ collection.url }}"
+            "name": {{ schema_crumb_collection.title | json }},
+            "item": "{{ shop.url }}{{ schema_crumb_collection.url }}"
           }, {
             "@type": "ListItem",
             "position": 3,

@@ -1,0 +1,44 @@
+{%- doc -%}
+  FRANKY'S (TLF) — Priority 8
+  Outputs the handle of the collection to show in the breadcrumb trail (or nothing).
+  Used by sections/breadcrumbs.liquid and snippets/microdata-schema.liquid so the
+  visible breadcrumbs and the BreadcrumbList schema always match.
+
+  Order of preference on product pages:
+    1. The collection the shopper came from (/collections/x/products/y).
+    2. The first link in the "collection-pills" menu that contains this product
+       (i.e. its main category range).
+    3. The first collection that isn't a merchandising / colour collection.
+
+  @param {object} [product]
+  @param {object} [collection]
+{%- enddoc -%}
+{%- liquid
+  assign result = ''
+
+  if collection and collection.handle != blank
+    assign result = collection.handle
+  elsif product
+    assign product_handles = product.collections | map: 'handle'
+
+    for link in linklists['collection-pills'].links
+      if link.type == 'collection_link' and product_handles contains link.object.handle
+        assign result = link.object.handle
+        break
+      endif
+    endfor
+
+    if result == blank
+      assign excluded_handles = 'frontpage,all,best-sellers,new-arrivals,sale,clearance,gifts,homewares,tableware' | split: ','
+      for product_collection in product.collections
+        if excluded_handles contains product_collection.handle or product_collection.template_suffix == 'color-based-collection'
+          continue
+        endif
+        assign result = product_collection.handle
+        break
+      endfor
+    endif
+  endif
+
+  echo result
+-%}

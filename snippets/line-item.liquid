@@ -5,6 +5,7 @@ This component renders a single line item product information, and is used on or
 @param {boolean} [show_line_price] - if true, the whole line price (quantity * unit price) is displayed
 @param {boolean} [show_quantity_selector] - if true, a quantity selector is displayed inside the line item
 @param {boolean} [hide_unit_price] - if set to true, we hide the unit price. We do that in the cart drawer to simplify it
+@param {boolean} [show_low_stock] - FRANKY'S (TLF) P9: if true, shows "Only X left" when tracked stock is genuinely low
 @param {object} [section]
 {%- enddoc -%}
 
@@ -47,6 +48,19 @@ This component renders a single line item product information, and is used on or
 
           {%- if line_item.selling_plan_allocation -%}
             <p class="subheading text-subdued">{{ line_item.selling_plan_allocation.selling_plan.name }}</p>
+          {%- endif -%}
+          {%- comment -%}
+            FRANKY'S (TLF) P9: low stock notice. Only shown when it's true: Shopify tracks the
+            variant's stock, overselling is off, and 5 or fewer are left.
+          {%- endcomment -%}
+          {%- if show_low_stock -%}
+            {%- liquid
+              assign low_stock_threshold = 5
+              assign low_stock_variant = line_item.variant
+            -%}
+            {%- if low_stock_variant.inventory_management == 'shopify' and low_stock_variant.inventory_policy == 'deny' and low_stock_variant.inventory_quantity > 0 and low_stock_variant.inventory_quantity <= low_stock_threshold -%}
+              <p class="line-item__low-stock text-xs">{{- 'product.inventory.low_stock_with_quantity_count' | t: count: low_stock_variant.inventory_quantity -}}</p>
+            {%- endif -%}
           {%- endif -%}
           
           {%- unless line_item.properties == empty -%}
