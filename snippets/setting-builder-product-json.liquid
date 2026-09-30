@@ -1,0 +1,52 @@
+{%- doc -%}
+  FRANKY'S (TLF) P1 — Build Your Setting.
+  Outputs one product as JSON for assets/frankys-setting-builder.js.
+  The colour is read from the option named "Colour"/"Color" (falls back to the first option).
+  Optional per-product override: metafield custom.builder_covers_settings (integer) — how many place settings one unit covers.
+
+  @param {object} product
+  @param {number} [covers] - default number of settings one unit covers (0 = one per table)
+{%- enddoc -%}
+{%- liquid
+  assign colour_index = 0
+  assign colour_option = product.options_with_values.first
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name == 'colour' or option_name == 'color'
+      assign colour_index = forloop.index0
+      assign colour_option = option
+      break
+    endif
+  endfor
+
+  assign covers_value = covers
+  if product.metafields.custom.builder_covers_settings != blank
+    assign covers_value = product.metafields.custom.builder_covers_settings.value
+  endif
+-%}
+{
+  "id": {{ product.id }},
+  "handle": {{ product.handle | json }},
+  "title": {{ product.title | json }},
+  "url": {{ product.url | json }},
+  "image": {% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
+  "covers": {% if covers_value != blank %}{{ covers_value | json }}{% else %}null{% endif %},
+  "swatches": {
+    {%- for value in colour_option.values -%}
+      {%- capture swatch_css -%}{%- render 'setting-builder-swatch', value: value -%}{%- endcapture -%}
+      {{ value | append: '' | json }}: {{ swatch_css | strip | json }}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  },
+  "variants": [
+    {%- for variant in product.variants -%}
+      {
+        "id": {{ variant.id }},
+        "colour": {{ variant.options[colour_index] | json }},
+        "key": {{ variant.options[colour_index] | handle | json }},
+        "available": {{ variant.available | json }},
+        "price": {{ variant.price | json }},
+        "image": {% if variant.featured_image %}{{ variant.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}

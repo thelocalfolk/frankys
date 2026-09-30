@@ -1,0 +1,235 @@
+/* ==========================================================================
+   FRANKY'S (TLF) P1 — Build Your Setting
+   Loaded only by sections/build-your-setting.liquid (kept out of
+   frankys-custom.css so other pages don't pay for it).
+   Uses the theme's colour-scheme variables; Steph's styling can layer on top.
+   ========================================================================== */
+
+.setting-builder {
+  --sb-border: rgb(var(--border-color));
+  --sb-muted: rgb(var(--text-color) / .6);
+  --sb-selected: rgb(var(--text-color));
+  --sb-tap: 44px;
+  display: block;
+  padding-block: 0 3rem;
+}
+
+.setting-builder .breadcrumbs { padding-block: 1rem 0; }
+
+.sb {
+  display: grid;
+  gap: 1.5rem;
+  padding-block-start: 1.25rem;
+}
+
+@media screen and (min-width: 1000px) {
+  .sb {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 3rem;
+    align-items: start;
+  }
+  .sb__preview {
+    position: sticky;
+    top: calc(var(--sticky-area-height, 0px) + 1.5rem);
+  }
+}
+
+/* ---- preview ---- */
+.sb__stage {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--rounded, 0);
+  overflow: hidden;
+  background: rgb(var(--text-color) / .04);
+  display: grid;
+  place-items: center;
+}
+.sb__stage-main { width: 100%; height: 100%; object-fit: cover; }
+.sb__stage-empty { padding: 2rem; text-align: center; }
+.sb__stage-extras {
+  position: absolute;
+  inset-inline-end: .75rem;
+  inset-block-end: .75rem;
+  display: flex;
+  gap: .5rem;
+}
+.sb__stage-extras img {
+  width: 64px; height: 64px; object-fit: cover;
+  border-radius: .5rem;
+  box-shadow: 0 2px 8px rgb(0 0 0 / .12);
+  background: rgb(var(--background));
+}
+.sb__stage-caption { margin-block-start: .5rem; }
+
+/* ---- panel + steps ---- */
+.sb__panel { display: grid; gap: 1.75rem; min-width: 0; }
+.sb__intro { display: grid; gap: .75rem; }
+.sb__step { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: .75rem; }
+.sb__step[disabled] { opacity: .4; }
+.sb__step-title {
+  padding: 0;
+  font-size: .875rem;
+  font-weight: 600;
+  display: flex; align-items: center; gap: .5rem;
+  margin-block-end: .25rem;
+}
+.sb__step-num {
+  display: inline-grid; place-items: center;
+  width: 1.5rem; height: 1.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--sb-border);
+  font-size: .75rem;
+}
+.sb__step-value { font-weight: 400; }
+.sb__hint { margin: 0; }
+
+/* ---- presets (step 0) ---- */
+.sb__preset-list {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(140px, 1fr);
+  gap: .75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-block-end: .25rem;
+}
+.sb__preset { scroll-snap-align: start; display: grid; gap: .375rem; align-content: start; }
+.sb__preset-media { aspect-ratio: 1; overflow: hidden; background: rgb(var(--text-color) / .04); }
+.sb__preset-media img, .sb__preset-media svg { width: 100%; height: 100%; object-fit: cover; }
+.sb__preset-title { margin: 0; }
+.sb__preset-actions { display: flex; gap: .75rem; }
+.sb__preset-actions .link { min-height: var(--sb-tap); }
+
+/* ---- shapes (step 1) ---- */
+.sb__shapes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: .5rem;
+}
+.sb__shape label {
+  display: grid; justify-items: center; gap: .25rem;
+  padding: .625rem .25rem;
+  border: 1px solid transparent;
+  border-radius: .5rem;
+  text-align: center;
+  cursor: pointer;
+  min-height: var(--sb-tap);
+}
+.sb__shape-icon { width: 56px; height: 44px; display: grid; place-items: center; }
+.sb__shape-icon img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.sb__shape-name { font-size: .8125rem; }
+.sb__shape-meta { line-height: 1.2; }
+.sb__shape label:hover { border-color: var(--sb-border); }
+.sb__shape input:checked + label { border-color: var(--sb-selected); }
+.sb__shape input:focus-visible + label,
+.sb__count input:focus-visible + label,
+.sb__pill input:focus-visible + label,
+.sb__swatch input:focus-visible + label { outline: 2px solid var(--sb-selected); outline-offset: 2px; }
+
+/* ---- swatches (step 2 + extras) ---- */
+.sb__swatch-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.sb__swatch label {
+  --size: 32px;
+  display: block;
+  width: var(--sb-tap); height: var(--sb-tap);
+  position: relative;
+  cursor: pointer;
+}
+.sb__swatch label::before {
+  content: "";
+  position: absolute;
+  inset: calc((var(--sb-tap) - var(--size)) / 2);
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / .12);
+}
+.sb__swatch input:checked + label::after {
+  content: "";
+  position: absolute;
+  inset: calc((var(--sb-tap) - var(--size)) / 2 - 4px);
+  border-radius: 50%;
+  border: 1.5px solid var(--sb-selected);
+}
+.sb__swatch input:disabled + label { cursor: not-allowed; opacity: .35; }
+.sb__swatch input:disabled + label::before {
+  background: linear-gradient(to top right, transparent calc(50% - 1px), rgb(var(--text-color)) 50%, transparent calc(50% + 1px)), var(--swatch);
+}
+.sb__swatch--sm label { --size: 24px; }
+
+/* ---- number of settings (step 3) ---- */
+.sb__counts { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.sb__count label,
+.sb__pill label {
+  display: inline-grid; place-items: center;
+  min-width: var(--sb-tap); min-height: var(--sb-tap);
+  padding-inline: .875rem;
+  border: 1px solid var(--sb-border);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: .875rem;
+}
+.sb__count input:checked + label,
+.sb__pill input:checked + label { border-color: var(--sb-selected); background: var(--sb-selected); color: rgb(var(--background)); }
+.sb__count--custom { display: flex; gap: .5rem; align-items: center; }
+.sb__count-input { width: 5rem; min-height: var(--sb-tap); text-align: center; }
+
+/* ---- complete the table (step 4) ---- */
+.sb__extras { display: grid; gap: .5rem; }
+.sb__extra { border: 1px solid var(--sb-border); border-radius: .5rem; }
+.sb__extra.is-on { border-color: var(--sb-selected); }
+.sb__extra-head { display: flex; align-items: center; gap: .75rem; padding-inline: .75rem; }
+.sb__check { width: 20px; height: 20px; flex: none; accent-color: rgb(var(--text-color)); }
+.sb__extra-head label {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: .75rem;
+  align-items: center;
+  padding-block: .625rem;
+  min-height: var(--sb-tap);
+  cursor: pointer;
+}
+.sb__extra-thumb { grid-row: span 2; width: 48px; height: 48px; object-fit: cover; border-radius: .25rem; }
+.sb__extra-name { font-size: .875rem; font-weight: 600; }
+.sb__extra-body { display: grid; gap: .625rem; padding: 0 .75rem .75rem; }
+.sb__pills { display: flex; flex-wrap: wrap; gap: .375rem; }
+.sb__pill label { min-height: 36px; font-size: .8125rem; }
+
+/* ---- summary (step 5) ---- */
+.sb__summary { padding-block-start: 1.25rem; border-top: 1px solid var(--sb-border); }
+.sb__lines { display: grid; gap: .375rem; }
+.sb__line { display: flex; justify-content: space-between; gap: 1rem; }
+.sb__line.is-sold-out { color: var(--sb-muted); text-decoration: line-through; }
+.sb__total { display: flex; justify-content: space-between; font-weight: 600; font-size: 1.0625rem; }
+.sb__shipping { display: grid; gap: .375rem; }
+.sb__shipping-bar { display: block; height: 4px; border-radius: 4px; background: rgb(var(--text-color) / .1); overflow: hidden; }
+.sb__shipping-bar span { display: block; height: 100%; width: 0; background: rgb(var(--text-color)); transition: width .3s; }
+.sb__atc { min-height: 52px; }
+.sb__status:empty { display: none; }
+
+/* ---- sticky mobile bar ---- */
+.sb__bar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 5;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .75rem 1rem calc(.75rem + env(safe-area-inset-bottom, 0px));
+  background: rgb(var(--background));
+  border-top: 1px solid var(--sb-border);
+  box-shadow: 0 -4px 16px rgb(0 0 0 / .06);
+}
+.sb__bar[hidden] { display: none; }
+.sb__bar-info { display: grid; min-width: 0; }
+.sb__bar-info > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb__bar-total { font-weight: 600; }
+.sb__bar-button { flex: none; }
+@media screen and (min-width: 1000px) {
+  .sb__bar { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sb__shipping-bar span { transition: none; }
+}

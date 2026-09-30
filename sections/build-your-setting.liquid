@@ -1,0 +1,327 @@
+{%- comment -%}
+  FRANKY'S (TLF) P1 — Build Your Setting (table builder), full-page layout.
+
+  Flow (agreed in the Build Your Setting plan):
+    0 (optional) start from a pre-built setting → 1 shape → 2 colour → 3 how many settings
+    → 4 complete the table → 5 add to cart.
+
+  v1 data comes from this section's blocks so it can be edited in the theme editor today.
+  When the Colour / Setting range / Setting preset metaobjects exist (plan item c1), only the
+  JSON built below needs to change — assets/frankys-setting-builder.js reads the same shape.
+  The same JS will power the smaller product-page block (P2).
+
+  Shareable / prefill links: ?range=sweden&colour=sage-green&settings=6&source=pdp
+{%- endcomment -%}
+
+{{- 'frankys-setting-builder.css' | asset_url | stylesheet_tag -}}
+<script src="{{ 'frankys-setting-builder.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign range_blocks = section.blocks | where: 'type', 'range'
+  assign addon_blocks = section.blocks | where: 'type', 'addon'
+  assign preset_blocks = section.blocks | where: 'type', 'preset'
+  assign settings_options = section.settings.settings_options | split: ','
+-%}
+
+<setting-builder class="setting-builder color-scheme color-scheme--{{ section.settings.color_scheme.id }}" data-section-id="{{ section.id }}">
+  <div class="container">
+    {%- if section.settings.show_breadcrumbs -%}
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <ol class="breadcrumbs__list unstyled-list text-xs">
+          <li class="breadcrumbs__item"><a href="{{ routes.root_url }}" class="breadcrumbs__link">{{ 'general.home' | t }}</a></li>
+          <li class="breadcrumbs__item"><span class="breadcrumbs__current" aria-current="page">{{ page.title | default: section.settings.heading }}</span></li>
+        </ol>
+      </nav>
+    {%- endif -%}
+
+    <div class="sb">
+      {%- comment -%} Preview — images swap with the shopper's picks. Top-down composition waits on the photography decision (plan a6). {%- endcomment -%}
+      <div class="sb__preview">
+        <div class="sb__stage">
+          <img class="sb__stage-main" data-preview-main alt="" width="900" height="900" hidden>
+          <div class="sb__stage-empty" data-preview-empty>
+            <p class="text-subdued">{{ section.settings.preview_empty_text }}</p>
+          </div>
+          <ul class="sb__stage-extras unstyled-list" data-preview-extras aria-hidden="true"></ul>
+        </div>
+        <p class="sb__stage-caption text-sm text-subdued" data-preview-caption aria-live="polite"></p>
+      </div>
+
+      <div class="sb__panel">
+        <header class="sb__intro">
+          <h1 class="h3">{{ section.settings.heading }}</h1>
+          {%- if section.settings.text != blank -%}
+            <div class="prose text-sm">{{ section.settings.text }}</div>
+          {%- endif -%}
+        </header>
+
+        {%- comment -%} Step 0 — optional presets {%- endcomment -%}
+        {%- if preset_blocks.size > 0 -%}
+          <section class="sb__step sb__presets" aria-labelledby="sb-presets-{{ section.id }}">
+            <h2 class="sb__step-title" id="sb-presets-{{ section.id }}">{{ section.settings.presets_heading }}</h2>
+            <ul class="sb__preset-list unstyled-list">
+              {%- for block in preset_blocks -%}
+                {%- liquid
+                  assign p = block.settings.product
+                  assign preset_image = block.settings.image | default: p.featured_image
+                  assign preset_title = block.settings.title | default: p.title
+                -%}
+                <li class="sb__preset" {{ block.shopify_attributes }}>
+                  <div class="sb__preset-media">
+                    {%- if preset_image -%}
+                      {{ preset_image | image_url: width: 480 | image_tag: loading: 'lazy', sizes: '(min-width: 1000px) 12vw, 40vw', widths: '240,360,480', alt: preset_title }}
+                    {%- else -%}
+                      {{ 'image' | placeholder_svg_tag: 'placeholder-background' }}
+                    {%- endif -%}
+                  </div>
+                  <p class="sb__preset-title text-sm">{{ preset_title }}{% if p %} <span class="text-subdued">· {{ p.price | money }}</span>{% endif %}</p>
+                  <div class="sb__preset-actions">
+                    {%- if p and p.available -%}
+                      <button type="button" class="link text-xs" data-preset-add="{{ p.selected_or_first_available_variant.id }}" data-preset-title="{{ preset_title | escape }}">Add as is</button>
+                    {%- endif -%}
+                    {%- if block.settings.range != blank -%}
+                      <button type="button" class="link text-xs" data-preset-customise data-range="{{ block.settings.range | handle }}" data-colour="{{ block.settings.colour | handle }}" data-settings="{{ block.settings.settings_count }}">Customise</button>
+                    {%- elsif p -%}
+                      <a class="link text-xs" href="{{ p.url }}">View</a>
+                    {%- endif -%}
+                  </div>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </section>
+        {%- endif -%}
+
+        {%- comment -%} Step 1 — shape {%- endcomment -%}
+        <fieldset class="sb__step" data-step="shape">
+          <legend class="sb__step-title"><span class="sb__step-num">1</span> {{ section.settings.shape_heading }}</legend>
+          <div class="sb__shapes">
+            {%- for block in range_blocks -%}
+              {%- liquid
+                assign placemat = block.settings.placemat
+                if placemat == blank
+                  continue
+                endif
+                assign range_key = block.settings.key | default: placemat.handle | remove: '-placemat' | handle
+                assign range_name = block.settings.label | default: placemat.title | remove: ' Placemat' | remove: ' placemat'
+                assign colour_count = placemat.options_with_values.first.values.size
+              -%}
+              <div class="sb__shape" {{ block.shopify_attributes }}>
+                <input class="sr-only" type="radio" name="sb-range-{{ section.id }}" id="sb-range-{{ section.id }}-{{ range_key }}" value="{{ range_key }}" data-range-input>
+                <label for="sb-range-{{ section.id }}-{{ range_key }}">
+                  <span class="sb__shape-icon" aria-hidden="true">
+                    {%- if block.settings.icon -%}
+                      {{ block.settings.icon | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}
+                    {%- elsif placemat.featured_image -%}
+                      {{ placemat.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}
+                    {%- endif -%}
+                  </span>
+                  <span class="sb__shape-name">{{ range_name }}</span>
+                  <span class="sb__shape-meta text-xs text-subdued">{{ placemat.price_min | money_without_trailing_zeros }} · {{ colour_count }} colours</span>
+                </label>
+              </div>
+            {%- endfor -%}
+          </div>
+        </fieldset>
+
+        {%- comment -%} Step 2 — colour (rendered by JS for the chosen shape) {%- endcomment -%}
+        <fieldset class="sb__step" data-step="colour" disabled>
+          <legend class="sb__step-title"><span class="sb__step-num">2</span> {{ section.settings.colour_heading }} <span class="sb__step-value text-subdued" data-colour-name></span></legend>
+          <p class="sb__hint text-sm text-subdued" data-colour-hint>{{ section.settings.colour_hint }}</p>
+          <div class="sb__swatches" data-colour-list></div>
+        </fieldset>
+
+        {%- comment -%} Step 3 — how many settings {%- endcomment -%}
+        <fieldset class="sb__step" data-step="settings" disabled>
+          <legend class="sb__step-title"><span class="sb__step-num">3</span> {{ section.settings.settings_heading }}</legend>
+          <div class="sb__counts">
+            {%- for option in settings_options -%}
+              {%- assign n = option | strip | plus: 0 -%}
+              {%- if n > 0 -%}
+                <div class="sb__count">
+                  <input class="sr-only" type="radio" name="sb-settings-{{ section.id }}" id="sb-settings-{{ section.id }}-{{ n }}" value="{{ n }}" data-settings-input {% if n == section.settings.default_settings %}checked{% endif %}>
+                  <label for="sb-settings-{{ section.id }}-{{ n }}">{{ n }}</label>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if section.settings.allow_custom_settings -%}
+              <div class="sb__count sb__count--custom">
+                <input class="sr-only" type="radio" name="sb-settings-{{ section.id }}" id="sb-settings-{{ section.id }}-custom" value="custom" data-settings-input>
+                <label for="sb-settings-{{ section.id }}-custom">Other</label>
+                <input class="sb__count-input input" type="number" inputmode="numeric" min="1" max="{{ section.settings.max_settings }}" value="{{ section.settings.default_settings }}" aria-label="Number of settings" data-settings-custom hidden>
+              </div>
+            {%- endif -%}
+          </div>
+          <p class="sb__hint text-sm text-subdued">{{ section.settings.settings_hint }}</p>
+        </fieldset>
+
+        {%- comment -%} Step 4 — complete the table (coasters + add-ons, rendered by JS) {%- endcomment -%}
+        <fieldset class="sb__step" data-step="extras" disabled>
+          <legend class="sb__step-title"><span class="sb__step-num">4</span> {{ section.settings.extras_heading }}</legend>
+          <div class="sb__extras" data-extras-list></div>
+        </fieldset>
+
+        {%- comment -%} Step 5 — summary + add to cart {%- endcomment -%}
+        <section class="sb__step sb__summary" aria-labelledby="sb-summary-{{ section.id }}">
+          <h2 class="sb__step-title" id="sb-summary-{{ section.id }}"><span class="sb__step-num">5</span> {{ section.settings.summary_heading }}</h2>
+          <ul class="sb__lines unstyled-list text-sm" data-summary-lines>
+            <li class="text-subdued">{{ section.settings.summary_empty_text }}</li>
+          </ul>
+          <div class="sb__total">
+            <span>Total</span>
+            <span class="sb__total-price" data-summary-total aria-live="polite">{{ 0 | money }}</span>
+          </div>
+          <div class="sb__shipping text-xs" data-shipping hidden>
+            <span data-shipping-text></span>
+            <span class="sb__shipping-bar" aria-hidden="true"><span data-shipping-bar></span></span>
+          </div>
+          <button type="button" class="button w-full sb__atc" data-add-to-cart disabled>
+            <span data-atc-label>{{ section.settings.atc_label }}</span>
+          </button>
+          <p class="sb__status text-xs" data-status role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Mobile sticky bar (≈78% of sessions are mobile) {%- endcomment -%}
+  <div class="sb__bar" data-sticky-bar hidden>
+    <div class="sb__bar-info">
+      <span class="text-xs text-subdued" data-bar-label></span>
+      <span class="sb__bar-total" data-bar-total></span>
+    </div>
+    <button type="button" class="button sb__bar-button" data-add-to-cart disabled>{{ section.settings.atc_label }}</button>
+  </div>
+
+  <script type="application/json" data-builder-data>
+    {
+      "moneyFormat": {{ shop.money_format | json }},
+      "freeShippingThreshold": {{ settings.cart_free_shipping_threshold | default: 0 | times: 100 | json }},
+      "showShipping": {{ settings.cart_show_free_shipping_bar | json }},
+      "defaultSettings": {{ section.settings.default_settings | json }},
+      "maxSettings": {{ section.settings.max_settings | json }},
+      "coastersOnByDefault": {{ section.settings.coasters_default_on | json }},
+      "strings": {
+        "atc": {{ section.settings.atc_label | json }},
+        "adding": "Adding…",
+        "added": "Added to your cart.",
+        "soldOut": "Sold out",
+        "notify": "Notify me",
+        "freeShipping": "Your order ships free.",
+        "toFreeShipping": "{amount} away from free shipping.",
+        "packNote": "Sold in sets of {covers} — {units} covers {total} settings.",
+        "perTable": "One per table.",
+        "noMatch": "Not made in {colour}, so we've picked {picked}.",
+        "chooseShape": "Pick a shape to start.",
+        "chooseColour": "Pick a colour.",
+        "settingName": "{range} setting · {colour} · {count} settings"
+      },
+      "ranges": [
+        {%- assign json_count = 0 -%}
+        {%- for block in range_blocks -%}
+          {%- liquid
+            assign placemat = block.settings.placemat
+            if placemat == blank
+              continue
+            endif
+            assign range_key = block.settings.key | default: placemat.handle | remove: '-placemat' | handle
+            assign range_name = block.settings.label | default: placemat.title | remove: ' Placemat' | remove: ' placemat'
+          -%}
+          {%- if json_count > 0 -%},{%- endif -%}
+          {%- assign json_count = json_count | plus: 1 -%}
+          {
+            "key": {{ range_key | json }},
+            "name": {{ range_name | json }},
+            "placemat": {%- render 'setting-builder-product-json', product: placemat, covers: 1 -%},
+            "coaster": {% if block.settings.coaster != blank %}{%- render 'setting-builder-product-json', product: block.settings.coaster, covers: 1 -%}{% else %}null{% endif %}
+          }
+        {%- endfor -%}
+      ],
+      "addons": [
+        {%- for block in addon_blocks -%}
+          {%- unless forloop.first -%},{%- endunless -%}
+          {
+            "key": {{ block.id | json }},
+            "label": {{ block.settings.label | json }},
+            "on": {{ block.settings.default_on | json }},
+            "products": [
+              {%- for p in block.settings.products -%}
+                {%- render 'setting-builder-product-json', product: p, covers: block.settings.covers -%}{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            ]
+          }
+        {%- endfor -%}
+      ]
+    }
+  </script>
+</setting-builder>
+
+{% schema %}
+{
+  "name": "Build your setting",
+  "class": "shopify-section--build-your-setting",
+  "tag": "section",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "checkbox", "id": "show_breadcrumbs", "label": "Show breadcrumbs", "default": true },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Build your own table" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Made from durable, leather-look material that's easy to wipe clean, with a soft, refined finish. Available in a range of shapes and colours to mix, match and make your own.</p>" },
+    { "type": "text", "id": "preview_empty_text", "label": "Preview text before a shape is picked", "default": "Pick a shape and colour to see your setting." },
+    { "type": "header", "content": "Steps" },
+    { "type": "text", "id": "presets_heading", "label": "Pre-built settings heading", "default": "Be inspired by our favourite settings" },
+    { "type": "text", "id": "shape_heading", "label": "Shape heading", "default": "Choose your shape" },
+    { "type": "text", "id": "colour_heading", "label": "Colour heading", "default": "Choose your colour" },
+    { "type": "text", "id": "colour_hint", "label": "Colour hint", "default": "Only colours made in this shape are shown." },
+    { "type": "text", "id": "settings_heading", "label": "Number of settings heading", "default": "How many settings?" },
+    { "type": "text", "id": "settings_hint", "label": "Number of settings hint", "default": "Sets the quantity of everything below." },
+    { "type": "text", "id": "settings_options", "label": "Setting counts", "info": "Comma separated, e.g. 4, 6, 8", "default": "4, 6, 8" },
+    { "type": "range", "id": "default_settings", "label": "Default number of settings", "min": 1, "max": 12, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "allow_custom_settings", "label": "Allow a custom number", "default": true },
+    { "type": "range", "id": "max_settings", "label": "Maximum custom number", "min": 4, "max": 30, "step": 1, "default": 16 },
+    { "type": "text", "id": "extras_heading", "label": "Complete the table heading", "default": "Complete the table" },
+    { "type": "checkbox", "id": "coasters_default_on", "label": "Tick matching coasters by default", "default": true },
+    { "type": "text", "id": "summary_heading", "label": "Summary heading", "default": "Your setting" },
+    { "type": "text", "id": "summary_empty_text", "label": "Summary text before a shape is picked", "default": "Nothing added yet." },
+    { "type": "text", "id": "atc_label", "label": "Add to cart label", "default": "Add to cart" }
+  ],
+  "blocks": [
+    {
+      "type": "range",
+      "name": "Shape (range)",
+      "settings": [
+        { "type": "product", "id": "placemat", "label": "Placemat" },
+        { "type": "product", "id": "coaster", "label": "Matching coaster", "info": "Leave empty if this shape has no coaster — the coaster row is hidden." },
+        { "type": "text", "id": "label", "label": "Name", "info": "Defaults to the placemat title without \"Placemat\"." },
+        { "type": "text", "id": "key", "label": "Link key", "info": "Used in links, e.g. ?range=sweden. Defaults to the placemat handle without -placemat." },
+        { "type": "image_picker", "id": "icon", "label": "Line icon", "info": "Steph's shape icon. Defaults to the placemat image." }
+      ]
+    },
+    {
+      "type": "addon",
+      "name": "Complete the table item",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Napkins" },
+        { "type": "product_list", "id": "products", "label": "Products", "limit": 12 },
+        { "type": "range", "id": "covers", "label": "Settings one unit covers", "min": 0, "max": 8, "step": 1, "default": 4, "info": "4 = sold in sets of 4 (rounded up). 1 = one per setting. 0 = one per table (e.g. tablecloth). A product can override this with the metafield custom.builder_covers_settings." },
+        { "type": "checkbox", "id": "default_on", "label": "Ticked by default", "default": false }
+      ]
+    },
+    {
+      "type": "preset",
+      "name": "Pre-built setting",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Setting product", "info": "Used for \"Add as is\"." },
+        { "type": "text", "id": "title", "label": "Title", "info": "Defaults to the product title." },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Defaults to the product image." },
+        { "type": "header", "content": "Customise" },
+        { "type": "paragraph", "content": "Fill these in to show a \"Customise\" link that loads this setting into the builder." },
+        { "type": "text", "id": "range", "label": "Shape link key", "info": "e.g. sweden" },
+        { "type": "text", "id": "colour", "label": "Colour", "info": "e.g. Sage Green" },
+        { "type": "range", "id": "settings_count", "label": "Number of settings", "min": 1, "max": 12, "step": 1, "default": 4 }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Build your setting" }
+  ]
+}
+{% endschema %}
