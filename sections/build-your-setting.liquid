@@ -85,7 +85,8 @@
                 </button>
               {%- endfor -%}
             </div>
-            <p class="sb__hint text-xs text-subdued" data-look-status aria-live="polite"></p>
+            {%- comment -%} Announced to screen readers only, not shown on the page. {%- endcomment -%}
+            <p class="sr-only" data-look-status aria-live="polite"></p>
           </section>
         {%- endif -%}
 
