@@ -1,0 +1,37 @@
+{%- doc -%}
+  FRANKY'S (TLF) P1 — Build Your Setting.
+  Outputs a CSS background value for a colour option value, using the same order as the theme's option-value snippet:
+  native Shopify swatch (image, then colour) → theme settings "Colour swatch configuration" → the label itself.
+
+  @param {object} value - a product option value (from product.options_with_values)
+{%- enddoc -%}
+{%- liquid
+  assign label = value | append: ''
+  assign downcase_label = label | downcase | strip
+  assign out = downcase_label
+
+  if value.swatch.image != blank
+    assign swatch_image = value.swatch.image | image_url: width: 72
+    assign out = 'url(' | append: swatch_image | append: ') center / cover'
+  elsif value.swatch.color != blank
+    assign out = value.swatch.color | append: ''
+  else
+    assign swatch_config = settings.color_swatch_config | newline_to_br | split: '<br />'
+    for swatch_item in swatch_config
+      assign swatch_parts = swatch_item | split: ':'
+      assign swatch_name = swatch_parts.first | downcase | strip
+      if downcase_label == swatch_name
+        assign swatch_value = swatch_parts.last | strip
+        if swatch_value contains 'gradient(' or swatch_value contains '#'
+          assign out = swatch_value
+        elsif images[swatch_value] != blank
+          assign swatch_image = images[swatch_value] | image_url: width: 72
+          assign out = 'url(' | append: swatch_image | append: ') center / cover'
+        endif
+        break
+      endif
+    endfor
+  endif
+
+  echo out
+-%}
