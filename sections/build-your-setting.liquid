@@ -160,7 +160,10 @@
 
         {%- comment -%} Step 5 — summary + add to cart {%- endcomment -%}
         <section class="sb__step sb__summary" aria-labelledby="sb-summary-{{ section.id }}">
-          <h2 class="sb__step-title" id="sb-summary-{{ section.id }}"><span class="sb__step-num">5</span> {{ section.settings.summary_heading }}</h2>
+          <div class="sb__summary-head">
+            <h2 class="sb__step-title" id="sb-summary-{{ section.id }}"><span class="sb__step-num">5</span> {{ section.settings.summary_heading }}</h2>
+            <button type="button" class="link text-xs" data-reset hidden>Start again</button>
+          </div>
           <ul class="sb__lines unstyled-list text-sm" data-summary-lines>
             <li class="text-subdued">{{ section.settings.summary_empty_text }}</li>
           </ul>
@@ -211,7 +214,8 @@
         "noMatch": "Not made in {colour}, so we've picked {picked}.",
         "chooseShape": "Pick a shape to start.",
         "chooseColour": "Pick a colour.",
-        "lookLoaded": "{look} loaded — change or remove any piece below.",
+        "lookLoaded": "{look} loaded — change or remove any piece below, or tap it again to clear.",
+        "cleared": "Cleared — pick a look or start with a shape.",
         "settingName": "{range} setting · {colour} · {count} settings"
       },
       "ranges": [
