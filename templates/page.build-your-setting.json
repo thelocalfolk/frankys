@@ -3,46 +3,94 @@
     "main": {
       "type": "build-your-setting",
       "blocks": {
-        "preset_long_lunch_table_setting": {
+        "look_long_lunch": {
           "type": "preset",
           "settings": {
             "product": "long-lunch-table-setting",
-            "settings_count": 4
+            "settings_count": 4,
+            "placemat": "sweden-placemat",
+            "placemat_colour": "Sage Green",
+            "coaster": "peru-coaster",
+            "coaster_colour": "Sage Green",
+            "piece_1": "messina-linen-tablecloth",
+            "piece_1_colour": "Olive",
+            "piece_2": "prado-napkins",
+            "piece_2_colour": "Chocolate"
           }
         },
-        "preset_the_late_lunch_table_setting": {
+        "look_late_lunch": {
           "type": "preset",
           "settings": {
             "product": "the-late-lunch-table-setting",
-            "settings_count": 4
+            "settings_count": 4,
+            "placemat": "sweden-placemat",
+            "placemat_colour": "Dark Green",
+            "coaster": "sweden-coaster",
+            "coaster_colour": "Dark Green",
+            "piece_1": "marbella-tablecloth",
+            "piece_1_colour": "Nude",
+            "piece_2": "marbella-napkin",
+            "piece_2_colour": "Nude"
           }
         },
-        "preset_the_dining_edit_table_setting": {
+        "look_dining_edit": {
           "type": "preset",
           "settings": {
             "product": "the-dining-edit-table-setting",
-            "settings_count": 4
+            "settings_count": 4,
+            "placemat": "sweden-placemat",
+            "placemat_colour": "Brown",
+            "coaster": "sweden-coaster",
+            "coaster_colour": "Brown",
+            "piece_1": "madrid-tablecloth",
+            "piece_1_colour": "Chocolate",
+            "piece_2": "prado-napkins",
+            "piece_2_colour": "Chocolate"
           }
         },
-        "preset_the_considered_table_setting": {
+        "look_considered": {
           "type": "preset",
           "settings": {
             "product": "the-considered-table-setting",
-            "settings_count": 4
+            "settings_count": 4,
+            "placemat": "sweden-placemat",
+            "placemat_colour": "Pink",
+            "coaster": "sweden-coaster",
+            "coaster_colour": "Pink",
+            "piece_1": "madrid-tablecloth",
+            "piece_1_colour": "Chocolate",
+            "piece_2": "prado-napkins",
+            "piece_2_colour": "Chocolate"
           }
         },
-        "preset_the_shared_table_setting": {
+        "look_shared_table": {
           "type": "preset",
           "settings": {
             "product": "the-shared-table-setting",
-            "settings_count": 4
+            "settings_count": 4,
+            "placemat": "peru-placemat",
+            "placemat_colour": "Light Blue",
+            "coaster": "peru-coaster",
+            "coaster_colour": "Light Blue",
+            "piece_1": "madrid-tablecloth",
+            "piece_1_colour": "Navy",
+            "piece_2": "marbella-napkin",
+            "piece_2_colour": "Nude"
           }
         },
-        "preset_the_hosts_table_setting": {
+        "look_hosts_table": {
           "type": "preset",
           "settings": {
             "product": "the-hosts-table-setting",
-            "settings_count": 4
+            "settings_count": 4,
+            "placemat": "sweden-placemat",
+            "placemat_colour": "Dark Green",
+            "coaster": "peru-coaster",
+            "coaster_colour": "Dark Green",
+            "piece_1": "messina-linen-tablecloth",
+            "piece_1_colour": "Olive",
+            "piece_2": "marbella-napkin",
+            "piece_2_colour": "Nude"
           }
         },
         "range_sweden": {
@@ -149,12 +197,12 @@
         }
       },
       "block_order": [
-        "preset_long_lunch_table_setting",
-        "preset_the_late_lunch_table_setting",
-        "preset_the_dining_edit_table_setting",
-        "preset_the_considered_table_setting",
-        "preset_the_shared_table_setting",
-        "preset_the_hosts_table_setting",
+        "look_long_lunch",
+        "look_late_lunch",
+        "look_dining_edit",
+        "look_considered",
+        "look_shared_table",
+        "look_hosts_table",
         "range_sweden",
         "range_seville",
         "range_lorient",

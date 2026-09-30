@@ -55,39 +55,37 @@
           {%- endif -%}
         </header>
 
-        {%- comment -%} Step 0 — optional presets {%- endcomment -%}
+        {%- comment -%}
+          Step 0 — optional "Be inspired" looks. Tapping a look loads every piece in it
+          (shape, colour, coasters, napkins, tablecloth, cutlery) into the builder below,
+          where each piece can still be changed or removed.
+        {%- endcomment -%}
         {%- if preset_blocks.size > 0 -%}
           <section class="sb__step sb__presets" aria-labelledby="sb-presets-{{ section.id }}">
             <h2 class="sb__step-title" id="sb-presets-{{ section.id }}">{{ section.settings.presets_heading }}</h2>
-            <ul class="sb__preset-list unstyled-list">
+            <div class="sb__preset-list" role="group" aria-labelledby="sb-presets-{{ section.id }}">
               {%- for block in preset_blocks -%}
                 {%- liquid
+                  if block.settings.placemat == blank
+                    continue
+                  endif
                   assign p = block.settings.product
-                  assign preset_image = block.settings.image | default: p.featured_image
-                  assign preset_title = block.settings.title | default: p.title
+                  assign preset_image = block.settings.image | default: p.featured_image | default: block.settings.placemat.featured_image
+                  assign preset_title = block.settings.title | default: p.title | remove: ' (Setting for 4)'
                 -%}
-                <li class="sb__preset" {{ block.shopify_attributes }}>
-                  <div class="sb__preset-media">
+                <button type="button" class="sb__preset" data-look="{{ block.id }}" aria-pressed="false" {{ block.shopify_attributes }}>
+                  <span class="sb__preset-media">
                     {%- if preset_image -%}
-                      {{ preset_image | image_url: width: 480 | image_tag: loading: 'lazy', sizes: '(min-width: 1000px) 12vw, 40vw', widths: '240,360,480', alt: preset_title }}
+                      {{ preset_image | image_url: width: 480 | image_tag: loading: 'lazy', sizes: '(min-width: 1000px) 12vw, 40vw', widths: '240,360,480', alt: '' }}
                     {%- else -%}
                       {{ 'image' | placeholder_svg_tag: 'placeholder-background' }}
                     {%- endif -%}
-                  </div>
-                  <p class="sb__preset-title text-sm">{{ preset_title }}{% if p %} <span class="text-subdued">· {{ p.price | money }}</span>{% endif %}</p>
-                  <div class="sb__preset-actions">
-                    {%- if p and p.available -%}
-                      <button type="button" class="link text-xs" data-preset-add="{{ p.selected_or_first_available_variant.id }}" data-preset-title="{{ preset_title | escape }}">Add as is</button>
-                    {%- endif -%}
-                    {%- if block.settings.range != blank -%}
-                      <button type="button" class="link text-xs" data-preset-customise data-range="{{ block.settings.range | handle }}" data-colour="{{ block.settings.colour | handle }}" data-settings="{{ block.settings.settings_count }}">Customise</button>
-                    {%- elsif p -%}
-                      <a class="link text-xs" href="{{ p.url }}">View</a>
-                    {%- endif -%}
-                  </div>
-                </li>
+                  </span>
+                  <span class="sb__preset-title text-xs">{{ preset_title }}</span>
+                </button>
               {%- endfor -%}
-            </ul>
+            </div>
+            <p class="sb__hint text-xs text-subdued" data-look-status aria-live="polite"></p>
           </section>
         {%- endif -%}
 
@@ -213,6 +211,7 @@
         "noMatch": "Not made in {colour}, so we've picked {picked}.",
         "chooseShape": "Pick a shape to start.",
         "chooseColour": "Pick a colour.",
+        "lookLoaded": "{look} loaded — change or remove any piece below.",
         "settingName": "{range} setting · {colour} · {count} settings"
       },
       "ranges": [
@@ -233,6 +232,36 @@
             "name": {{ range_name | json }},
             "placemat": {%- render 'setting-builder-product-json', product: placemat, covers: 1 -%},
             "coaster": {% if block.settings.coaster != blank %}{%- render 'setting-builder-product-json', product: block.settings.coaster, covers: 1 -%}{% else %}null{% endif %}
+          }
+        {%- endfor -%}
+      ],
+      "looks": [
+        {%- assign json_count = 0 -%}
+        {%- for block in preset_blocks -%}
+          {%- if block.settings.placemat == blank -%}{%- continue -%}{%- endif -%}
+          {%- if json_count > 0 -%},{%- endif -%}
+          {%- assign json_count = json_count | plus: 1 -%}
+          {%- assign look_title = block.settings.title | default: block.settings.product.title | remove: ' (Setting for 4)' -%}
+          {
+            "key": {{ block.id | json }},
+            "title": {{ look_title | json }},
+            "settings": {{ block.settings.settings_count | json }},
+            "placemat": {{ block.settings.placemat.id | json }},
+            "colour": {{ block.settings.placemat_colour | handle | json }},
+            "coaster": {% if block.settings.coaster != blank %}{ "colour": {{ block.settings.coaster_colour | default: block.settings.placemat_colour | handle | json }}, "product": {%- render 'setting-builder-product-json', product: block.settings.coaster, covers: 1 -%} }{% else %}null{% endif %},
+            "pieces": [
+              {%- assign piece_count = 0 -%}
+              {%- for i in (1..4) -%}
+                {%- assign piece_key = 'piece_' | append: i -%}
+                {%- assign colour_key = 'piece_' | append: i | append: '_colour' -%}
+                {%- assign piece = block.settings[piece_key] -%}
+                {%- if piece != blank -%}
+                  {%- if piece_count > 0 -%},{%- endif -%}
+                  {%- assign piece_count = piece_count | plus: 1 -%}
+                  { "product": {{ piece.id | json }}, "colour": {{ block.settings[colour_key] | handle | json }} }
+                {%- endif -%}
+              {%- endfor -%}
+            ]
           }
         {%- endfor -%}
       ],
@@ -307,16 +336,27 @@
     },
     {
       "type": "preset",
-      "name": "Pre-built setting",
+      "name": "Look (Be inspired)",
       "settings": [
-        { "type": "product", "id": "product", "label": "Setting product", "info": "Used for \"Add as is\"." },
-        { "type": "text", "id": "title", "label": "Title", "info": "Defaults to the product title." },
-        { "type": "image_picker", "id": "image", "label": "Image", "info": "Defaults to the product image." },
-        { "type": "header", "content": "Customise" },
-        { "type": "paragraph", "content": "Fill these in to show a \"Customise\" link that loads this setting into the builder." },
-        { "type": "text", "id": "range", "label": "Shape link key", "info": "e.g. sweden" },
-        { "type": "text", "id": "colour", "label": "Colour", "info": "e.g. Sage Green" },
-        { "type": "range", "id": "settings_count", "label": "Number of settings", "min": 1, "max": 12, "step": 1, "default": 4 }
+        { "type": "paragraph", "content": "Tapping this look loads every piece below into the builder. Pieces must also be in a \"Complete the table item\" block so the shopper can change them." },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Defaults to the setting product's image." },
+        { "type": "text", "id": "title", "label": "Title", "info": "Defaults to the setting product's title." },
+        { "type": "product", "id": "product", "label": "Setting product (optional)", "info": "Only used for the default image and title." },
+        { "type": "range", "id": "settings_count", "label": "Number of settings", "min": 1, "max": 12, "step": 1, "default": 4 },
+        { "type": "header", "content": "Placemats and coasters" },
+        { "type": "product", "id": "placemat", "label": "Placemat", "info": "Must match one of the Shape blocks." },
+        { "type": "text", "id": "placemat_colour", "label": "Placemat colour", "info": "e.g. Sage Green" },
+        { "type": "product", "id": "coaster", "label": "Coaster", "info": "Can be from another range, e.g. Peru coasters with Sweden placemats. Leave empty for no coasters." },
+        { "type": "text", "id": "coaster_colour", "label": "Coaster colour", "info": "Defaults to the placemat colour." },
+        { "type": "header", "content": "Pieces" },
+        { "type": "product", "id": "piece_1", "label": "Piece 1" },
+        { "type": "text", "id": "piece_1_colour", "label": "Piece 1 colour" },
+        { "type": "product", "id": "piece_2", "label": "Piece 2" },
+        { "type": "text", "id": "piece_2_colour", "label": "Piece 2 colour" },
+        { "type": "product", "id": "piece_3", "label": "Piece 3" },
+        { "type": "text", "id": "piece_3_colour", "label": "Piece 3 colour" },
+        { "type": "product", "id": "piece_4", "label": "Piece 4" },
+        { "type": "text", "id": "piece_4_colour", "label": "Piece 4 colour" }
       ]
     }
   ],

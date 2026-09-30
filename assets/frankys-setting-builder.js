@@ -2,7 +2,7 @@
    FRANKY'S (TLF) P1 — Build Your Setting
    <setting-builder> reads the JSON in [data-builder-data] (built by
    sections/build-your-setting.liquid) and runs the flow:
-   0 preset (optional) → 1 shape → 2 colour → 3 how many settings
+   0 look (optional, loads every piece) → 1 shape → 2 colour → 3 how many settings
    → 4 complete the table → 5 add to cart.
    The same element will power the product-page block (P2).
    Cart: follows the theme's own add-to-cart (theme.js ProductForm) so the
@@ -52,13 +52,19 @@
       this.uid = this.dataset.sectionId || Math.random().toString(36).slice(2, 8);
       this.strings = this.data.strings;
       this.ranges = new Map(this.data.ranges.map((r) => [r.key, r]));
+      this.looks = new Map((this.data.looks || []).map((l) => [l.key, l]));
+      // Every coaster the builder knows about — a look can pair one range's placemats with another's coasters.
+      this.coasters = [];
+      [...this.data.ranges.map((r) => r.coaster), ...(this.data.looks || []).map((l) => l.coaster && l.coaster.product)]
+        .forEach((p) => { if (p && !this.coasters.some((c) => c.id === p.id)) this.coasters.push(p); });
+      this.activeLook = null;
       this.cartSubtotal = 0;
       this.state = {
         range: null,
         colour: null,
         settings: this.data.defaultSettings || 4,
         customSettings: false,
-        coaster: { on: !!this.data.coastersOnByDefault, colour: null, touched: false },
+        coaster: { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null },
         addons: {}
       };
       this.data.addons.forEach((a) => {
@@ -99,6 +105,24 @@
       return Math.ceil(this.state.settings / covers);
     }
 
+    // The coaster in use: a look's override, else the range's own coaster.
+    coasterProduct() {
+      return this.state.coaster.product || (this.range && this.range.coaster) || null;
+    }
+
+    coasterOptions() {
+      const list = [];
+      if (this.range && this.range.coaster) list.push(this.range.coaster);
+      const override = this.state.coaster.product;
+      if (override && !list.some((p) => p.id === override.id)) list.push(override);
+      return list;
+    }
+
+    setCoasterProduct(product) {
+      const own = this.range && this.range.coaster;
+      this.state.coaster.product = own && product && own.id === product.id ? null : product;
+    }
+
     addonProduct(addon) {
       const s = this.state.addons[addon.key];
       return addon.products[s.product] || addon.products[0] || null;
@@ -111,9 +135,10 @@
       const placematVariant = this.variantFor(range.placemat, this.state.colour);
       if (placematVariant) out.push({ product: range.placemat, variant: placematVariant, qty: this.state.settings, role: 'placemat' });
 
-      if (range.coaster && this.state.coaster.on) {
-        const v = this.variantFor(range.coaster, this.state.coaster.colour);
-        if (v) out.push({ product: range.coaster, variant: v, qty: this.state.settings, role: 'coaster' });
+      const coaster = this.coasterProduct();
+      if (coaster && this.state.coaster.on) {
+        const v = this.variantFor(coaster, this.state.coaster.colour);
+        if (v) out.push({ product: coaster, variant: v, qty: this.state.settings, role: 'coaster' });
       }
 
       this.data.addons.forEach((addon) => {
@@ -144,6 +169,7 @@
       const current = this.variantFor(range.placemat, this.state.colour);
       if (!current || !current.available) this.state.colour = null;
       this.state.coaster.touched = false;
+      this.state.coaster.product = null;
       if (this.state.colour) this.syncExtraColours();
       if (!silent) this.track(firstPick ? 'builder_start' : 'builder_step', { step: 'shape', range: key });
     }
@@ -168,8 +194,9 @@
     // Coasters and add-ons follow the placemat colour until the shopper changes them by hand.
     syncExtraColours(resetTouched = false) {
       const range = this.range;
-      if (range && range.coaster && (resetTouched || !this.state.coaster.touched)) {
-        this.state.coaster.colour = this.pickColour(range.coaster, this.state.colour);
+      const coaster = this.coasterProduct();
+      if (range && coaster && (resetTouched || !this.state.coaster.touched)) {
+        this.state.coaster.colour = this.pickColour(coaster, this.state.colour);
         this.state.coaster.touched = false;
       }
       this.data.addons.forEach((addon) => {
@@ -194,8 +221,88 @@
       if (range && this.ranges.has(range)) {
         this.setRange(range, { silent: true });
         if (colour) this.setColour(colour, { silent: true });
+        if (this.state.colour) this.applyPieces({ coaster: params.get('coaster'), add: params.get('add') });
         this.track('builder_prefill_source', { source: this.source, range, colour: this.state.colour });
       }
+    }
+
+    // coaster = "<handle>.<colour>" or "none"; add = "<handle>.<colour>,<handle>.<colour>"
+    applyPieces({ coaster, add }) {
+      const split = (token) => { const [handle, colour] = token.split('.'); return { handle, colour }; };
+      if (coaster === 'none') {
+        this.state.coaster.on = false;
+      } else if (coaster) {
+        const { handle, colour } = split(coaster);
+        const product = this.coasters.find((p) => p.handle === handle);
+        if (product) {
+          this.setCoasterProduct(product);
+          this.state.coaster.on = true;
+          this.state.coaster.colour = this.pickColour(product, colour);
+          this.state.coaster.touched = true;
+        }
+      }
+      if (add === null || add === undefined) return;
+      this.resetAddons();
+      add.split(',').filter(Boolean).forEach((token) => {
+        const { handle, colour } = split(token);
+        this.turnOnPiece((p) => p.handle === handle, colour);
+      });
+    }
+
+    resetAddons() {
+      this.data.addons.forEach((addon) => {
+        const s = this.state.addons[addon.key];
+        s.on = false; s.product = 0; s.touched = false;
+        s.colour = this.pickColour(this.addonProduct(addon), this.state.colour);
+      });
+    }
+
+    turnOnPiece(match, colour) {
+      const addon = this.data.addons.find((a) => a.products.some(match));
+      if (!addon) { console.warn('[setting-builder] Look piece is not in any "Complete the table" block'); return; }
+      const s = this.state.addons[addon.key];
+      s.on = true;
+      s.product = addon.products.findIndex(match);
+      s.colour = this.pickColour(addon.products[s.product], colour);
+      s.touched = true;
+    }
+
+    /* ---------- looks ("Be inspired") ---------- */
+    loadLook(key) {
+      const look = this.looks.get(key);
+      const range = look && this.data.ranges.find((r) => r.placemat.id === look.placemat);
+      if (!range) return;
+
+      this.setSettings(look.settings || this.data.defaultSettings);
+      this.setRange(range.key, { silent: true });
+      this.state.colour = null;
+      this.setColour(look.colour, { silent: true });
+      if (!this.state.colour) this.state.colour = this.pickColour(range.placemat, look.colour);
+
+      if (look.coaster) {
+        this.setCoasterProduct(look.coaster.product);
+        this.state.coaster.on = true;
+        this.state.coaster.colour = this.pickColour(look.coaster.product, look.coaster.colour);
+        this.state.coaster.touched = true;
+      } else {
+        this.state.coaster.on = false;
+      }
+
+      this.resetAddons();
+      look.pieces.forEach((piece) => this.turnOnPiece((p) => p.id === piece.product, piece.colour));
+
+      this.activeLook = key;
+      this.track('builder_start', { source: 'look', look: look.title });
+      this.renderAll({ colours: true, extras: true });
+      const status = this.$('[data-look-status]');
+      if (status) status.textContent = tpl(this.strings.lookLoaded, { look: look.title });
+    }
+
+    clearLook() {
+      if (!this.activeLook) return;
+      this.activeLook = null;
+      const status = this.$('[data-look-status]');
+      if (status) status.textContent = '';
     }
 
     writeUrl() {
@@ -204,6 +311,13 @@
       set('range', this.state.range);
       set('colour', this.state.colour);
       set('settings', this.state.range ? String(this.state.settings) : null);
+      const ready = this.state.range && this.state.colour;
+      const coaster = this.coasterProduct();
+      set('coaster', ready && coaster ? (this.state.coaster.on ? `${coaster.handle}.${this.state.coaster.colour}` : 'none') : null);
+      const add = this.data.addons
+        .filter((a) => this.state.addons[a.key].on && this.addonProduct(a))
+        .map((a) => `${this.addonProduct(a).handle}.${this.state.addons[a.key].colour}`);
+      if (ready) url.searchParams.set('add', add.join(',')); else url.searchParams.delete('add');
       window.history.replaceState(window.history.state, '', url.toString());
     }
 
@@ -211,6 +325,7 @@
     bindEvents() {
       this.addEventListener('change', (event) => {
         const t = event.target;
+        this.clearLook();
         if (t.matches('[data-range-input]')) {
           this.setRange(t.value);
           this.renderAll({ colours: true, extras: true });
@@ -234,6 +349,11 @@
           else this.state.addons[key].on = t.checked;
           this.track('builder_step', { step: 'extras', item: key, on: t.checked });
           this.renderAll({ extras: true });
+        } else if (t.matches('[data-extra-product]') && t.dataset.extraProduct === 'coaster') {
+          const product = this.coasterOptions()[Number(t.value)];
+          this.setCoasterProduct(product);
+          this.state.coaster.colour = this.pickColour(product, this.state.coaster.touched ? this.state.coaster.colour : this.state.colour);
+          this.renderAll({ extras: true });
         } else if (t.matches('[data-extra-product]')) {
           const addon = this.data.addons.find((a) => a.key === t.dataset.extraProduct);
           const s = this.state.addons[addon.key];
@@ -252,6 +372,7 @@
       this.addEventListener('input', (event) => {
         if (event.target.matches('[data-settings-custom]')) {
           if (event.target.value === '') return; // let the shopper clear the box while typing
+          this.clearLook();
           this.setSettings(event.target.value, { custom: true });
           this.renderAll({ extras: true });
         }
@@ -259,25 +380,10 @@
 
       this.addEventListener('click', (event) => {
         const atc = event.target.closest('[data-add-to-cart]');
-        const presetAdd = event.target.closest('[data-preset-add]');
-        const presetCustomise = event.target.closest('[data-preset-customise]');
+        const look = event.target.closest('[data-look]');
         if (atc) this.addSetting();
-        if (presetAdd) {
-          this.track('builder_add_to_cart', { preset: presetAdd.dataset.presetTitle });
-          this.addToCart([{ id: Number(presetAdd.dataset.presetAdd), quantity: 1 }], [presetAdd]);
-        }
-        if (presetCustomise) this.loadPreset(presetCustomise.dataset);
+        if (look) this.loadLook(look.dataset.look);
       });
-    }
-
-    loadPreset({ range, colour, settings }) {
-      if (!this.ranges.has(range)) return;
-      if (settings) this.setSettings(settings);
-      this.setRange(range, { silent: true });
-      if (colour) this.setColour(colour, { silent: true });
-      this.track('builder_start', { source: 'preset', range, colour });
-      this.renderAll({ colours: true, extras: true });
-      this.$('[data-step="shape"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     /* ---------- rendering ---------- */
@@ -286,6 +392,7 @@
       const hasColour = !!(range && this.state.colour);
 
       this.$$('[data-range-input]').forEach((input) => { input.checked = input.value === this.state.range; });
+      this.$$('[data-look]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.look === this.activeLook)));
       this.$('[data-step="colour"]').disabled = !range;
       this.$('[data-step="settings"]').disabled = !hasColour;
       this.$('[data-step="extras"]').disabled = !hasColour;
@@ -398,8 +505,11 @@
       const range = this.range;
       if (!range || !this.state.colour) { list.innerHTML = ''; return; }
       const rows = [];
-      if (range.coaster) {
-        rows.push(this.extraRow({ key: 'coaster', label: `Matching ${range.name} coasters`, product: range.coaster, state: this.state.coaster }));
+      const coaster = this.coasterProduct();
+      if (coaster) {
+        const options = this.coasterOptions();
+        const label = range.coaster && coaster.id === range.coaster.id ? `Matching ${range.name} coasters` : 'Coasters';
+        rows.push(this.extraRow({ key: 'coaster', label, product: coaster, state: this.state.coaster, products: options, productIndex: options.findIndex((p) => p.id === coaster.id) }));
       }
       this.data.addons.forEach((addon) => {
         const product = this.addonProduct(addon);
