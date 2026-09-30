@@ -298,6 +298,24 @@
       if (status) status.textContent = tpl(this.strings.lookLoaded, { look: look.title });
     }
 
+    // Back to a blank builder: no shape, colour or pieces.
+    resetBuilder() {
+      this.activeLook = null;
+      this.state.range = null;
+      this.state.colour = null;
+      this.state.settings = this.data.defaultSettings || 4;
+      this.state.customSettings = false;
+      this.state.coaster = { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null };
+      this.data.addons.forEach((a) => {
+        this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false };
+      });
+      this.track('builder_step', { step: 'reset' });
+      this.renderAll({ colours: true, extras: true });
+      const status = this.$('[data-look-status]');
+      if (status) status.textContent = this.strings.cleared;
+      this.$('.sb__presets, [data-step="shape"]')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
     clearLook() {
       if (!this.activeLook) return;
       this.activeLook = null;
@@ -382,7 +400,12 @@
         const atc = event.target.closest('[data-add-to-cart]');
         const look = event.target.closest('[data-look]');
         if (atc) this.addSetting();
-        if (look) this.loadLook(look.dataset.look);
+        if (look) {
+          // Tapping the selected look again clears the whole look.
+          if (look.dataset.look === this.activeLook) this.resetBuilder();
+          else this.loadLook(look.dataset.look);
+        }
+        if (event.target.closest('[data-reset]')) this.resetBuilder();
       });
     }
 
@@ -393,6 +416,7 @@
 
       this.$$('[data-range-input]').forEach((input) => { input.checked = input.value === this.state.range; });
       this.$$('[data-look]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.look === this.activeLook)));
+      this.$$('[data-reset]').forEach((b) => { b.hidden = !range; });
       this.$('[data-step="colour"]').disabled = !range;
       this.$('[data-step="settings"]').disabled = !hasColour;
       this.$('[data-step="extras"]').disabled = !hasColour;

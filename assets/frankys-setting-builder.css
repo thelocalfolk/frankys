@@ -212,6 +212,8 @@
 
 /* ---- summary (step 5) ---- */
 .sb__summary { padding-block-start: 1.25rem; border-top: 1px solid var(--sb-border); }
+.sb__summary-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.sb__summary-head .link { min-height: var(--sb-tap); }
 .sb__lines { display: grid; gap: .375rem; }
 .sb__line { display: flex; justify-content: space-between; gap: 1rem; }
 .sb__line.is-sold-out { color: var(--sb-muted); text-decoration: line-through; }
