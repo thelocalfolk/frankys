@@ -258,31 +258,31 @@
 /* P4: "Build your own table" (text-with-media on the colour template).
    Figma: 50/50, copy left on #ebe9d1, photo right at 864 x 602; on mobile the
    copy sits above the photo. Section id ends in __build_your_table. */
-[id$="__build_your_table"] .color-scheme {
+:is([id$="__build_your_table"], [id$="__good_taste"]) .color-scheme {
   --background: 235 233 209;
 }
 
-[id$="__build_your_table"] .section-split__column--image {
+:is([id$="__build_your_table"], [id$="__good_taste"]) .section-split__column--image {
   aspect-ratio: 864 / 602;
 }
 
-[id$="__build_your_table"] .section-split__column--image img {
+:is([id$="__build_your_table"], [id$="__good_taste"]) .section-split__column--image img {
   object-fit: cover;
 }
 
 @media screen and (max-width: 999px) {
-  [id$="__build_your_table"] .section-split {
+  :is([id$="__build_your_table"], [id$="__good_taste"]) .section-split {
     display: flex;
     flex-direction: column-reverse;
   }
 
-  [id$="__build_your_table"] .section-split__column:not(.section-split__column--image) {
+  :is([id$="__build_your_table"], [id$="__good_taste"]) .section-split__column:not(.section-split__column--image) {
     padding-block: var(--section-vertical-spacing);
   }
 }
 
 /* P4: "Collections you will love": heading and link on one line on mobile too */
-[id$="__collections_you_will_love"] .section-header {
+:is([id$="__collections_you_will_love"], [id$="__shop_by_colour"]) .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -298,12 +298,12 @@
 .colour-switcher .frankys-section-header .h5,
 .colour-heading .h5,
 .shopify-section--frankys-collection-products .frankys-section-header .h5,
-[id$="__collections_you_will_love"] .section-header .h5 {
+:is([id$="__collections_you_will_love"], [id$="__shop_by_colour"]) .section-header .h5 {
   font-size: clamp(1.25rem, 1.061rem + .754vw, 1.875rem);
   line-height: 1.2;
 }
 
-[id$="__build_your_table"] .h3 {
+:is([id$="__build_your_table"], [id$="__good_taste"]) .h3 {
   max-width: 11.5em; /* Figma text box is 553px at 50px: breaks after "table," */
   font-size: clamp(1.875rem, 1.496rem + 1.508vw, 3.125rem);
   line-height: 1.2;
@@ -372,7 +372,194 @@
 }
 
 /* P4: "Collections you will love" names sized to the card like the colour tiles */
-[id$="__collections_you_will_love"] .collection-list__item .h3 {
+:is([id$="__collections_you_will_love"], [id$="__shop_by_colour"]) .collection-list__item .h3 {
   font-size: clamp(1.25rem, 11.9cqi, 3.125rem);
   line-height: 1.2;
+}
+
+/* --- FRANKY'S (TLF) P4: Homepage (templates/index.json) --------------------
+   Figma: "Homepage - Desktop" (1728px) and "Homepage - Mobile" (402px).
+   Stock sections; these rules are scoped to the homepage section keys.
+   "Good taste" reuses the "Build your own table" rules above, and
+   "Shop by Colour" reuses the "Collections you will love" rules. */
+
+/* Section headings: 20px mobile to 30px desktop, like the colour template */
+:is([id$="__made_for_living"], [id$="__instagram"], [id$="__reasons_to_love"]) .h5,
+.ugc-videos__header .h5 {
+  font-size: clamp(1.25rem, 1.061rem + .754vw, 1.875rem);
+  line-height: 1.2;
+}
+
+[id$="__made_for_living"] .prose {
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+/* Hero and "Set the table your way": 30px mobile to 50px desktop */
+:is([id$="__hero"], [id$="__set_the_table"]) .h3 {
+  font-size: clamp(1.875rem, 1.496rem + 1.508vw, 3.125rem);
+  line-height: 1.2;
+}
+
+[id$="__hero"] .h3 {
+  max-width: 14.75em; /* Figma text box is 732px at 50px: breaks after "place" */
+  margin-inline: auto;
+}
+
+/* "At home with Frankys": UGC videos (sections/frankys-ugc-videos.liquid).
+   Tall 303 x 540 cards, handle bottom left. About two across on mobile,
+   five across on desktop; more cards scroll. */
+.ugc-videos__header {
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+.ugc-videos {
+  display: grid;
+  grid: auto / auto-flow var(--ugc-videos-mobile-width, 52vw);
+  gap: calc(var(--container-gutter) / 2);
+}
+
+.ugc-videos__card {
+  position: relative;
+  display: block;
+  aspect-ratio: 303 / 540;
+  overflow: hidden;
+  background: rgb(var(--text-color) / .1); /* grey box until a poster or video is added */
+}
+
+.ugc-videos__media,
+.ugc-videos__poster,
+.ugc-videos__video,
+.ugc-videos__toggle {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ugc-videos__poster,
+.ugc-videos__video {
+  object-fit: cover;
+}
+
+/* The video sits under the poster until it's actually playing */
+.ugc-videos__video {
+  z-index: 0;
+}
+
+.ugc-videos__poster {
+  z-index: 1;
+  transition: opacity .3s ease;
+}
+
+frankys-ugc-video[playing] .ugc-videos__poster {
+  opacity: 0;
+}
+
+.ugc-videos__toggle {
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ugc-videos__toggle .play-button {
+  width: 56px;
+  height: 56px;
+}
+
+frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
+  opacity: 0;
+}
+
+.ugc-videos__toggle:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -6px;
+}
+
+.ugc-videos__handle {
+  position: absolute;
+  z-index: 3;
+  inset-inline-start: 1.125rem;
+  inset-block-end: .75rem;
+  margin: 0;
+  color: #f5f5f5;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  text-shadow: 0 1px 4px rgb(0 0 0 / .25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ugc-videos__poster,
+  .ugc-videos__toggle .play-button {
+    transition: none;
+  }
+}
+
+/* Category tiles (2 x 2): 50px heading in the middle, button at the bottom */
+[id$="__category_tiles"] .media-blocks__item {
+  --button-background-primary: 172 208 207;
+  --button-text-primary: 80 61 53;
+  aspect-ratio: 1;
+}
+
+[id$="__category_tiles"] .media-blocks__item img {
+  object-fit: cover;
+}
+
+[id$="__category_tiles"] .media-blocks__item .h3 {
+  max-width: 70%; /* Figma text box is 553px in a 789px tile */
+  margin-inline: auto;
+  font-size: clamp(1.875rem, 1.496rem + 1.508vw, 3.125rem);
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* "Shop by Colour" names are #ebe9d1 in the Figma (not white) */
+[id$="__shop_by_colour"] .collection-list__item {
+  --text-color: 235 233 209;
+}
+
+/* @frankysaus: three square photos on mobile, six across on desktop */
+[id$="__instagram"] .media-blocks {
+  --media-blocks-grid: auto-flow / repeat(3, minmax(0, 1fr));
+  --media-blocks-gap: .25rem;
+}
+
+[id$="__instagram"] .media-blocks__item {
+  aspect-ratio: 1;
+}
+
+[id$="__instagram"] .media-blocks__item img {
+  object-fit: cover;
+}
+
+/* "Reasons to love Frankys": light blue band, text in the brand brown */
+[id$="__reasons_to_love"] .color-scheme {
+  --text-color: 80 61 53;
+}
+
+@media screen and (max-width: 699px) {
+  [id$="__instagram"] .media-blocks__item:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .ugc-videos {
+    grid: auto / auto-flow 30vw;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .ugc-videos {
+    grid: auto / auto-flow calc((100% - (var(--ugc-videos-per-row, 5) - 1) * var(--container-gutter) / 2) / var(--ugc-videos-per-row, 5));
+  }
+
+  [id$="__instagram"] .media-blocks {
+    --media-blocks-grid: auto-flow / repeat(6, minmax(0, 1fr));
+    --media-blocks-gap: .5rem;
+  }
 }
