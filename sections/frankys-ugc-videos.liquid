@@ -1,0 +1,216 @@
+{%- comment -%}
+  FRANKY'S (TLF) P4: "At home with Frankys" — a row of customer (UGC) videos.
+  Figma: Homepage - Desktop / Mobile, tall 303 x 540 cards with the creator's
+  handle bottom left, arrows either side.
+
+  Built for speed: only the poster image is in the page. A <video> is created
+  the first time a card plays, so no video bytes load until then, and only one
+  video plays at a time (assets/frankys-ugc-videos.js). Desktop plays on hover,
+  touch screens play the card most in view, and reduced motion / data saver
+  only play on tap. Reuses the theme's scroll-carousel and arrow buttons.
+{%- endcomment -%}
+{%- liquid
+  assign carousel_id = 'ugc-videos-' | append: section.id
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --ugc-videos-per-row: {{ section.settings.videos_per_row_desktop }};
+    --ugc-videos-mobile-width: {{ section.settings.mobile_card_width }}vw;
+  }
+</style>
+
+<div class="color-scheme color-scheme--{{ section.settings.color_scheme.id }}">
+  <div class="container section-spacing">
+    <div class="section-stack">
+      {%- if section.settings.title != blank or section.settings.content != blank -%}
+        <div class="ugc-videos__header prose text-center">
+          {%- if section.settings.title != blank -%}
+            <h2 class="h5">{{ section.settings.title }}</h2>
+          {%- endif -%}
+
+          {{- section.settings.content -}}
+        </div>
+      {%- endif -%}
+
+      <div class="w-full floating-controls-container">
+        <carousel-prev-button class="floating-controls__control floating-controls__control--offset" aria-controls="{{ carousel_id }}">
+          <button class="circle-button circle-button--xl" disabled>
+            <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+            {%- render 'icon' with 'big-arrow-left', direction_aware: true, width: 14 -%}
+          </button>
+        </carousel-prev-button>
+
+        <scroll-carousel id="{{ carousel_id }}" class="ugc-videos scroll-area bleed snap-x" role="region" aria-label="{{ section.settings.title | strip_html | escape }}">
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign video = block.settings.video
+              assign poster = block.settings.poster | default: video.preview_image
+
+              comment
+                Pick one MP4 whose short side is as close to 720px as possible without going over
+                (the cards are at most ~350px wide, so this is plenty for retina screens).
+              endcomment
+              assign src = blank
+              assign src_size = 0
+              for source in video.sources
+                if source.format != 'mp4'
+                  continue
+                endif
+
+                assign size = source.height
+                if source.width < source.height
+                  assign size = source.width
+                endif
+
+                if src == blank
+                  assign src = source.url
+                  assign src_size = size
+                elsif src_size > 720 and size < src_size
+                  assign src = source.url
+                  assign src_size = size
+                elsif size <= 720 and size > src_size
+                  assign src = source.url
+                  assign src_size = size
+                endif
+              endfor
+            -%}
+
+            <frankys-ugc-video class="ugc-videos__card snap-start" {% if src != blank %}data-src="{{ src }}"{% endif %} {{ block.shopify_attributes }}>
+              <div class="ugc-videos__media">
+                {%- if poster != blank -%}
+                  {{- poster | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(max-width: 699px) 52vw, (max-width: 999px) 30vw, 20vw', widths: '300,400,500,600,750,900', class: 'ugc-videos__poster', alt: block.settings.handle | escape -}}
+                {%- else -%}
+                  {{- 'lifestyle-1' | placeholder_svg_tag: 'ugc-videos__poster placeholder' -}}
+                {%- endif -%}
+
+                {%- if src != blank -%}
+                  <button type="button" class="ugc-videos__toggle" aria-pressed="false" aria-label="{{ 'general.accessibility.play_video' | t }}{% if block.settings.handle != blank %}: {{ block.settings.handle | escape }}{% endif %}">
+                    <span class="play-button" aria-hidden="true">
+                      {%- render 'icon' with 'play-triangle', width: 12 -%}
+                    </span>
+                  </button>
+                {%- endif -%}
+              </div>
+
+              {%- if block.settings.handle != blank -%}
+                <p class="ugc-videos__handle">
+                  {%- if block.settings.link != blank -%}
+                    <a href="{{ block.settings.link }}" class="link-faded">{{ block.settings.handle }}</a>
+                  {%- else -%}
+                    {{ block.settings.handle }}
+                  {%- endif -%}
+                </p>
+              {%- endif -%}
+            </frankys-ugc-video>
+          {%- endfor -%}
+        </scroll-carousel>
+
+        <carousel-next-button class="floating-controls__control floating-controls__control--offset" aria-controls="{{ carousel_id }}">
+          <button class="circle-button circle-button--xl">
+            <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+            {%- render 'icon' with 'big-arrow-right', direction_aware: true, width: 14 -%}
+          </button>
+        </carousel-next-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'frankys-ugc-videos.js' | asset_url }}" type="module" defer></script>
+
+{% schema %}
+{
+  "name": "UGC videos",
+  "class": "shopify-section--frankys-ugc-videos",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "FRANKY'S (TLF) P4. Customer videos in a row. Videos only load when they play, and only one plays at a time. Upload portrait (9:16) videos; the poster image shows until a video plays."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:global.colors.scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "At home with Frankys"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Text",
+      "default": "<p>See how our community brings Frankys into their homes</p>"
+    },
+    {
+      "type": "range",
+      "id": "videos_per_row_desktop",
+      "label": "Videos per row on desktop",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "mobile_card_width",
+      "label": "Card width on mobile",
+      "info": "Percentage of the screen width.",
+      "min": 40,
+      "max": 80,
+      "step": 2,
+      "unit": "%",
+      "default": 52
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video",
+          "info": "Portrait (9:16), short, no sound needed. Plays muted on a loop."
+        },
+        {
+          "type": "image_picker",
+          "id": "poster",
+          "label": "Poster image",
+          "info": "Shown until the video plays. Defaults to the video's cover image."
+        },
+        {
+          "type": "text",
+          "id": "handle",
+          "label": "Creator handle",
+          "default": "@frankysaus"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Handle link",
+          "info": "Optional, e.g. the creator's Instagram."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "UGC videos",
+      "blocks": [
+        { "type": "video" },
+        { "type": "video" },
+        { "type": "video" },
+        { "type": "video" },
+        { "type": "video" }
+      ]
+    }
+  ]
+}
+{% endschema %}

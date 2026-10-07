@@ -166,167 +166,62 @@
       }
     },
     "at_home": {
-      "type": "media-blocks",
+      "type": "frankys-ugc-videos",
       "blocks": {
-        "photo_1": {
-          "type": "image_with_text",
+        "video_1": {
+          "type": "video",
           "settings": {
-            "change_color_scheme_on_hover": false,
-            "color_scheme": "scheme-3",
-            "color_scheme_hover": "scheme-3",
-            "image": "shopify://shop_images/frankys-home-at-home-1.jpg",
-            "icon": "none",
-            "icon_width": 32,
-            "mobile_icon_width": 24,
-            "icon_position": "middle_center",
-            "subheading": "",
-            "subheading_position": "middle_center",
-            "title": "",
-            "heading_tag": "h3",
-            "heading_position": "middle_center",
-            "scrolling_title": false,
-            "scrolling_title_separator": "none",
-            "show_text_vertically": false,
-            "text": "<p>@influencername</p>",
-            "text_position": "bottom_left",
-            "button_style": "solid",
-            "link_url": "",
-            "link_text": "",
-            "link_position": "bottom_center"
+            "poster": "shopify://shop_images/frankys-home-at-home-1.jpg",
+            "handle": "@influencername",
+            "link": ""
           }
         },
-        "photo_2": {
-          "type": "image_with_text",
+        "video_2": {
+          "type": "video",
           "settings": {
-            "change_color_scheme_on_hover": false,
-            "color_scheme": "scheme-3",
-            "color_scheme_hover": "scheme-3",
-            "image": "shopify://shop_images/frankys-home-at-home-2.jpg",
-            "icon": "none",
-            "icon_width": 32,
-            "mobile_icon_width": 24,
-            "icon_position": "middle_center",
-            "subheading": "",
-            "subheading_position": "middle_center",
-            "title": "",
-            "heading_tag": "h3",
-            "heading_position": "middle_center",
-            "scrolling_title": false,
-            "scrolling_title_separator": "none",
-            "show_text_vertically": false,
-            "text": "<p>@influencername</p>",
-            "text_position": "bottom_left",
-            "button_style": "solid",
-            "link_url": "",
-            "link_text": "",
-            "link_position": "bottom_center"
+            "poster": "shopify://shop_images/frankys-home-at-home-2.jpg",
+            "handle": "@influencername",
+            "link": ""
           }
         },
-        "photo_3": {
-          "type": "image_with_text",
+        "video_3": {
+          "type": "video",
           "settings": {
-            "change_color_scheme_on_hover": false,
-            "color_scheme": "scheme-3",
-            "color_scheme_hover": "scheme-3",
-            "image": "shopify://shop_images/frankys-home-at-home-3.jpg",
-            "icon": "none",
-            "icon_width": 32,
-            "mobile_icon_width": 24,
-            "icon_position": "middle_center",
-            "subheading": "",
-            "subheading_position": "middle_center",
-            "title": "",
-            "heading_tag": "h3",
-            "heading_position": "middle_center",
-            "scrolling_title": false,
-            "scrolling_title_separator": "none",
-            "show_text_vertically": false,
-            "text": "<p>@influencername</p>",
-            "text_position": "bottom_left",
-            "button_style": "solid",
-            "link_url": "",
-            "link_text": "",
-            "link_position": "bottom_center"
+            "poster": "shopify://shop_images/frankys-home-at-home-3.jpg",
+            "handle": "@influencername",
+            "link": ""
           }
         },
-        "photo_4": {
-          "type": "image_with_text",
+        "video_4": {
+          "type": "video",
           "settings": {
-            "change_color_scheme_on_hover": false,
-            "color_scheme": "scheme-3",
-            "color_scheme_hover": "scheme-3",
-            "image": "shopify://shop_images/frankys-home-at-home-4.jpg",
-            "icon": "none",
-            "icon_width": 32,
-            "mobile_icon_width": 24,
-            "icon_position": "middle_center",
-            "subheading": "",
-            "subheading_position": "middle_center",
-            "title": "",
-            "heading_tag": "h3",
-            "heading_position": "middle_center",
-            "scrolling_title": false,
-            "scrolling_title_separator": "none",
-            "show_text_vertically": false,
-            "text": "<p>@influencername</p>",
-            "text_position": "bottom_left",
-            "button_style": "solid",
-            "link_url": "",
-            "link_text": "",
-            "link_position": "bottom_center"
+            "poster": "shopify://shop_images/frankys-home-at-home-4.jpg",
+            "handle": "@influencername",
+            "link": ""
           }
         },
-        "photo_5": {
-          "type": "image_with_text",
+        "video_5": {
+          "type": "video",
           "settings": {
-            "change_color_scheme_on_hover": false,
-            "color_scheme": "scheme-3",
-            "color_scheme_hover": "scheme-3",
-            "image": "shopify://shop_images/frankys-home-at-home-5.jpg",
-            "icon": "none",
-            "icon_width": 32,
-            "mobile_icon_width": 24,
-            "icon_position": "middle_center",
-            "subheading": "",
-            "subheading_position": "middle_center",
-            "title": "",
-            "heading_tag": "h3",
-            "heading_position": "middle_center",
-            "scrolling_title": false,
-            "scrolling_title_separator": "none",
-            "show_text_vertically": false,
-            "text": "<p>@influencername</p>",
-            "text_position": "bottom_left",
-            "button_style": "solid",
-            "link_url": "",
-            "link_text": "",
-            "link_position": "bottom_center"
+            "poster": "shopify://shop_images/frankys-home-at-home-5.jpg",
+            "handle": "@influencername",
+            "link": ""
           }
         }
       },
       "block_order": [
-        "photo_1",
-        "photo_2",
-        "photo_3",
-        "photo_4",
-        "photo_5"
+        "video_1",
+        "video_2",
+        "video_3",
+        "video_4",
+        "video_5"
       ],
       "settings": {
         "color_scheme": "scheme-1",
-        "allow_transparent_header": false,
-        "subheading": "",
         "title": "At home with Frankys",
         "content": "<p>See how our community brings Frankys into their homes</p>",
-        "heading_tag": "h5",
-        "text_alignment": "center",
-        "scrolling_title": false,
-        "scrolling_title_separator": "circle",
-        "stack_on_mobile": false,
-        "add_horizontal_spacing": true,
-        "add_border": false,
-        "column_spacing": "sm",
-        "items_per_row": 4,
-        "block_size": "auto"
+        "videos_per_row_desktop": 5,
+        "mobile_card_width": 52
       }
     },
     "category_tiles": {
