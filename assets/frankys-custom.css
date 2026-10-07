@@ -304,7 +304,7 @@
 }
 
 [id$="__build_your_table"] .h3 {
-  max-width: 14ch; /* breaks "Build your own table, / piece by piece" as in the Figma */
+  max-width: 11.5em; /* Figma text box is 553px at 50px: breaks after "table," */
   font-size: clamp(1.875rem, 1.496rem + 1.508vw, 3.125rem);
   line-height: 1.2;
 }
