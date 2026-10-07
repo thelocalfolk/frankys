@@ -140,7 +140,7 @@
         "tile_color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",
         "overlay_color": "#000000",
         "overlay_opacity": 0,
-        "tile_width_mobile": 70,
+        "tile_width_mobile": 44,
         "tiles_per_row_desktop": 4
       }
     },
