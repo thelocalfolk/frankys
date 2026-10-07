@@ -55,9 +55,23 @@ managed at the theme level.
           }
         {%- endif -%}
       {%- elsif request.page_type == 'collection' -%}
+          {%- comment -%}FRANKY'S (TLF) P4: match the Shop by Colour parent crumb in sections/breadcrumbs.liquid{%- endcomment -%}
+          {%- assign schema_crumb_position = 2 -%}
+          {%- if template.suffix == 'colour' and collection.handle != 'shop-by-colour' -%}
+            {%- assign schema_crumb_parent = collections['shop-by-colour'] -%}
+            {%- if schema_crumb_parent.id != blank -%}
+              ,{
+                "@type": "ListItem",
+                "position": 2,
+                "name": {{ schema_crumb_parent.title | json }},
+                "item": "{{ shop.url }}{{ schema_crumb_parent.url }}"
+              }
+              {%- assign schema_crumb_position = 3 -%}
+            {%- endif -%}
+          {%- endif -%}
           ,{
             "@type": "ListItem",
-            "position": 2,
+            "position": {{ schema_crumb_position }},
             "name": {{ collection.title | json }},
             "item": "{{ shop.url }}{{ collection.url }}"
           }

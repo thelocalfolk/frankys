@@ -11,7 +11,12 @@
       <meta name="description" content="{{ page_description | escape }}">
     {%- endif -%}
 
-    <link rel="canonical" href="{{ canonical_url }}">
+    {%- comment -%}FRANKY'S (TLF) P4: shop-by-colour repeats the placemats products, so it points its canonical at /collections/placemats{%- endcomment -%}
+    {%- if request.page_type == 'collection' and collection.handle == 'shop-by-colour' and collections['placemats'].id != blank -%}
+      <link rel="canonical" href="{{ shop.url }}{{ collections['placemats'].url }}">
+    {%- else -%}
+      <link rel="canonical" href="{{ canonical_url }}">
+    {%- endif -%}
 
     {%- if settings.favicon -%}
       <link rel="shortcut icon" href="{{ settings.favicon | image_url: width: 96 }}">

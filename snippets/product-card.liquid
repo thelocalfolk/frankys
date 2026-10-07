@@ -124,7 +124,13 @@ based on your desired layout (and remove most of the settings associated), and t
   assign card_featured_media = product.featured_media
   assign card_url = product.url
 
-  if template.suffix == 'color-based-collection' and collection.title != blank
+  # FRANKY'S (TLF) P4: the new 'colour' template keeps the colour-matched card image
+  assign is_colour_template = false
+  if template.suffix == 'color-based-collection' or template.suffix == 'colour'
+    assign is_colour_template = true
+  endif
+
+  if is_colour_template and collection.title != blank
     assign color_target = collection.title | downcase | strip
     assign color_label_list = 'general.label.color' | t | replace: ', ', ',' | downcase | split: ','
 

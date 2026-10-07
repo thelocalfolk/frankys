@@ -1,0 +1,247 @@
+{%- comment -%}
+  FRANKY'S (TLF) P4: Shop by Colour, page header + colour switcher.
+  Used by templates/collection.colour.json on the 16 colour collections and the
+  all-colours collection (handle shop-by-colour).
+
+  - Every tile is a real <a href> to its collection, so the switcher works and is
+    crawlable without JavaScript. assets/frankys-colour-switcher.js enhances it to
+    swap the heading, filters and grid in place (Section Rendering API).
+  - The tile for the current collection gets aria-current="page". On the
+    all-colours page no tile matches, so none is highlighted.
+  - SEO: the h1 on every page is collection.title. On a colour page "Shop by Colour"
+    is styled text, not a heading; on the all-colours page it is the h1.
+{%- endcomment -%}
+{%- liquid
+  assign is_all_colours = false
+  if collection.handle == 'shop-by-colour'
+    assign is_all_colours = true
+  endif
+
+  assign tile_desktop_vw = 100.0 | divided_by: section.settings.tiles_per_row_desktop
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --colour-switcher-tile-width: {{ section.settings.tile_width_mobile }}vw;
+    --colour-switcher-tiles-per-row: {{ section.settings.tiles_per_row_desktop }};
+  }
+</style>
+
+<div class="color-scheme color-scheme--{{ section.settings.color_scheme.id }}">
+  <div class="container section-spacing colour-switcher">
+    <div class="section-stack">
+      {%- if section.settings.title != blank or section.settings.intro != blank -%}
+        <div class="colour-switcher__intro prose prose-justify-center text-center">
+          {%- if section.settings.title != blank -%}
+            {%- if is_all_colours -%}
+              <h1 class="h3">{{ collection.title | default: section.settings.title }}</h1>
+            {%- else -%}
+              <p class="h3">{{ section.settings.title }}</p>
+            {%- endif -%}
+          {%- endif -%}
+
+          {%- if section.settings.intro != blank -%}
+            <div class="colour-switcher__intro-text">{{ section.settings.intro }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <colour-switcher class="colour-switcher__picker" section-id="{{ section.id }}">
+          <div class="colour-switcher__header">
+            {%- if section.settings.switcher_title != blank -%}
+              <h2 class="h5" id="colour-switcher-title-{{ section.id }}">{{ section.settings.switcher_title }}</h2>
+            {%- endif -%}
+
+            <div class="colour-switcher__controls h-stack gap-3 sm-max:hidden">
+              <button type="button" class="circle-button circle-button--lg" data-colour-switcher-prev>
+                <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+                {%- render 'icon' with 'big-arrow-left', direction_aware: true, width: 12 -%}
+              </button>
+
+              <button type="button" class="circle-button circle-button--lg" data-colour-switcher-next>
+                <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+                {%- render 'icon' with 'big-arrow-right', direction_aware: true, width: 12 -%}
+              </button>
+            </div>
+          </div>
+
+          <nav class="colour-switcher__list scroll-area snap-x bleed" data-colour-switcher-list {% if section.settings.switcher_title != blank %}aria-labelledby="colour-switcher-title-{{ section.id }}"{% else %}aria-label="{{ section.settings.title | escape }}"{% endif %}>
+            {%- for block in section.blocks -%}
+              {%- liquid
+                assign tile_collection = block.settings.collection
+                if tile_collection == blank
+                  continue
+                endif
+
+                assign tile_label = block.settings.label | default: tile_collection.title
+                assign tile_image = block.settings.image | default: tile_collection.featured_image
+                assign is_current = false
+                if tile_collection.handle == collection.handle
+                  assign is_current = true
+                endif
+              -%}
+
+              <a
+                href="{{ tile_collection.url }}"
+                class="colour-switcher__tile snap-start group color-scheme color-scheme--{{ section.settings.tile_color_scheme.id }}"
+                data-colour-handle="{{ tile_collection.handle }}"
+                {% if is_current %}aria-current="page"{% endif %}
+                {{ block.shopify_attributes }}
+              >
+                <div class="colour-switcher__media content-box min-h-auto overflow-clip">
+                  <div class="content-box__background-media with-overlay" style="--overlay: {{ section.settings.overlay_color.rgb }} / {{ section.settings.overlay_opacity | divided_by: 100.0 }};">
+                    {%- if tile_image != blank -%}
+                      {%- capture sizes -%}(max-width: 699px) {{ section.settings.tile_width_mobile }}vw, (max-width: 999px) 37vw, {{ tile_desktop_vw | ceil }}vw{%- endcapture -%}
+                      {{- tile_image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: sizes, widths: '300,400,500,600,800,1000,1200', class: 'zoom-image group-hover:zoom', alt: '' -}}
+                    {%- else -%}
+                      {{- 'collection-apparel-1' | placeholder_svg_tag: 'size-full' -}}
+                    {%- endif -%}
+                  </div>
+
+                  <div class="colour-switcher__label place-self-center text-center">
+                    {%- if block.settings.icon != blank -%}
+                      {{- block.settings.icon | image_url: width: 300 | image_tag: loading: 'lazy', class: 'colour-switcher__icon', alt: '', width: 150, height: 150 -}}
+                    {%- endif -%}
+                    <span class="h4">{{ tile_label }}</span>
+                  </div>
+                </div>
+              </a>
+            {%- endfor -%}
+          </nav>
+
+          <p class="sr-only" aria-live="polite" data-colour-switcher-status></p>
+        </colour-switcher>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'frankys-colour-switcher.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Colour switcher",
+  "class": "shopify-section--colour-switcher",
+  "tag": "section",
+  "enabled_on": {
+    "templates": ["collection"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "FRANKY'S (TLF) P4. Each tile links to a colour collection. On the all-colours collection (handle shop-by-colour) the title below is replaced by the collection title and becomes the page heading."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:global.colors.scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Shop by Colour"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro",
+      "default": "<p>Start with a colour you love. We’ll take it from there. Explore pieces for every room in complementary shades, designed to mix, match and bring a little more colour into everyday living.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Colour tiles"
+    },
+    {
+      "type": "text",
+      "id": "switcher_title",
+      "label": "Heading",
+      "default": "Choose your colour"
+    },
+    {
+      "type": "color_scheme",
+      "id": "tile_color_scheme",
+      "label": "Tile text colour scheme",
+      "default": "scheme-3"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Image overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Image overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "tile_width_mobile",
+      "label": "Tile width on mobile",
+      "info": "Percentage of the screen width. Smaller tiles keep the products closer to the top of the page.",
+      "min": 40,
+      "max": 85,
+      "step": 1,
+      "unit": "%",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "tiles_per_row_desktop",
+      "label": "Tiles visible on desktop",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "colour",
+      "name": "Colour",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Colour collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Tile image",
+          "info": "Defaults to the collection image. Square images work best."
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon",
+          "info": "Optional line illustration shown above the name. Use a transparent PNG."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "info": "Defaults to the collection title."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Colour switcher"
+    }
+  ]
+}
+{% endschema %}
