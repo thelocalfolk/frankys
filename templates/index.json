@@ -171,40 +171,35 @@
         "video_1": {
           "type": "video",
           "settings": {
-            "poster": "shopify://shop_images/frankys-home-at-home-1.jpg",
-            "handle": "@influencername",
+            "handle": "",
             "link": ""
           }
         },
         "video_2": {
           "type": "video",
           "settings": {
-            "poster": "shopify://shop_images/frankys-home-at-home-2.jpg",
-            "handle": "@influencername",
+            "handle": "",
             "link": ""
           }
         },
         "video_3": {
           "type": "video",
           "settings": {
-            "poster": "shopify://shop_images/frankys-home-at-home-3.jpg",
-            "handle": "@influencername",
+            "handle": "",
             "link": ""
           }
         },
         "video_4": {
           "type": "video",
           "settings": {
-            "poster": "shopify://shop_images/frankys-home-at-home-4.jpg",
-            "handle": "@influencername",
+            "handle": "",
             "link": ""
           }
         },
         "video_5": {
           "type": "video",
           "settings": {
-            "poster": "shopify://shop_images/frankys-home-at-home-5.jpg",
-            "handle": "@influencername",
+            "handle": "",
             "link": ""
           }
         }

@@ -425,7 +425,7 @@
   display: block;
   aspect-ratio: 303 / 540;
   overflow: hidden;
-  background: rgb(var(--text-color) / .06);
+  background: rgb(var(--text-color) / .1); /* grey box until a poster or video is added */
 }
 
 .ugc-videos__media,
