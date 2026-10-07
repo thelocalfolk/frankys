@@ -341,6 +341,12 @@
   gap: var(--product-list-row-gap) var(--product-list-column-gap);
 }
 
+/* Card text lines up with the left edge of the photo (Figma); the theme pads it for bordered cards */
+.shopify-section--colour-switcher ~ .shopify-section--main-collection .product-card__info,
+.shopify-section--frankys-collection-products .product-card__info {
+  padding-inline: 0;
+}
+
 /* Mobile filter button: full-width outlined bar, as in the mobile Figma */
 @media screen and (max-width: 699px) {
   .shopify-section--colour-switcher ~ .shopify-section--main-collection .collection__toolbar [aria-controls="facets-drawer"] {
