@@ -3,3 +3,6 @@ node_modules/
 .shopify/
 .env
 *.log
+
+# Claude Code worktrees (one per page build) — never commit or sync to Shopify
+.claude/worktrees/
