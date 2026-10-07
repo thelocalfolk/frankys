@@ -1,0 +1,153 @@
+{%- comment -%}
+  FRANKY'S (TLF) P4: a product row with a small heading and an underlined
+  "Shop All" link on the same line (Figma: "Shop Curated Bundles" on the Colour
+  Collection Page). Reuses the theme's product cards and carousel; the stock
+  featured-collections section uses large tab headings and an outline button.
+{%- endcomment -%}
+{%- liquid
+  assign source = section.settings.collection
+  assign link = section.settings.link_url | default: source.url
+  assign product_list_id = 'product-list-' | append: section.id
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --product-list-column-count: {{ section.settings.products_per_row_mobile }};
+  }
+
+  @media screen and (min-width: 700px) {
+    #shopify-section-{{ section.id }} {
+      --product-list-column-count: 3;
+    }
+  }
+
+  @media screen and (min-width: 1000px) {
+    #shopify-section-{{ section.id }} {
+      --product-list-column-count: {{ section.settings.products_per_row_desktop }};
+    }
+  }
+</style>
+
+<div class="color-scheme color-scheme--{{ section.settings.color_scheme.id }}">
+  <div class="container section-spacing">
+    <div class="section-stack">
+      <div class="frankys-section-header">
+        {%- if section.settings.title != blank -%}
+          <h2 class="h5">{{ section.settings.title }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.link_text != blank and link != blank -%}
+          <a href="{{ link }}" class="frankys-section-header__link link">{{ section.settings.link_text }}</a>
+        {%- endif -%}
+      </div>
+
+      <div class="w-full floating-controls-container">
+        <carousel-prev-button class="floating-controls__control floating-controls__control--offset" aria-controls="{{ product_list_id }}">
+          <button class="circle-button circle-button--xl" disabled>
+            <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+            {%- render 'icon' with 'big-arrow-left', direction_aware: true, width: 14 -%}
+          </button>
+        </carousel-prev-button>
+
+        <product-list id="{{ product_list_id }}" class="product-list product-list--padded full-bleed product-list--carousel scroll-area">
+          {%- capture sizes -%}(max-width: 699px) calc(100vw / {{ section.settings.products_per_row_mobile }} - 40px), (max-width: 999px) calc(100vw / 3 - 64px), calc((100vw - 96px) / {{ section.settings.products_per_row_desktop }}){%- endcapture -%}
+
+          {%- liquid
+            if source != blank
+              for product in source.products limit: section.settings.products_count
+                render 'product-card', product: product, reveal: true, sizes: sizes, position: forloop.index
+              endfor
+            else
+              for i in (1..section.settings.products_count)
+                render 'product-card-placeholder', loop_index: i
+              endfor
+            endif
+          -%}
+        </product-list>
+
+        <carousel-next-button class="floating-controls__control floating-controls__control--offset" aria-controls="{{ product_list_id }}">
+          <button class="circle-button circle-button--xl">
+            <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+            {%- render 'icon' with 'big-arrow-right', direction_aware: true, width: 14 -%}
+          </button>
+        </carousel-next-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product row with link",
+  "class": "shopify-section--frankys-collection-products",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "FRANKY'S (TLF) P4. A collection's products in a carousel, with a heading and a text link."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:global.colors.scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop Curated Bundles"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "Shop All"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link",
+      "info": "Defaults to the collection."
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "label": "Products to show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "products_per_row_mobile",
+      "label": "t:global.product_list.products_per_row_mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_desktop",
+      "label": "t:global.product_list.products_per_row_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product row with link"
+    }
+  ]
+}
+{% endschema %}

@@ -130,11 +130,16 @@
   row-gap: 1.25rem;
 }
 
-.colour-switcher__header {
+.frankys-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.frankys-section-header__link {
+  flex-shrink: 0;
+  font-size: var(--text-sm);
 }
 
 .colour-switcher__list {
@@ -161,14 +166,21 @@
 .colour-switcher__label {
   display: grid;
   justify-items: center;
-  gap: .5rem;
+  align-self: center;
+  justify-self: stretch;
+  gap: .25em;
   color: rgb(var(--text-color));
 }
 
+/* Icon width is a % of the tile, set per icon in snippets/frankys-colour-icon.liquid */
 .colour-switcher__icon {
-  width: 40%;
-  max-width: 9rem;
+  width: var(--icon-width, 30%);
   height: auto;
+}
+
+/* The tile's content-box padding would shrink the % width, so measure from the full tile */
+.colour-switcher__media {
+  --content-box-spacing: 0px;
 }
 
 /* Current colour: an inset ring, so it isn't clipped by the scroll area */
@@ -223,4 +235,38 @@
   .shopify-section[aria-busy="true"] {
     transition: none;
   }
+}
+
+/* P4: "Build your own table" (text-with-media on the colour template).
+   Figma: 50/50, copy left on #ebe9d1, photo right at 864 x 602; on mobile the
+   copy sits above the photo. Section id ends in __build_your_table. */
+[id$="__build_your_table"] .color-scheme {
+  --background: 235 233 209;
+}
+
+[id$="__build_your_table"] .section-split__column--image {
+  aspect-ratio: 864 / 602;
+}
+
+[id$="__build_your_table"] .section-split__column--image img {
+  object-fit: cover;
+}
+
+@media screen and (max-width: 999px) {
+  [id$="__build_your_table"] .section-split {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  [id$="__build_your_table"] .section-split__column:not(.section-split__column--image) {
+    padding-block: var(--section-vertical-spacing);
+  }
+}
+
+/* P4: "Collections you will love": heading and link on one line on mobile too */
+[id$="__collections_you_will_love"] .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
