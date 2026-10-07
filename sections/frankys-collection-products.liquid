@@ -49,7 +49,7 @@
           </button>
         </carousel-prev-button>
 
-        <product-list id="{{ product_list_id }}" class="product-list product-list--padded full-bleed product-list--carousel scroll-area">
+        <product-list id="{{ product_list_id }}" class="product-list product-list--carousel scroll-area bleed">
           {%- capture sizes -%}(max-width: 699px) calc(100vw / {{ section.settings.products_per_row_mobile }} - 40px), (max-width: 999px) calc(100vw / 3 - 64px), calc((100vw - 96px) / {{ section.settings.products_per_row_desktop }}){%- endcapture -%}
 
           {%- liquid

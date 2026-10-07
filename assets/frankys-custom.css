@@ -163,34 +163,52 @@
   object-fit: cover;
 }
 
+.colour-switcher__tile {
+  background: none; /* the tile scheme is only used for its text colour */
+}
+
+/* Figma (421px tile): icon centred ~37% down, name centred 62.5% down at 50px */
+.colour-switcher__media {
+  --content-box-spacing: 0px;
+  container-type: inline-size;
+}
+
 .colour-switcher__label {
-  display: grid;
-  justify-items: center;
-  align-self: center;
-  justify-self: stretch;
-  gap: .25em;
+  position: absolute;
+  inset: 0;
   color: rgb(var(--text-color));
+}
+
+.colour-switcher__label .h3 {
+  position: absolute;
+  inset-inline: 0;
+  top: 62.5%;
+  transform: translateY(-50%);
+  font-size: clamp(1.25rem, 11.9cqi, 3.125rem);
+  line-height: 1.2;
 }
 
 /* Icon width is a % of the tile, set per icon in snippets/frankys-colour-icon.liquid */
 .colour-switcher__icon {
+  position: absolute;
+  left: 50%;
+  top: 37%;
   width: var(--icon-width, 30%);
   height: auto;
+  transform: translate(-50%, -50%);
 }
 
-/* The tile's content-box padding would shrink the % width, so measure from the full tile */
-.colour-switcher__media {
-  --content-box-spacing: 0px;
+/* Current colour: a thin bar under the tile in the page text colour (not in the Figma; keeps the state visible) */
+.colour-switcher__picker {
+  --colour-switcher-current: var(--text-color);
 }
 
-/* Current colour: an inset ring, so it isn't clipped by the scroll area */
-.colour-switcher__tile[aria-current="page"] .colour-switcher__media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  box-shadow: inset 0 0 0 3px rgb(var(--text-color));
-  pointer-events: none;
+.colour-switcher__tile {
+  padding-block-end: 6px;
+}
+
+.colour-switcher__tile[aria-current="page"] {
+  box-shadow: inset 0 -3px 0 rgb(var(--colour-switcher-current));
 }
 
 .colour-switcher__tile:focus-visible {
@@ -269,4 +287,86 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+
+/* P4: type sizes from the Figma, scaled between the mobile (402px) and desktop (1728px) frames */
+.colour-switcher__intro .h3 {
+  font-size: clamp(2rem, 1.659rem + 1.357vw, 3.125rem);
+  line-height: 1.2;
+}
+
+.colour-switcher .frankys-section-header .h5,
+.colour-heading .h5,
+.shopify-section--frankys-collection-products .frankys-section-header .h5,
+[id$="__collections_you_will_love"] .section-header .h5 {
+  font-size: clamp(1.25rem, 1.061rem + .754vw, 1.875rem);
+  line-height: 1.2;
+}
+
+[id$="__build_your_table"] .h3 {
+  max-width: 14ch; /* breaks "Build your own table, / piece by piece" as in the Figma */
+  font-size: clamp(1.875rem, 1.496rem + 1.508vw, 3.125rem);
+  line-height: 1.2;
+}
+
+/* P4: product grids on the colour template are contained with small gaps and no
+   borders (Figma), unlike the edge-to-edge bordered grid on other collections. */
+.shopify-section--colour-switcher ~ .shopify-section--main-collection,
+.shopify-section--frankys-collection-products {
+  --product-list-column-gap: .375rem;
+  --product-list-row-gap: 2rem;
+}
+
+.shopify-section--colour-switcher ~ .shopify-section--main-collection .collection {
+  padding-inline: var(--container-gutter);
+}
+
+.shopify-section--colour-switcher ~ .shopify-section--main-collection .collection__results,
+.shopify-section--colour-switcher ~ .shopify-section--main-collection .collection__toolbar {
+  padding-inline: 0;
+}
+
+.shopify-section--colour-switcher ~ .shopify-section--main-collection .collection__toolbar {
+  border-block-start-width: 0;
+}
+
+.shopify-section--colour-switcher ~ .shopify-section--main-collection .product-card--bordered,
+.shopify-section--frankys-collection-products .product-card--bordered {
+  outline: 0;
+}
+
+.shopify-section--colour-switcher ~ .shopify-section--main-collection .product-list,
+.shopify-section--frankys-collection-products .product-list {
+  --product-list-card-border-width: 0px;
+  gap: var(--product-list-row-gap) var(--product-list-column-gap);
+}
+
+/* Mobile filter button: full-width outlined bar, as in the mobile Figma */
+@media screen and (max-width: 699px) {
+  .shopify-section--colour-switcher ~ .shopify-section--main-collection .collection__toolbar [aria-controls="facets-drawer"] {
+    width: 100%;
+    min-height: 48px;
+    padding-inline: 1.25rem;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    border: 1px solid rgb(var(--text-color));
+  }
+
+  .shopify-section--colour-switcher ~ .shopify-section--main-collection .collection__toolbar {
+    flex-wrap: wrap;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .shopify-section--colour-switcher ~ .shopify-section--main-collection,
+  .shopify-section--frankys-collection-products {
+    --product-list-column-gap: .75rem;
+    --product-list-row-gap: 3rem;
+  }
+}
+
+/* P4: "Collections you will love" names sized to the card like the colour tiles */
+[id$="__collections_you_will_love"] .collection-list__item .h3 {
+  font-size: clamp(1.25rem, 11.9cqi, 3.125rem);
+  line-height: 1.2;
 }
