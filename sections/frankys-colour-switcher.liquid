@@ -48,7 +48,7 @@
 
       {%- if section.blocks.size > 0 -%}
         <colour-switcher class="colour-switcher__picker" section-id="{{ section.id }}">
-          <div class="colour-switcher__header">
+          <div class="frankys-section-header">
             {%- if section.settings.switcher_title != blank -%}
               <h2 class="h5" id="colour-switcher-title-{{ section.id }}">{{ section.settings.switcher_title }}</h2>
             {%- endif -%}
@@ -99,11 +99,13 @@
                     {%- endif -%}
                   </div>
 
-                  <div class="colour-switcher__label place-self-center text-center">
-                    {%- if block.settings.icon != blank -%}
-                      {{- block.settings.icon | image_url: width: 300 | image_tag: loading: 'lazy', class: 'colour-switcher__icon', alt: '', width: 150, height: 150 -}}
+                  <div class="colour-switcher__label text-center">
+                    {%- if block.settings.icon_style != 'none' and block.settings.icon_style != blank -%}
+                      {%- render 'frankys-colour-icon', name: block.settings.icon_style -%}
+                    {%- elsif block.settings.icon != blank -%}
+                      {{- block.settings.icon | image_url: width: 400 | image_tag: loading: 'lazy', class: 'colour-switcher__icon', alt: '' -}}
                     {%- endif -%}
-                    <span class="h4">{{ tile_label }}</span>
+                    <span class="h3">{{ tile_label }}</span>
                   </div>
                 </div>
               </a>
@@ -224,10 +226,23 @@
           "info": "Defaults to the collection image. Square images work best."
         },
         {
+          "type": "select",
+          "id": "icon_style",
+          "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "chocolate", "label": "Chocolate" },
+            { "value": "sage-green", "label": "Sage leaf" },
+            { "value": "light-blue", "label": "Waves" },
+            { "value": "butter", "label": "Butter" }
+          ],
+          "default": "none"
+        },
+        {
           "type": "image_picker",
           "id": "icon",
-          "label": "Icon",
-          "info": "Optional line illustration shown above the name. Use a transparent PNG."
+          "label": "Custom icon",
+          "info": "Used when Icon is None. Transparent PNG, drawn in the tile text colour."
         },
         {
           "type": "text",

@@ -12,7 +12,9 @@
         "colour_light_blue": {
           "type": "colour",
           "settings": {
-            "collection": "light-blue"
+            "collection": "light-blue",
+            "image": "shopify://shop_images/frankys-colour-tile-light-blue.jpg",
+            "icon_style": "light-blue"
           }
         },
         "colour_navy": {
@@ -24,7 +26,9 @@
         "colour_sage_green": {
           "type": "colour",
           "settings": {
-            "collection": "sage-green"
+            "collection": "sage-green",
+            "image": "shopify://shop_images/frankys-colour-tile-sage-green.jpg",
+            "icon_style": "sage-green"
           }
         },
         "colour_dark_green": {
@@ -84,7 +88,9 @@
         "colour_chocolate": {
           "type": "colour",
           "settings": {
-            "collection": "chocolate"
+            "collection": "chocolate",
+            "image": "shopify://shop_images/frankys-colour-tile-chocolate.jpg",
+            "icon_style": "chocolate"
           }
         },
         "colour_black": {
@@ -96,7 +102,9 @@
         "colour_butter": {
           "type": "colour",
           "settings": {
-            "collection": "butter"
+            "collection": "butter",
+            "image": "shopify://shop_images/frankys-colour-tile-butter.jpg",
+            "icon_style": "butter"
           }
         },
         "colour_milk": {
@@ -107,9 +115,11 @@
         }
       },
       "block_order": [
-        "colour_light_blue",
-        "colour_navy",
+        "colour_chocolate",
         "colour_sage_green",
+        "colour_light_blue",
+        "colour_butter",
+        "colour_navy",
         "colour_dark_green",
         "colour_pink",
         "colour_nude",
@@ -119,9 +129,7 @@
         "colour_pearl_grey",
         "colour_dark_grey",
         "colour_beige",
-        "colour_chocolate",
         "colour_black",
-        "colour_butter",
         "colour_milk"
       ],
       "settings": {
@@ -131,7 +139,7 @@
         "switcher_title": "Choose your colour",
         "tile_color_scheme": "scheme-3",
         "overlay_color": "#000000",
-        "overlay_opacity": 10,
+        "overlay_opacity": 0,
         "tile_width_mobile": 70,
         "tiles_per_row_desktop": 4
       }
@@ -190,8 +198,8 @@
             "url": "/pages/build-your-setting",
             "position": "middle_left",
             "style": "solid",
-            "background": "",
-            "text_color": ""
+            "background": "#acd0cf",
+            "text_color": "#503d35"
           }
         }
       },
@@ -201,14 +209,14 @@
         "button"
       ],
       "settings": {
-        "color_scheme": "scheme-2",
-        "content_position": "start",
+        "color_scheme": "scheme-1",
+        "content_position": "end",
         "content_percentage_width": 50,
         "overlay_color": "#000000",
         "overlay_opacity": 20,
         "add_media_spacing": false,
         "autoplay_video": true,
-        "primary_image": "shopify://shop_images/2025-10-frankys-hero-4.jpg",
+        "primary_image": "shopify://shop_images/frankys-build-your-table.jpg",
         "secondary_media_width": 55,
         "secondary_media_mobile_width": 55,
         "show_secondary_media_on_mobile": true,
@@ -217,32 +225,16 @@
       }
     },
     "curated_bundles": {
-      "type": "featured-collections",
-      "blocks": {
-        "collection_bundles": {
-          "type": "collection",
-          "settings": {
-            "collection": "table-settings",
-            "products_count": 8,
-            "title": "Shop Curated Bundles",
-            "content": "",
-            "link": "{{ block.settings.collection.url }}"
-          }
-        }
-      },
-      "block_order": [
-        "collection_bundles"
-      ],
+      "type": "frankys-collection-products",
       "settings": {
         "color_scheme": "",
-        "stack_products_mobile": false,
-        "stack_products_desktop": false,
+        "title": "Shop Curated Bundles",
+        "collection": "table-settings",
+        "link_text": "Shop All",
+        "link_url": "",
+        "products_count": 8,
         "products_per_row_mobile": "2",
-        "products_per_row_desktop": 4,
-        "tabs_alignment": "start",
-        "tabs_icon": "none",
-        "show_view_all_button": true,
-        "show_scrolling_bar": true
+        "products_per_row_desktop": 4
       }
     },
     "collections_you_will_love": {
@@ -270,13 +262,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "placemats",
-            "image": "{{ closest.collection.image }}",
+            "image": "shopify://shop_images/frankys-collection-placemats.jpg",
             "title": "{{ closest.collection.title }}",
-            "heading_tag": "h4",
+            "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 20
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -285,13 +277,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "coasters",
-            "image": "{{ closest.collection.image }}",
+            "image": "shopify://shop_images/frankys-collection-coasters.jpg",
             "title": "{{ closest.collection.title }}",
-            "heading_tag": "h4",
+            "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 20
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -300,13 +292,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "throws",
-            "image": "{{ closest.collection.image }}",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h4",
+            "image": "shopify://shop_images/frankys-collection-bedding.jpg",
+            "title": "Bedding",
+            "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 20
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -315,13 +307,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "bath",
-            "image": "{{ closest.collection.image }}",
+            "image": "shopify://shop_images/frankys-collection-bath.jpg",
             "title": "{{ closest.collection.title }}",
-            "heading_tag": "h4",
+            "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 20
+            "overlay_opacity": 0
           },
           "blocks": {}
         }
