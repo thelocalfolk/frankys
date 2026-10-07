@@ -111,3 +111,116 @@
   border-radius: 999px;
   background: currentColor;
 }
+
+/* --- P4: Shop by Colour (templates/collection.colour.json) ---------------
+   Switcher: sections/frankys-colour-switcher.liquid
+   Heading:  sections/frankys-colour-heading.liquid
+   Mobile first. Tile sizes come from section settings as CSS variables. */
+.colour-switcher {
+  --section-stack-row-gap: 2rem;
+}
+
+.colour-switcher__intro {
+  max-width: 37rem;
+  margin-inline: auto;
+}
+
+.colour-switcher__picker {
+  display: grid;
+  row-gap: 1.25rem;
+}
+
+.colour-switcher__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.colour-switcher__list {
+  display: grid;
+  grid: auto / auto-flow var(--colour-switcher-tile-width, 70vw);
+  gap: calc(var(--container-gutter) / 2);
+}
+
+.colour-switcher__tile {
+  display: block;
+  min-width: 44px;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.colour-switcher__media {
+  aspect-ratio: 1;
+}
+
+.colour-switcher__media .content-box__background-media img {
+  object-fit: cover;
+}
+
+.colour-switcher__label {
+  display: grid;
+  justify-items: center;
+  gap: .5rem;
+  color: rgb(var(--text-color));
+}
+
+.colour-switcher__icon {
+  width: 40%;
+  max-width: 9rem;
+  height: auto;
+}
+
+/* Current colour: an inset ring, so it isn't clipped by the scroll area */
+.colour-switcher__tile[aria-current="page"] .colour-switcher__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  box-shadow: inset 0 0 0 3px rgb(var(--text-color));
+  pointer-events: none;
+}
+
+.colour-switcher__tile:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -6px;
+}
+
+.colour-heading {
+  padding-block-end: 1rem;
+}
+
+.colour-heading__description {
+  display: grid;
+  justify-items: start;
+  gap: .25rem;
+  max-width: 45rem;
+}
+
+.colour-heading__description-text > :last-child {
+  margin-block-end: 0;
+}
+
+/* Swapping colours: fade the old grid while the next one loads */
+.shopify-section[aria-busy="true"] {
+  opacity: .5;
+  transition: opacity .2s ease;
+}
+
+@media screen and (min-width: 700px) {
+  .colour-switcher__list {
+    grid: auto / auto-flow 37vw;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .colour-switcher__list {
+    grid: auto / auto-flow calc((100% - (var(--colour-switcher-tiles-per-row, 4) - 1) * var(--container-gutter) / 2) / var(--colour-switcher-tiles-per-row, 4));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shopify-section[aria-busy="true"] {
+    transition: none;
+  }
+}

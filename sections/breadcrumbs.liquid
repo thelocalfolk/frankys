@@ -2,6 +2,7 @@
   FRANKY'S (TLF) — Priority 8: breadcrumbs.
   Home › Collection            (collection pages)
   Home › Collection › Product  (product pages)
+  Home › Shop by Colour › Brown (P4: colour template, once the shop-by-colour collection exists)
   The collection on product pages is chosen by snippets/breadcrumb-collection-handle.liquid.
 {%- endcomment -%}
 {%- liquid
@@ -15,6 +16,15 @@
   if crumb_handle != blank
     assign crumb_collection = collections[crumb_handle]
   endif
+
+  # FRANKY'S (TLF) P4: parent crumb for the colour collections
+  assign crumb_parent = nil
+  if request.page_type == 'collection' and template.suffix == 'colour' and collection.handle != 'shop-by-colour'
+    assign crumb_parent = collections['shop-by-colour']
+    if crumb_parent.id == blank
+      assign crumb_parent = nil
+    endif
+  endif
 -%}
 
 {%- if request.page_type == 'product' or request.page_type == 'collection' -%}
@@ -24,6 +34,12 @@
         <li class="breadcrumbs__item">
           <a href="{{ routes.root_url }}" class="breadcrumbs__link">{{ 'general.home' | t }}</a>
         </li>
+
+        {%- if crumb_parent -%}
+          <li class="breadcrumbs__item">
+            <a href="{{ crumb_parent.url }}" class="breadcrumbs__link">{{ crumb_parent.title }}</a>
+          </li>
+        {%- endif -%}
 
         {%- if crumb_collection -%}
           <li class="breadcrumbs__item">

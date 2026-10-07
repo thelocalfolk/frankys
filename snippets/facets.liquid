@@ -61,6 +61,14 @@ Display the facets for a given resource.
     {%- endif -%}
 
     {%- for filter in source.filters -%}
+      {%- comment -%}FRANKY'S (TLF) P4: the colour switcher already picks the colour, so the Colour filter is hidden on the colour template{%- endcomment -%}
+      {%- if template.suffix == 'colour' -%}
+        {%- assign frankys_filter_label = filter.label | downcase | strip -%}
+        {%- if frankys_filter_label == 'colour' or frankys_filter_label == 'color' -%}
+          {%- continue -%}
+        {%- endif -%}
+      {%- endif -%}
+
       {%- if filter.param_name == 'filter.v.availability' -%}
         {%- comment -%}
         IMPLEMENTATION NOTE: we are doing an exception for the availability filter, where we display it differently

@@ -31,9 +31,10 @@
     endfor
 
     if result == blank
-      assign excluded_handles = 'frontpage,all,best-sellers,new-arrivals,sale,clearance,gifts,homewares,tableware' | split: ','
+      # FRANKY'S (TLF) P4: shop-by-colour and the 'colour' template are merchandising too
+      assign excluded_handles = 'frontpage,all,best-sellers,new-arrivals,sale,clearance,gifts,homewares,tableware,shop-by-colour' | split: ','
       for product_collection in product.collections
-        if excluded_handles contains product_collection.handle or product_collection.template_suffix == 'color-based-collection'
+        if excluded_handles contains product_collection.handle or product_collection.template_suffix == 'color-based-collection' or product_collection.template_suffix == 'colour'
           continue
         endif
         assign result = product_collection.handle

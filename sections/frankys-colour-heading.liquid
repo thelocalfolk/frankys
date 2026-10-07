@@ -1,0 +1,71 @@
+{%- comment -%}
+  FRANKY'S (TLF) P4: colour collection heading.
+  The h1 is always collection.title ("Brown"), and the collection description is
+  rendered as visible text under it (SEO rules in the Shop by Colour brief).
+  Long descriptions are clamped by assets/frankys-colour-switcher.js with a
+  "Read more" toggle; without JavaScript the full text shows.
+  Outputs nothing on the all-colours collection (shop-by-colour), where the
+  switcher section's header is the h1.
+{%- endcomment -%}
+{%- comment -%}Read by the switcher JS to update document.title after an in-place swap{%- endcomment -%}
+<span hidden data-colour-document-title="{% if page_title == blank %}{{ shop.name | escape }}{% else %}{{ page_title | escape }}{% endif %}"></span>
+
+{%- unless collection.handle == 'shop-by-colour' -%}
+  <div class="color-scheme color-scheme--{{ section.settings.color_scheme.id }}">
+    <div class="container colour-heading">
+      <div class="prose">
+        <h1 class="h5" tabindex="-1" data-colour-heading>{{ collection.title }}</h1>
+
+        {%- if section.settings.show_description and collection.description != blank -%}
+          <div class="colour-heading__description" data-colour-description style="--line-clamp-count: {{ section.settings.description_lines }};">
+            <div class="colour-heading__description-text" data-colour-description-text>
+              {{- collection.description -}}
+            </div>
+
+            <button type="button" class="link text-sm" aria-expanded="false" hidden data-colour-description-toggle>
+              {{- 'blog.general.read_more' | t -}}
+            </button>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Colour heading",
+  "class": "shopify-section--colour-heading",
+  "tag": "section",
+  "enabled_on": {
+    "templates": ["collection"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "FRANKY'S (TLF) P4. Shows the collection title (the page heading) and description. Hidden on the all-colours collection."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:global.colors.scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "description_lines",
+      "label": "Description lines before \"Read more\"",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 2
+    }
+  ]
+}
+{% endschema %}
