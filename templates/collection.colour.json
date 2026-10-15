@@ -52,7 +52,8 @@
         "colour_wine": {
           "type": "colour",
           "settings": {
-            "collection": "wine"
+            "collection": "wine",
+            "icon": "shopify://shop_images/Wine.png"
           }
         },
         "colour_clay": {
