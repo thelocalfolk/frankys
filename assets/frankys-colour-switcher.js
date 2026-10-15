@@ -41,6 +41,7 @@
           const expanded = toggle.getAttribute('aria-expanded') === 'true';
           toggle.setAttribute('aria-expanded', String(!expanded));
           text.classList.toggle('line-clamp', expanded);
+          toggle.textContent = expanded ? toggle.dataset.labelMore : toggle.dataset.labelLess;
         });
       });
     });
