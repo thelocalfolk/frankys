@@ -20,7 +20,8 @@
         "colour_navy": {
           "type": "colour",
           "settings": {
-            "collection": "navy"
+            "collection": "navy",
+            "icon_style": "navy"
           }
         },
         "colour_sage_green": {
@@ -34,13 +35,15 @@
         "colour_dark_green": {
           "type": "colour",
           "settings": {
-            "collection": "dark-green"
+            "collection": "dark-green",
+            "icon_style": "dark-green"
           }
         },
         "colour_pink": {
           "type": "colour",
           "settings": {
-            "collection": "pink"
+            "collection": "pink",
+            "icon_style": "pink"
           }
         },
         "colour_nude": {
@@ -53,25 +56,28 @@
           "type": "colour",
           "settings": {
             "collection": "wine",
-            "icon": "shopify://shop_images/Wine.png"
+            "icon_style": "wine"
           }
         },
         "colour_clay": {
           "type": "colour",
           "settings": {
-            "collection": "clay"
+            "collection": "clay",
+            "icon_style": "clay"
           }
         },
         "colour_brown": {
           "type": "colour",
           "settings": {
-            "collection": "brown"
+            "collection": "brown",
+            "icon_style": "brown"
           }
         },
         "colour_pearl_grey": {
           "type": "colour",
           "settings": {
-            "collection": "pearl-grey"
+            "collection": "pearl-grey",
+            "icon_style": "pearl-grey"
           }
         },
         "colour_dark_grey": {
@@ -83,7 +89,8 @@
         "colour_beige": {
           "type": "colour",
           "settings": {
-            "collection": "beige"
+            "collection": "beige",
+            "icon_style": "beige"
           }
         },
         "colour_chocolate": {
@@ -97,7 +104,8 @@
         "colour_black": {
           "type": "colour",
           "settings": {
-            "collection": "black"
+            "collection": "black",
+            "icon_style": "black"
           }
         },
         "colour_butter": {
@@ -111,7 +119,8 @@
         "colour_milk": {
           "type": "colour",
           "settings": {
-            "collection": "milk"
+            "collection": "milk",
+            "icon_style": "milk"
           }
         }
       },
