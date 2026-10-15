@@ -103,7 +103,10 @@
                     {%- if block.settings.icon_style != 'none' and block.settings.icon_style != blank -%}
                       {%- render 'frankys-colour-icon', name: block.settings.icon_style -%}
                     {%- elsif block.settings.icon != blank -%}
-                      {{- block.settings.icon | image_url: width: 400 | image_tag: loading: 'lazy', class: 'colour-switcher__icon', alt: '' -}}
+                      {%- comment -%}Good Manners exports icons at Figma size for a 421px tile, so the file's width sets its share of the tile{%- endcomment -%}
+                      {%- assign icon_width = block.settings.icon.width | times: 100.0 | divided_by: 421 | at_most: 60 | round: 1 -%}
+                      {%- capture icon_style -%}--icon-width: {{ icon_width }}%;{%- endcapture -%}
+                      {{- block.settings.icon | image_url: width: 400 | image_tag: loading: 'lazy', class: 'colour-switcher__icon', alt: '', style: icon_style -}}
                     {%- endif -%}
                     <span class="h3">{{ tile_label }}</span>
                   </div>
@@ -242,7 +245,7 @@
           "type": "image_picker",
           "id": "icon",
           "label": "Custom icon",
-          "info": "Used when Icon is None. Transparent PNG, drawn in the tile text colour."
+          "info": "Used when Icon is None. Transparent PNG exported at Figma size (for a 421px tile); its width sets the icon size."
         },
         {
           "type": "text",
