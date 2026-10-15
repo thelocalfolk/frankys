@@ -188,6 +188,16 @@
   line-height: 1.2;
 }
 
+/* Icon SVGs live in assets/ and are painted in the tile text colour through a mask
+   (see snippets/frankys-colour-icon.liquid) */
+.colour-switcher__icon--mask {
+  display: block;
+  aspect-ratio: var(--icon-ratio, 1);
+  background-color: currentColor;
+  -webkit-mask: var(--icon-url) center / contain no-repeat;
+  mask: var(--icon-url) center / contain no-repeat;
+}
+
 /* Icon width is a % of the tile, set per icon in snippets/frankys-colour-icon.liquid */
 .colour-switcher__icon {
   position: absolute;
