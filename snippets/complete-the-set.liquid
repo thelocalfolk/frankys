@@ -1,0 +1,354 @@
+{%- doc -%}
+  "Complete the set" cross-sell for the product page. Replaces the Search & Discovery driven complementary products
+  strip, which repeated near-identical products, crossed ranges and ignored the chosen colour.
+
+  HOW SUGGESTIONS ARE PICKED (all server-side, re-rendered on variant change)
+    1. Range: the current product's range collection. Taken from the product metafield custom.range (collection
+       reference, or a collection handle as text); otherwise the first of the product's collections that is listed in
+       the block's "Range collections" setting. With no range found, only curated products (step 2) can show.
+    2. Candidates: curated custom.matching_product (list of product references, same metafield the cart drawer's
+       matching row uses) first, then the products of the range collection. When a range is known, curated products
+       outside it are dropped too.
+    3. Distinct: one product per product type, and never the current product's own type, so the strip shows e.g. a
+       napkin, a coaster and a runner rather than the same cutlery three times. Products with no type are only
+       de-duplicated by ID.
+    4. Colour: if the current variant has a Colour/Color option, each suggestion uses its variant in the same colour
+       (case-insensitive). A suggestion that has a colour option but no available variant in that colour is skipped.
+       Suggestions without a colour option use their first available variant.
+
+  SET SIZE
+    Suggestions that are themselves sold as sets (template suffix "upsell", the template that renders
+    buy-buttons-set) add the set size the customer picked in the set picker. Everything else adds 1. The set picker
+    announces changes with a "set:change" event (see buy-buttons-set.liquid).
+
+  DISCOUNTS
+    Only suggestions in a discount collection (block setting, falling back to the handles "bath" and "bedding") show
+    the discounted price and apply the discount code. The discount itself must exist in Shopify admin (code or
+    automatic), restricted to the same collections; this block only displays it and applies the code.
+
+  @param {object} product - the product whose page this is
+  @param {object} block - the complementary_products block
+  @param {object} [section]
+{%- enddoc -%}
+
+{%- liquid
+  assign colour_names = 'color,colour' | split: ','
+  assign max_count = block.settings.products_count | default: 4
+  assign current_variant = product.selected_or_first_available_variant
+
+  # ---- Chosen colour --------------------------------------------------------------------------------------------
+  assign chosen_colour = blank
+  for option in product.options_with_values
+    assign option_name = option.name | downcase | strip
+    if colour_names contains option_name
+      assign chosen_colour = current_variant.options[forloop.index0] | downcase | strip
+      break
+    endif
+  endfor
+
+  # ---- Range ----------------------------------------------------------------------------------------------------
+  assign range_collection = nil
+  assign range_metafield = product.metafields.custom.range
+
+  if range_metafield != blank
+    if range_metafield.type == 'collection_reference'
+      assign range_collection = range_metafield.value
+    else
+      assign range_handle = range_metafield.value | handleize
+      assign range_collection = collections[range_handle]
+    endif
+  endif
+
+  if range_collection == nil or range_collection.handle == blank
+    assign range_collection = nil
+    assign range_handles = block.settings.range_collections | map: 'handle'
+
+    for collection in product.collections
+      if range_handles contains collection.handle
+        assign range_collection = collection
+        break
+      endif
+    endfor
+  endif
+
+  # ---- Discount -------------------------------------------------------------------------------------------------
+  assign discount_percent = block.settings.discount_percent | default: 0
+  assign discount_code = block.settings.discount_code | strip
+  assign discount_handles = block.settings.discount_collections | map: 'handle'
+
+  if discount_handles.size == 0
+    assign discount_handles = 'bath,bedding' | split: ','
+  endif
+
+  # ---- Pick ------------------------------------------------------------------------------------------------------
+  # IDs and types already used, kept as "|"-delimited strings so a single `contains` checks membership.
+  assign curated = product.metafields.custom.matching_product.value
+  assign picked_ids = '|' | append: product.id | append: '|'
+  assign picked_types = '|'
+  assign own_type = product.type | downcase | strip
+
+  if own_type != blank
+    assign picked_types = picked_types | append: own_type | append: '|'
+  endif
+
+  assign picked_count = 0
+-%}
+
+{%- capture cards -%}
+  {%- for pass in (1..2) -%}
+    {%- liquid
+      if pass == 1
+        assign source = curated
+      elsif range_collection != nil
+        assign source = range_collection.products
+      else
+        assign source = nil
+      endif
+    -%}
+
+    {%- for candidate in source -%}
+      {%- if picked_count >= max_count -%}
+        {%- break -%}
+      {%- endif -%}
+
+      {%- liquid
+        assign candidate_key = '|' | append: candidate.id | append: '|'
+
+        if candidate.available == false or picked_ids contains candidate_key
+          continue
+        endif
+
+        assign candidate_type = candidate.type | downcase | strip
+        assign candidate_type_key = '|' | append: candidate_type | append: '|'
+
+        if candidate_type != blank and picked_types contains candidate_type_key
+          continue
+        endif
+
+        assign candidate_handles = candidate.collections | map: 'handle'
+
+        if range_collection != nil
+          unless candidate_handles contains range_collection.handle
+            continue
+          endunless
+        endif
+
+        # Colour: find the suggestion's colour option, then its available variant in the chosen colour
+        assign candidate_variant = candidate.selected_or_first_available_variant
+        assign colour_index = -1
+
+        for option_name in candidate.options
+          assign option_name_down = option_name | downcase | strip
+          if colour_names contains option_name_down
+            assign colour_index = forloop.index0
+            break
+          endif
+        endfor
+
+        if chosen_colour != blank and colour_index >= 0
+          assign candidate_variant = nil
+
+          for variant in candidate.variants
+            assign variant_colour = variant.options[colour_index] | downcase | strip
+            if variant_colour == chosen_colour and variant.available
+              assign candidate_variant = variant
+              break
+            endif
+          endfor
+
+          if candidate_variant == nil
+            continue
+          endif
+        endif
+
+        assign follows_set = false
+        if candidate.template_suffix == 'upsell'
+          assign follows_set = true
+        endif
+
+        assign discounted = false
+        if discount_percent > 0
+          for handle in candidate_handles
+            if discount_handles contains handle
+              assign discounted = true
+              break
+            endif
+          endfor
+        endif
+
+        assign picked_ids = picked_ids | append: candidate.id | append: '|'
+        if candidate_type != blank
+          assign picked_types = picked_types | append: candidate_type | append: '|'
+        endif
+        assign picked_count = picked_count | plus: 1
+
+        assign card_media = candidate_variant.featured_media | default: candidate.featured_media
+        assign card_url = candidate.url | append: '?variant=' | append: candidate_variant.id
+        assign card_alt = candidate.title
+        if colour_index >= 0
+          assign card_alt = card_alt | append: ' – ' | append: candidate_variant.options[colour_index]
+        endif
+        assign form_id = 'complete-the-set-' | append: section.id | append: '-' | append: candidate.id
+      -%}
+
+      <div class="complete-the-set__item product-cross-sell product-cross-sell--vertical snap-start" data-complete-the-set-item {% if follows_set %}data-follows-set{% endif %} {% if discounted and discount_code != blank %}data-discount-code="{{ discount_code | escape }}"{% endif %}>
+        {%- if card_media != blank -%}
+          <a href="{{ card_url }}">
+            {{- card_media | image_url: width: card_media.width | image_tag: sizes: '200px', widths: '200,400,600', alt: card_alt -}}
+          </a>
+        {%- endif -%}
+
+        <div class="v-stack gap-2">
+          <div class="v-stack gap-0.5">
+            <a href="{{ card_url }}" class="text-sm">{{ candidate.title }}</a>
+
+            {%- if colour_index >= 0 -%}
+              <span class="text-xs text-subdued">{{ candidate_variant.options[colour_index] }}</span>
+            {%- endif -%}
+
+            {%- if discounted -%}
+              {%- liquid
+                assign discount_multiplier = 100 | minus: discount_percent
+                assign discounted_price = candidate_variant.price | times: discount_multiplier | divided_by: 100
+              -%}
+              <price-list class="price-list justify-center">
+                <sale-price class="text-sm text-on-sale">
+                  <span class="sr-only">{{ 'product.price.sale_price' | t }}</span>
+                  {{- discounted_price | money -}}
+                </sale-price>
+                <compare-at-price class="text-sm text-subdued line-through">
+                  <span class="sr-only">{{ 'product.price.regular_price' | t }}</span>
+                  {{- candidate_variant.price | money -}}
+                </compare-at-price>
+              </price-list>
+
+              {%- if block.settings.discount_label != blank -%}
+                <span class="text-xs text-on-sale">{{ block.settings.discount_label | escape }}</span>
+              {%- endif -%}
+            {%- else -%}
+              {%- render 'price-list', variant: candidate_variant, context: 'card', alignment: 'center' -%}
+            {%- endif -%}
+          </div>
+
+          <product-form>
+            {%- form 'product', candidate, id: form_id -%}
+              <input type="hidden" name="id" value="{{ candidate_variant.id }}">
+              <input type="hidden" name="quantity" value="1" data-complete-the-set-quantity>
+              <button type="submit" class="block link subheading subheading-xs">
+                {{- 'product.general.add_to_cart_button' | t -}}
+                {%- if follows_set %} <span data-complete-the-set-label hidden></span>{%- endif -%}
+              </button>
+            {%- endform -%}
+          </product-form>
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if picked_count > 0 -%}
+  {%- assign carousel_id = 'carousel-' | append: section.id | append: block.id -%}
+
+  <complete-the-set class="block">
+    <div class="v-stack gap-4">
+      {%- if block.settings.title != blank or picked_count > 2 -%}
+        <div class="h-stack justify-between">
+          {%- if block.settings.title != blank -%}
+            <p>{{ block.settings.title }}</p>
+          {%- endif -%}
+
+          {%- if picked_count > 2 -%}
+            <div class="h-stack gap-2">
+              <carousel-prev-button aria-controls="{{ carousel_id }}">
+                <button type="button" disabled class="circle-button">
+                  <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+                  {%- render 'icon' with 'big-arrow-left', width: 9, direction_aware: true -%}
+                </button>
+              </carousel-prev-button>
+
+              <carousel-next-button aria-controls="{{ carousel_id }}">
+                <button type="button" class="circle-button">
+                  <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+                  {%- render 'icon' with 'big-arrow-right', width: 9, direction_aware: true -%}
+                </button>
+              </carousel-next-button>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <scroll-carousel id="{{ carousel_id }}" class="complementary-products complementary-products--vertical scroll-area bleed sm:unbleed snap-x">
+        {{- cards -}}
+      </scroll-carousel>
+    </div>
+  </complete-the-set>
+{%- endif -%}
+
+{%- comment -%} Rendered even when empty so the element is defined if a later variant re-render brings suggestions in. {%- endcomment -%}
+<script>
+  (function () {
+    if (customElements.get('complete-the-set')) return;
+
+    class CompleteTheSet extends HTMLElement {
+      connectedCallback() {
+        this.abortController = new AbortController();
+        const signal = this.abortController.signal;
+
+        // The set picker lives in the same product section; read its current size so a re-render keeps it.
+        const section = this.closest('.shopify-section') || document;
+        const setInput = section.querySelector('set-quantity [data-set-quantity]');
+        this.applySetSize(setInput ? parseInt(setInput.value, 10) : 1);
+
+        section.addEventListener('set:change', (event) => this.applySetSize(event.detail.quantity), { signal });
+        this.addEventListener('variant:add', (event) => this.onVariantAdd(event), { signal });
+      }
+
+      disconnectedCallback() {
+        this.abortController.abort();
+      }
+
+      applySetSize(size) {
+        const quantity = size > 0 ? size : 1;
+
+        this.querySelectorAll('[data-complete-the-set-item][data-follows-set]').forEach((item) => {
+          item.querySelector('[data-complete-the-set-quantity]').value = quantity;
+
+          const label = item.querySelector('[data-complete-the-set-label]');
+          label.textContent = '(' + quantity + ')';
+          label.hidden = quantity <= 1;
+        });
+      }
+
+      // Applies the discount code after a discounted suggestion is added; the code is merged with any codes
+      // already on the cart, the same way the theme's cart discount field does it.
+      async onVariantAdd(event) {
+        const item = event.target.closest('[data-discount-code]');
+        if (!item) return;
+
+        const code = item.getAttribute('data-discount-code');
+        const root = Shopify.routes.root;
+
+        try {
+          const cart = await (await fetch(`${root}cart.js`)).json();
+          const codes = (cart.discount_codes || []).filter((discount) => discount.applicable).map((discount) => discount.code);
+
+          if (codes.some((existing) => existing.toLowerCase() === code.toLowerCase())) return;
+
+          const response = await fetch(`${root}cart/update.js`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ discount: codes.concat(code).join(',') })
+          });
+
+          if (response.ok) {
+            document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+          }
+        } catch (error) {
+          console.error('[complete-the-set] could not apply discount code', error);
+        }
+      }
+    }
+
+    customElements.define('complete-the-set', CompleteTheSet);
+  })();
+</script>

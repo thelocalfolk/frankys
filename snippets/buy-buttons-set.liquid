@@ -559,6 +559,9 @@
           // SET (GMC fix): show the chosen set SIZE on the button, never a dollar total.
           // Editing a text node preserves sibling elements (spinner, icons) inside the button.
           if (this.labelNode) this.labelNode.nodeValue = this.baseLabel + ' (' + qty + ')';
+
+          // SET: let the "Complete the set" suggestions follow the chosen set size.
+          this.dispatchEvent(new CustomEvent('set:change', { bubbles: true, detail: { quantity: qty } }));
         }
       }
 
