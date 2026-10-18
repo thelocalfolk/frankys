@@ -837,7 +837,7 @@ document.addEventListener('variant:change', function(event) {
       "settings": [
         {
           "type": "paragraph",
-          "content": "t:sections.main_product.blocks.complementary_products.instructions"
+          "content": "Suggests one product per type from the same range, in the customer's chosen colour. Curated picks come from the custom.matching_product metafield first."
         },
         {
           "type": "inline_richtext",
@@ -852,6 +852,52 @@ document.addEventListener('variant:change', function(event) {
           "min": 1,
           "max": 10,
           "default": 10
+        },
+        {
+          "type": "header",
+          "content": "Range"
+        },
+        {
+          "type": "collection_list",
+          "id": "range_collections",
+          "label": "Range collections",
+          "info": "Suggestions come from the first of these collections the product belongs to. The product metafield custom.range (collection) overrides this. With no range, only curated picks show."
+        },
+        {
+          "type": "header",
+          "content": "Discount"
+        },
+        {
+          "type": "paragraph",
+          "content": "Shown only on suggestions in the discount collections. Create the matching discount in Shopify admin, limited to the same collections."
+        },
+        {
+          "type": "collection_list",
+          "id": "discount_collections",
+          "label": "Discount collections",
+          "info": "Leave empty to use the collections with handles bath and bedding."
+        },
+        {
+          "type": "range",
+          "id": "discount_percent",
+          "label": "Discount",
+          "min": 0,
+          "max": 50,
+          "step": 5,
+          "unit": "%",
+          "default": 0
+        },
+        {
+          "type": "text",
+          "id": "discount_code",
+          "label": "Discount code",
+          "info": "Applied to the cart when a discounted suggestion is added. Leave empty for an automatic discount."
+        },
+        {
+          "type": "text",
+          "id": "discount_label",
+          "label": "Discount label",
+          "default": "Bundle & save"
         }
       ]
     },
