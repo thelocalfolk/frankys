@@ -1,0 +1,113 @@
+{%- doc -%}
+  FRANKY'S (TLF) P8: product pills — small tags such as colour, set size and material, shown by the
+  "Product pills" block on product pages (snippets/product-info.liquid).
+
+  Sources, in order: the selected variant's options, product metafields, then product tags with a prefix.
+  Blank values are skipped and each value shows once (case-insensitive). The block is in the partial
+  re-render list in product-info, so a Colour pill follows the swatch the shopper picks.
+
+  @param {object} product
+  @param {object} [variant] - defaults to the selected or first available variant
+  @param {string} [variant_options] - option names, comma-separated (e.g. "Colour, Color")
+  @param {boolean} [show_option_name] - show "Colour: Sage Green" instead of "Sage Green"
+  @param {string} [metafields] - namespace.key, comma-separated (text, number, list or metaobject with label / name / title)
+  @param {string} [tag_prefix] - tags starting with this show as pills, without the prefix (e.g. "pill:")
+  @param {string} [alignment] - start, center or end
+{%- enddoc -%}
+
+{%- liquid
+  assign pill_candidates = ''
+  assign pill_variant = variant | default: product.selected_or_first_available_variant
+
+  # Variant options, e.g. "Colour"
+  assign pill_option_names = variant_options | downcase | split: ','
+  for option in product.options_with_values
+    assign option_name = option.name | downcase | strip
+    assign option_index = forloop.index0
+    for wanted_option in pill_option_names
+      assign wanted_name = wanted_option | strip
+      if wanted_name != blank and wanted_name == option_name
+        assign option_value = pill_variant.options[option_index]
+        if option_value != 'Default Title'
+          if show_option_name
+            assign option_value = option.name | append: ': ' | append: option_value
+          endif
+          assign pill_candidates = pill_candidates | append: option_value | append: '@@'
+        endif
+        break
+      endif
+    endfor
+  endfor
+
+  # Metafields, e.g. "custom.set_size" (text, number, lists, or metaobjects with a label / name / title)
+  assign pill_metafield_keys = metafields | split: ','
+  for metafield_key in pill_metafield_keys
+    assign metafield_parts = metafield_key | strip | split: '.'
+    if metafield_parts.size != 2
+      continue
+    endif
+
+    assign pill_metafield = product.metafields[metafield_parts[0]][metafield_parts[1]]
+    if pill_metafield == blank
+      continue
+    endif
+
+    if pill_metafield.type == 'list.metaobject_reference'
+      for metaobject in pill_metafield.value
+        assign metafield_label = metaobject.label.value | default: metaobject.name.value | default: metaobject.title.value
+        assign pill_candidates = pill_candidates | append: metafield_label | append: '@@'
+      endfor
+    elsif pill_metafield.type == 'metaobject_reference'
+      assign metaobject = pill_metafield.value
+      assign metafield_label = metaobject.label.value | default: metaobject.name.value | default: metaobject.title.value
+      assign pill_candidates = pill_candidates | append: metafield_label | append: '@@'
+    elsif pill_metafield.type contains 'list.'
+      for metafield_item in pill_metafield.value
+        assign pill_candidates = pill_candidates | append: metafield_item | append: '@@'
+      endfor
+    else
+      assign metafield_label = pill_metafield | metafield_text
+      assign pill_candidates = pill_candidates | append: metafield_label | append: '@@'
+    endif
+  endfor
+
+  # Tags, e.g. "pill:100% linen" shows "100% linen"
+  assign pill_tag_prefix = tag_prefix | strip
+  if pill_tag_prefix != blank
+    for tag in product.tags
+      assign tag_start = tag | slice: 0, pill_tag_prefix.size
+      if tag_start == pill_tag_prefix
+        assign tag_text = tag | remove_first: pill_tag_prefix
+        assign pill_candidates = pill_candidates | append: tag_text | append: '@@'
+      endif
+    endfor
+  endif
+
+  # Drop blanks and repeats
+  assign pill_values = ''
+  assign pill_seen = '|'
+  assign pill_candidates = pill_candidates | split: '@@'
+  for pill_candidate in pill_candidates
+    assign pill_text = pill_candidate | strip_html | strip
+    if pill_text == blank
+      continue
+    endif
+
+    assign pill_key = pill_text | downcase | append: '|'
+    assign pill_key_bounded = pill_key | prepend: '|'
+    unless pill_seen contains pill_key_bounded
+      assign pill_seen = pill_seen | append: pill_key
+      assign pill_values = pill_values | append: pill_text | append: '@@'
+    endunless
+  endfor
+
+  assign pill_values = pill_values | split: '@@'
+-%}
+
+{%- if pill_values.size > 0 -%}
+  <ul class="product-pills h-stack gap-2 wrap justify-{{ alignment }} unstyled-list" role="list">
+    {%- for pill_value in pill_values -%}
+      <li class="product-pills__item text-xs">{{ pill_value | escape }}</li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

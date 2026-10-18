@@ -360,6 +360,45 @@ document.addEventListener('variant:change', function(event) {
       ]
     },
     {
+      "type": "product_pills",
+      "name": "Product pills",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Franky's: small tags such as colour, set size and material. Empty sources are skipped and repeated values show once."
+        },
+        {
+          "type": "text",
+          "id": "variant_options",
+          "label": "Variant options",
+          "info": "Option names, separated by commas. Shows the selected value and updates when the shopper picks another variant.",
+          "default": "Colour, Color"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_option_name",
+          "label": "Show option name",
+          "info": "For example \"Colour: Sage Green\" instead of \"Sage Green\".",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "metafields",
+          "label": "Product metafields",
+          "info": "namespace.key, separated by commas. Text, number, list and metaobject (label, name or title) metafields are supported.",
+          "default": "custom.set_size, custom.material"
+        },
+        {
+          "type": "text",
+          "id": "tag_prefix",
+          "label": "Tag prefix",
+          "info": "Product tags starting with this show as pills, without the prefix. For example the tag \"pill:Set of 4\" shows \"Set of 4\". Leave blank to ignore tags.",
+          "default": "pill:"
+        }
+      ]
+    },
+    {
       "type": "price",
       "name": "t:sections.main_product.blocks.price.name",
       "limit": 1,
