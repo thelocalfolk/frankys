@@ -3,6 +3,7 @@
   Home › Collection            (collection pages)
   Home › Collection › Product  (product pages)
   Home › Shop by Colour › Brown (P4: colour template, once the shop-by-colour collection exists)
+  Home › Bedding › Navy        (P4: colour template scoped to a category by its product type filter)
   The collection on product pages is chosen by snippets/breadcrumb-collection-handle.liquid.
 {%- endcomment -%}
 {%- liquid
@@ -19,8 +20,35 @@
 
   # FRANKY'S (TLF) P4: parent crumb for the colour collections
   assign crumb_parent = nil
-  if request.page_type == 'collection' and template.suffix == 'colour' and collection.handle != 'shop-by-colour'
-    assign crumb_parent = collections['shop-by-colour']
+  if request.page_type == 'collection' and template.suffix == 'colour'
+    # Shopping one category's colours (?filter.p.product_type=Bedding): Home › Bedding › Navy.
+    # The category is the collection whose handle matches the first product type in the filter,
+    # unless the map setting below says otherwise (e.g. Coasters=placemats).
+    assign scope_type = ''
+    for filter in collection.filters
+      if filter.param_name == 'filter.p.product_type' and filter.active_values.size > 0
+        assign scope_type = filter.active_values.first.value
+      endif
+    endfor
+
+    if scope_type != blank
+      assign scope_handle = scope_type | handleize
+      assign map_lines = section.settings.colour_category_map | newline_to_br | split: '<br />'
+      for map_line in map_lines
+        assign map_parts = map_line | strip | split: '='
+        if map_parts.size == 2
+          assign map_type = map_parts[0] | strip
+          if map_type == scope_type
+            assign scope_handle = map_parts[1] | strip
+          endif
+        endif
+      endfor
+
+      assign crumb_parent = collections[scope_handle]
+    elsif collection.handle != 'shop-by-colour'
+      assign crumb_parent = collections['shop-by-colour']
+    endif
+
     if crumb_parent.id == blank
       assign crumb_parent = nil
     endif
@@ -78,6 +106,13 @@
       "id": "color_scheme",
       "label": "t:global.colors.scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "textarea",
+      "id": "colour_category_map",
+      "label": "Shop by Colour category links",
+      "info": "FRANKY'S (TLF) P4. On colour pages filtered to a product type, the middle link goes to the collection with the same handle as the type. List exceptions one per line as Product type=collection-handle, e.g. Coasters=placemats.",
+      "default": "Placemats=placemats\nCoasters=placemats"
     }
   ],
   "presets": [
