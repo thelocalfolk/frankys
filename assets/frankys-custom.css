@@ -85,6 +85,20 @@
   }
 }
 
+/* --- P8: Product pills (main product "Product pills" block) -------------
+   Same outline as the collection pills, smaller, and not links. */
+.product-pills {
+  row-gap: .5rem;
+}
+
+.product-pills__item {
+  padding: .3125rem .75rem;
+  border: 1px solid rgb(var(--text-color) / .25);
+  border-radius: 999px;
+  line-height: 1.4;
+  color: rgb(var(--text-color) / .85);
+}
+
 /* --- P9: Cart drawer — returns promise + low stock ----------------------- */
 .cart-returns-promise {
   display: flex;
