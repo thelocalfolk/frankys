@@ -75,7 +75,10 @@
                 endif
 
                 assign tile_label = block.settings.label | default: tile_collection.title
-                assign tile_image = block.settings.image | default: tile_collection.featured_image
+                assign tile_image = block.settings.image
+                if tile_image == blank and block.settings.image_asset == blank
+                  assign tile_image = tile_collection.featured_image
+                endif
                 assign is_current = false
                 if tile_collection.handle == collection.handle
                   assign is_current = true
@@ -94,6 +97,9 @@
                     {%- if tile_image != blank -%}
                       {%- capture sizes -%}(max-width: 699px) {{ section.settings.tile_width_mobile }}vw, (max-width: 999px) 37vw, {{ tile_desktop_vw | ceil }}vw{%- endcapture -%}
                       {{- tile_image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: sizes, widths: '300,400,500,600,800,1000,1200', class: 'zoom-image group-hover:zoom', alt: '' -}}
+                    {%- elsif block.settings.image_asset != blank -%}
+                      {%- comment -%}Good Manners' Figma tile (421px square) shipped in assets/ until a larger copy is uploaded to Files{%- endcomment -%}
+                      <img src="{{ block.settings.image_asset | asset_url }}" width="421" height="421" loading="lazy" decoding="async" class="zoom-image group-hover:zoom" alt="">
                     {%- else -%}
                       {{- 'collection-apparel-1' | placeholder_svg_tag: 'size-full' -}}
                     {%- endif -%}
@@ -226,7 +232,13 @@
           "type": "image_picker",
           "id": "image",
           "label": "Tile image",
-          "info": "Defaults to the collection image. Square images work best."
+          "info": "Defaults to the theme file below, then the collection image. Square images work best."
+        },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "Tile image (theme file)",
+          "info": "Filename in the theme's assets folder, e.g. frankys-colour-tile-navy.jpg. Used when Tile image is empty."
         },
         {
           "type": "select",
