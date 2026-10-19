@@ -113,9 +113,11 @@
       this.swap(new URL(window.location.href), { push: false });
     }
 
-    // Keep the preview template (?view=colour) while QA'ing on the dev theme
+    // Keep the category scope (product type filter, carried in the tile link) and the
+    // preview template (?view=colour) while QA'ing on the dev theme
     pageUrl(url) {
       const pageUrl = new URL(url.pathname, window.location.origin);
+      url.searchParams.getAll('filter.p.product_type').forEach((type) => pageUrl.searchParams.append('filter.p.product_type', type));
       const view = new URLSearchParams(window.location.search).get('view');
       if (view) pageUrl.searchParams.set('view', view);
       return pageUrl;
