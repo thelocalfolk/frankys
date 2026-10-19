@@ -21,7 +21,8 @@
           "type": "colour",
           "settings": {
             "collection": "navy",
-            "icon_style": "navy"
+            "icon_style": "navy",
+            "image_asset": "frankys-colour-tile-navy.jpg"
           }
         },
         "colour_sage_green": {
@@ -36,61 +37,70 @@
           "type": "colour",
           "settings": {
             "collection": "dark-green",
-            "icon_style": "dark-green"
+            "icon_style": "dark-green",
+            "image_asset": "frankys-colour-tile-dark-green.jpg"
           }
         },
         "colour_pink": {
           "type": "colour",
           "settings": {
             "collection": "pink",
-            "icon_style": "pink"
+            "icon_style": "pink",
+            "image_asset": "frankys-colour-tile-pink.jpg"
           }
         },
         "colour_nude": {
           "type": "colour",
           "settings": {
-            "collection": "nude"
+            "collection": "nude",
+            "image_asset": "frankys-colour-tile-nude.jpg"
           }
         },
         "colour_wine": {
           "type": "colour",
           "settings": {
             "collection": "wine",
-            "icon_style": "wine"
+            "icon_style": "wine",
+            "image_asset": "frankys-colour-tile-wine.jpg"
           }
         },
         "colour_clay": {
           "type": "colour",
           "settings": {
             "collection": "clay",
-            "icon_style": "clay"
+            "icon_style": "clay",
+            "image_asset": "frankys-colour-tile-clay.jpg"
           }
         },
         "colour_brown": {
           "type": "colour",
           "settings": {
             "collection": "brown",
-            "icon_style": "brown"
+            "icon_style": "brown",
+            "image_asset": "frankys-colour-tile-brown.jpg"
           }
         },
         "colour_pearl_grey": {
           "type": "colour",
           "settings": {
             "collection": "pearl-grey",
-            "icon_style": "pearl-grey"
+            "icon_style": "pearl-grey",
+            "image_asset": "frankys-colour-tile-pearl-grey.jpg"
           }
         },
         "colour_dark_grey": {
           "type": "colour",
           "settings": {
-            "collection": "dark-grey"
+            "collection": "dark-grey",
+            "image_asset": "frankys-colour-tile-dark-grey.jpg"
           }
         },
         "colour_beige": {
           "type": "colour",
           "settings": {
             "collection": "beige",
-            "icon_style": "beige"
+            "icon_style": "beige",
+            "image_asset": "frankys-colour-tile-beige.jpg"
           }
         },
         "colour_chocolate": {
@@ -105,7 +115,8 @@
           "type": "colour",
           "settings": {
             "collection": "black",
-            "icon_style": "black"
+            "icon_style": "black",
+            "image_asset": "frankys-colour-tile-black.jpg"
           }
         },
         "colour_butter": {
@@ -120,7 +131,8 @@
           "type": "colour",
           "settings": {
             "collection": "milk",
-            "icon_style": "milk"
+            "icon_style": "milk",
+            "image_asset": "frankys-colour-tile-milk.jpg"
           }
         }
       },
