@@ -53,6 +53,7 @@
           "type": "colour",
           "settings": {
             "collection": "nude",
+            "icon_style": "nude",
             "image_asset": "frankys-colour-tile-nude.jpg"
           }
         },
@@ -92,6 +93,7 @@
           "type": "colour",
           "settings": {
             "collection": "dark-grey",
+            "icon_style": "dark-grey",
             "image_asset": "frankys-colour-tile-dark-grey.jpg"
           }
         },
