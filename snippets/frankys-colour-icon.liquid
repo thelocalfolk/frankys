@@ -4,10 +4,11 @@
   text colour with a CSS mask, so it is downloaded once and cached across every colour page
   instead of being inlined into the HTML. Width is a % of the tile, matching the Figma (tile = 421px).
   Chocolate, sage-green, light-blue and butter were traced from the Figma; the rest were traced
-  with potrace from Good Manners' PNG exports (15 Oct 2026).
+  with potrace from Good Manners' PNG exports (15 Oct 2026);
+  dark-grey and nude from Steph's PNGs (19 Oct 2026), sized by eye as they aren't in the Figma frames.
 
-  @param {string} name - beige, black, brown, butter, chocolate, clay, dark-green, light-blue,
-    milk, navy, pearl-grey, pink, sage-green or wine
+  @param {string} name - beige, black, brown, butter, chocolate, clay, dark-green, dark-grey,
+    light-blue, milk, navy, nude, pearl-grey, pink, sage-green or wine
 {%- enddoc -%}
 {%- liquid
   case name
@@ -29,6 +30,9 @@
     when 'clay'
       assign icon_width = '37.9%'
       assign icon_ratio = '1038 / 951'
+    when 'dark-grey'
+      assign icon_width = '40.0%'
+      assign icon_ratio = '1759 / 960'
     when 'dark-green'
       assign icon_width = '35.2%'
       assign icon_ratio = '1372 / 1352'
@@ -41,6 +45,9 @@
     when 'navy'
       assign icon_width = '28.9%'
       assign icon_ratio = '1136 / 1361'
+    when 'nude'
+      assign icon_width = '33.0%'
+      assign icon_ratio = '1611 / 1397'
     when 'pearl-grey'
       assign icon_width = '33.6%'
       assign icon_ratio = '1270 / 1311'
