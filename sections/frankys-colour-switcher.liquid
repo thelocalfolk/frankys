@@ -18,6 +18,31 @@
   endif
 
   assign tile_desktop_vw = 100.0 | divided_by: section.settings.tiles_per_row_desktop
+
+  # Category scope: Shop by Colour always works inside one category (placemats & coasters,
+  # bedding, bath), set by Shopify's product type filter in the URL, e.g. the Placemats menu
+  # links to ?filter.p.product_type=Placemats&filter.p.product_type=Coasters. Tiles carry the
+  # same filter so switching colour stays in that category.
+  assign scope_query = ''
+  assign scope_label = ''
+  for filter in collection.filters
+    if filter.param_name == 'filter.p.product_type'
+      for filter_value in filter.active_values
+        assign encoded_value = filter_value.value | url_encode
+        assign scope_query = scope_query | append: '&' | append: filter_value.param_name | append: '=' | append: encoded_value
+        if scope_label != blank
+          assign scope_label = scope_label | append: ' & '
+        endif
+        assign scope_label = scope_label | append: filter_value.label
+      endfor
+    endif
+  endfor
+  assign scope_query = scope_query | remove_first: '&'
+
+  assign page_title_text = section.settings.title
+  if scope_label != blank and is_all_colours == false
+    assign page_title_text = 'Shop ' | append: scope_label | append: ' by Colour'
+  endif
 -%}
 
 <style>
@@ -35,8 +60,11 @@
           {%- if section.settings.title != blank -%}
             {%- if is_all_colours -%}
               <h1 class="h3">{{ collection.title | default: section.settings.title }}</h1>
+              {%- if scope_label != blank -%}
+                <p class="text-sm">{{ scope_label | escape }}</p>
+              {%- endif -%}
             {%- else -%}
-              <p class="h3">{{ section.settings.title }}</p>
+              <p class="h3">{{ page_title_text | escape }}</p>
             {%- endif -%}
           {%- endif -%}
 
@@ -86,7 +114,7 @@
               -%}
 
               <a
-                href="{{ tile_collection.url }}"
+                href="{{ tile_collection.url }}{% if scope_query != blank %}?{{ scope_query }}{% endif %}"
                 class="colour-switcher__tile snap-start group color-scheme color-scheme--{{ section.settings.tile_color_scheme.id }}"
                 data-colour-handle="{{ tile_collection.handle }}"
                 {% if is_current %}aria-current="page"{% endif %}
