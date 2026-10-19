@@ -10,7 +10,10 @@
 <a class="collection-list__item @container/content-box snap-center color-scheme color-scheme--{{ color_scheme.id }}" href="{{ collection.url | default: '#' }}" {{ block.shopify_attributes }}>
   {%- capture image -%}
     {%- liquid
-      assign collection_image = block.settings.image | default: collection.featured_image
+      assign collection_image = block.settings.image
+      if collection_image == blank and block.settings.image_asset == blank
+        assign collection_image = collection.featured_image
+      endif
 
       if collection_image != blank
         assign desktop_size = 100.0 | divided_by: section.settings.items_per_row | ceil
@@ -28,6 +31,10 @@
         endif
 
         echo collection_image | image_url: width: collection_image.width | image_tag: sizes: sizes_attribute, widths: '200,300,400,600,800,1000,1200,1400,1600,1800', class: class_name
+      elsif block.settings.image_asset != blank
+        # FRANKY'S (TLF) P4: Good Manners' colour tile from theme assets (421px square), same file as the colour switcher
+        assign asset_src = block.settings.image_asset | asset_url
+        echo '<img src="' | append: asset_src | append: '" width="421" height="421" loading="lazy" decoding="async" class="zoom-image group-hover:zoom" alt="">'
       else
         echo 'collection-apparel-1' | placeholder_svg_tag: 'size-full zoom-image group-hover:zoom'
       endif
@@ -87,6 +94,12 @@
       "id": "image",
       "label": "t:global.image.image",
       "info": "t:blocks.collection_card.image_size_recommendation"
+    },
+    {
+      "type": "text",
+      "id": "image_asset",
+      "label": "Image (theme file)",
+      "info": "FRANKY'S (TLF). Filename in the theme's assets folder, e.g. frankys-colour-tile-navy.jpg. Used when Image is empty."
     },
     {
       "type": "inline_richtext",

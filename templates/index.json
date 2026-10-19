@@ -590,13 +590,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "milk",
-            "image": "{{ closest.collection.image }}",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "image_asset": "frankys-colour-tile-milk.jpg"
           },
           "blocks": {}
         },
@@ -605,13 +605,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "pink",
-            "image": "{{ closest.collection.image }}",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "image_asset": "frankys-colour-tile-pink.jpg"
           },
           "blocks": {}
         },
@@ -620,13 +620,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "wine",
-            "image": "{{ closest.collection.image }}",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "image_asset": "frankys-colour-tile-wine.jpg"
           },
           "blocks": {}
         },
@@ -635,13 +635,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "navy",
-            "image": "{{ closest.collection.image }}",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "image_asset": "frankys-colour-tile-navy.jpg"
           },
           "blocks": {}
         },
@@ -650,13 +650,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "dark-green",
-            "image": "{{ closest.collection.image }}",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "image_asset": "frankys-colour-tile-dark-green.jpg"
           },
           "blocks": {}
         },
@@ -665,13 +665,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "clay",
-            "image": "{{ closest.collection.image }}",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "image_asset": "frankys-colour-tile-clay.jpg"
           },
           "blocks": {}
         },
@@ -680,13 +680,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "black",
-            "image": "{{ closest.collection.image }}",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "image_asset": "frankys-colour-tile-black.jpg"
           },
           "blocks": {}
         },
@@ -695,13 +695,13 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "pearl-grey",
-            "image": "{{ closest.collection.image }}",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "image_asset": "frankys-colour-tile-pearl-grey.jpg"
           },
           "blocks": {}
         }
