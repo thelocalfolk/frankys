@@ -424,45 +424,7 @@ no need to manually pass the section as it is globally available)
             {%- endif -%}
 
           {%- when 'complementary_products' -%}
-            <product-recommendations class="block" hidden product="{{ product.id }}" limit="{{ block.settings.products_count }}" intent="complementary">
-              {%- if recommendations.performed? and recommendations.intent == 'complementary' and recommendations.products_count > 0 -%}
-                {%- assign carousel_id = 'carousel-' | append: section.id | append: block.id -%}
-
-                <div class="v-stack gap-4">
-                  {%- if block.settings.title != blank or recommendations.products_count > 1 -%}
-                    <div class="h-stack justify-between">
-                      {%- if block.settings.title != blank -%}
-                        <p>{{ block.settings.title }}</p>
-                      {%- endif -%}
-
-                      {%- if recommendations.products_count > 2 -%}
-                        <div class="h-stack gap-2">
-                          <carousel-prev-button aria-controls="{{ carousel_id }}">
-                            <button type="button" disabled class="circle-button">
-                              <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
-                              {%- render 'icon' with 'big-arrow-left', width: 9, direction_aware: true -%}
-                            </button>
-                          </carousel-prev-button>
-
-                          <carousel-next-button aria-controls="{{ carousel_id }}">
-                            <button type="button" class="circle-button">
-                              <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
-                              {%- render 'icon' with 'big-arrow-right', width: 9, direction_aware: true -%}
-                            </button>
-                          </carousel-next-button>
-                        </div>
-                      {%- endif -%}
-                    </div>
-                  {%- endif -%}
-
-                  <scroll-carousel id="{{ carousel_id }}" class="complementary-products complementary-products--vertical scroll-area bleed sm:unbleed snap-x">
-                    {%- for product in recommendations.products -%}
-                      {%- render 'product-cross-sell', product: product, layout: 'vertical', show_quick_buy: true -%}
-                    {%- endfor -%}
-                  </scroll-carousel>
-                </div>
-              {%- endif -%}
-            </product-recommendations>
+            {%- render 'complete-the-set', product: product, block: block, section: section -%}
 
           {%- when 'text' -%}
             {%- if block.settings.text != blank -%}
@@ -645,7 +607,7 @@ no need to manually pass the section as it is globally available)
       {%- endif -%}
 
       {%- liquid
-        assign block_types_allowing_partial_rerender = 'sku,badges,product_pills,price,payment_terms,volume_pricing,variant_picker,inventory,buy_buttons,pickup_availability,liquid' | split: ','
+        assign block_types_allowing_partial_rerender = 'sku,badges,product_pills,price,payment_terms,volume_pricing,variant_picker,inventory,buy_buttons,pickup_availability,liquid,complementary_products' | split: ','
         assign allow_partial_rerender = false
 
         if block_types_allowing_partial_rerender contains block.type
