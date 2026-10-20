@@ -180,6 +180,10 @@
     "main": {
       "type": "main-collection",
       "settings": {
+        "hide_in_collections": [
+          "throws",
+          "bath"
+        ],
         "color_scheme": "",
         "products_per_page": 36,
         "products_per_row_mobile": 2,
