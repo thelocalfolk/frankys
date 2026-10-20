@@ -120,7 +120,11 @@
         </div>
       {%- endif -%}
 
-      {%- if section.blocks.size > 0 or colour_filter != blank -%}
+      {%- if section.settings.tile_source == 'colour_filter' and colour_filter == blank -%}
+        {%- if request.design_mode -%}
+          <p class="text-sm text-center">No Colour filter found on this collection. Switch on the Colour filter in Search &amp; Discovery to show the colour tiles.</p>
+        {%- endif -%}
+      {%- elsif section.blocks.size > 0 or colour_filter != blank -%}
         <colour-switcher class="colour-switcher__picker" section-id="{{ section.id }}">
           <div class="frankys-section-header">
             {%- if section.settings.switcher_title != blank -%}
