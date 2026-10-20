@@ -1,3 +1,15 @@
+{%- liquid
+  # FRANKY'S (TLF) P4: Shop by Colour for bedding and bath shows only that category's
+  # products from the colour collection. Filtering happens per page, so those pages
+  # load the whole colour collection on one page (colour collections are small).
+  assign only_in_collections = section.settings.only_in_collections | map: 'handle' | join: ','
+  assign hide_in_collections = section.settings.hide_in_collections | map: 'handle' | join: ','
+  assign products_per_page = section.settings.products_per_page
+  if only_in_collections != blank or hide_in_collections != blank
+    assign products_per_page = 250
+  endif
+-%}
+
 {%- if section.settings.show_filters and collection.filters.size > 0 -%}
   {%- assign show_filters = true -%}
 {%- else -%}
@@ -45,7 +57,7 @@
       {%- render 'collection-toolbar' -%}
 
       <div class="collection__inner">
-        {%- paginate collection.products by section.settings.products_per_page -%}
+        {%- paginate collection.products by products_per_page -%}
           {%- if show_filters and section.settings.filter_layout == 'sidebar' -%}
             <safe-sticky class="collection__sidebar">
               {%- comment -%}On desktop the sort by is shown on the right rather than the sidebar{%- endcomment -%}
@@ -68,7 +80,7 @@
           {%- else -%}
             <div class="collection__results">
               {%- render 'active-facets', source: collection, hash: "#collection" -%}
-              {%- render 'product-list', products: collection.products, allow_highlight: true, paginate: paginate, blocks: section.blocks, output_override_attributes: true -%}
+              {%- render 'product-list', products: collection.products, allow_highlight: true, paginate: paginate, blocks: section.blocks, output_override_attributes: true, only_in_collections: only_in_collections, hide_in_collections: hide_in_collections -%}
             </div>
 
             {%- render 'pagination', paginate: paginate, facet: true, hash: '#collection' -%}
@@ -133,6 +145,18 @@ on desktop based on the settings
       "id": "color_scheme",
       "label": "t:global.colors.scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "collection_list",
+      "id": "only_in_collections",
+      "label": "Only show products from",
+      "info": "FRANKY'S (TLF) P4. For Shop by Colour pages, e.g. Bath. Leave empty on normal collection pages."
+    },
+    {
+      "type": "collection_list",
+      "id": "hide_in_collections",
+      "label": "Hide products from",
+      "info": "FRANKY'S (TLF) P4. e.g. Placemats and Coasters on the bedding colour page."
     },
     {
       "type": "range",

@@ -13,6 +13,8 @@ This component display a list of product that can be used in collection, search.
 @param {boolean} [output_override_attributes] - only for collection page, we allow customers to switch the layout. To avoid CLS, we have to save the attribute in the cart and apply it to the product list. A better approach would be to use container query around cards, but unfortunately we are using subgrid, and currently in browsers, subgrid and container queries can't be used together, so we have to revert to this approach
 @param {object} [paginate] - an optional paginate object when product list is rendered in context of collection pages
 @param {object} [section]
+@param {string} [only_in_collections] - FRANKY'S (TLF) P4: comma-separated collection handles; products in none of them are skipped
+@param {string} [hide_in_collections] - FRANKY'S (TLF) P4: comma-separated collection handles; products in any of them are skipped
 {%- enddoc -%}
 
 <product-list {% if id %}id="{{ id }}"{% endif %} class="product-list {% if stack == false or spotlight == false %}product-list--carousel scroll-area bleed{% endif %} {% if spotlight %}product-list--spotlight scroll-area bleed{% if settings.product_listing_spacing == 'none' %}border{% endif %}{% endif %}" {% if output_override_attributes %}mobile-items-per-row="{{ cart.attributes.product_card_mobile_items_per_row | default: section.settings.products_per_row_mobile }}" desktop-layout="{{ cart.attributes.product_card_desktop_layout | default: 'grid' }}"{% endif %}>
@@ -42,7 +44,37 @@ This component display a list of product that can be used in collection, search.
     {%- endif -%}
   {%- endcapture -%}
 
+  {%- liquid
+    # FRANKY'S (TLF) P4: keep a colour page to one category (bedding, bath) by collection
+    assign only_handles = only_in_collections | default: '' | split: ','
+    assign hide_handles = hide_in_collections | default: '' | split: ','
+  -%}
+
   {%- for product in products -%}
+    {%- liquid
+      if only_handles.size > 0 or hide_handles.size > 0
+        assign product_collection_handles = product.collections | map: 'handle'
+        assign keep_product = true
+        if only_handles.size > 0
+          assign keep_product = false
+          for only_handle in only_handles
+            if product_collection_handles contains only_handle
+              assign keep_product = true
+              break
+            endif
+          endfor
+        endif
+        for hide_handle in hide_handles
+          if product_collection_handles contains hide_handle
+            assign keep_product = false
+            break
+          endif
+        endfor
+        if keep_product == false
+          continue
+        endif
+      endif
+    -%}
     {%- for block in blocks -%}
       {%- if has_active_filters or paginate.current_page > 1 or forloop.parentloop.index != block.settings.position -%}
         {%- continue -%}
