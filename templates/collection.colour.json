@@ -196,13 +196,13 @@
         "swatch_selector_size": "lg"
       }
     },
-    "build_your_table": {
+    "good_mornings": {
       "type": "text-with-media",
       "blocks": {
         "heading": {
           "type": "heading",
           "settings": {
-            "text": "Build your own table, piece by piece",
+            "text": "Good mornings start here.",
             "heading_tag": "h3",
             "position": "middle_left",
             "highlight_effect": "default",
@@ -213,15 +213,15 @@
         "richtext": {
           "type": "richtext",
           "settings": {
-            "text": "<p>Found a colour you love? Bring it all together with our Table Builder. Mix and match placemats, napkins and coasters to create a setting that feels like you.</p>",
+            "text": "<p>Meet Zurich bedding. Soft organic cotton, feel-good colours and a very good reason to stay a little longer. Bring the Frankys feeling to your bedroom.</p>",
             "position": "middle_left"
           }
         },
         "button": {
           "type": "button",
           "settings": {
-            "text": "Build your own table",
-            "url": "/pages/build-your-setting",
+            "text": "Shop Bedding",
+            "url": "shopify://collections/throws",
             "position": "middle_left",
             "style": "solid",
             "background": "#acd0cf",
@@ -242,7 +242,7 @@
         "overlay_opacity": 20,
         "add_media_spacing": false,
         "autoplay_video": true,
-        "primary_image": "shopify://shop_images/frankys-build-your-table.jpg",
+        "primary_image_asset": "frankys-bedding-good-mornings.jpg",
         "secondary_media_width": 55,
         "secondary_media_mobile_width": 55,
         "show_secondary_media_on_mobile": true,
@@ -366,7 +366,7 @@
     "colour_switcher",
     "colour_heading",
     "main",
-    "build_your_table",
+    "good_mornings",
     "curated_bundles",
     "collections_you_will_love"
   ]
