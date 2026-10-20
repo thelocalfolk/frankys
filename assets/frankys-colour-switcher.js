@@ -114,11 +114,12 @@
       this.swap(new URL(window.location.href), { push: false });
     }
 
-    // A page is its collection plus its filters: placemats tiles change the collection,
-    // bedding and bath tiles change the Colour filter on the same collection
+    // A page is its collection plus its category / colour filters: placemats tiles change the
+    // collection, bedding and bath tiles change the Colour filter on the same collection.
+    // Other filters (price, availability) don't change which tile is current.
     pageKey(url) {
       const filters = Array.from(url.searchParams.entries())
-        .filter(([name]) => name.startsWith('filter.'))
+        .filter(([name]) => name === 'filter.p.product_type' || /colou?r/i.test(name))
         .map(([name, value]) => `${name}=${value}`)
         .sort();
       return [url.pathname, ...filters].join('&');

@@ -48,6 +48,7 @@ This component display a list of product that can be used in collection, search.
     # FRANKY'S (TLF) P4: keep a colour page to one category (bedding, bath) by collection
     assign only_handles = only_in_collections | default: '' | split: ','
     assign hide_handles = hide_in_collections | default: '' | split: ','
+    assign visible_position = 0
   -%}
 
   {%- for product in products -%}
@@ -74,6 +75,7 @@ This component display a list of product that can be used in collection, search.
           continue
         endif
       endif
+      assign visible_position = visible_position | plus: 1
     -%}
     {%- for block in blocks -%}
       {%- if has_active_filters or paginate.current_page > 1 or forloop.parentloop.index != block.settings.position -%}
@@ -129,7 +131,7 @@ This component display a list of product that can be used in collection, search.
       </div>
     {%- endfor -%}
 
-    {%- render 'product-card', product: product, reveal: true, allow_highlight: allow_highlight, sizes: sizes, force_no_border: spotlight, section_color_scheme: section_color_scheme, prefix_id: prefix_id, position: forloop.index -%}
+    {%- render 'product-card', product: product, reveal: true, allow_highlight: allow_highlight, sizes: sizes, force_no_border: spotlight, section_color_scheme: section_color_scheme, prefix_id: prefix_id, position: visible_position -%}
   {%- else -%}
     {%- if show_placeholder -%}
       {%- for i in (1..4) -%}
