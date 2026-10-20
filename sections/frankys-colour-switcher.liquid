@@ -63,6 +63,19 @@
     assign tile_query = tile_query | append: '&view=' | append: tile_view
   endif
 
+  # Tiles from the collection's own colours (bedding and bath templates): uses the
+  # Colour filter from Search & Discovery on the category collection itself.
+  assign colour_filter = blank
+  if section.settings.tile_source == 'colour_filter'
+    for filter in collection.filters
+      assign filter_label = filter.label | downcase | strip
+      if filter_label == 'colour' or filter_label == 'color' or filter_label == 'colours' or filter_label == 'colors'
+        assign colour_filter = filter
+        break
+      endif
+    endfor
+  endif
+
   assign scope_query = scope_query | remove_first: '&'
   assign tile_query = tile_query | remove_first: '&'
 
@@ -101,7 +114,7 @@
         </div>
       {%- endif -%}
 
-      {%- if section.blocks.size > 0 -%}
+      {%- if section.blocks.size > 0 or colour_filter != blank -%}
         <colour-switcher class="colour-switcher__picker" section-id="{{ section.id }}">
           <div class="frankys-section-header">
             {%- if section.settings.switcher_title != blank -%}
@@ -122,58 +135,79 @@
           </div>
 
           <nav class="colour-switcher__list scroll-area snap-x bleed" data-colour-switcher-list {% if section.settings.switcher_title != blank %}aria-labelledby="colour-switcher-title-{{ section.id }}"{% else %}aria-label="{{ section.settings.title | escape }}"{% endif %}>
-            {%- for block in section.blocks -%}
-              {%- liquid
-                assign tile_collection = block.settings.collection
-                if tile_collection == blank
-                  continue
-                endif
+            {%- capture sizes -%}(max-width: 699px) {{ section.settings.tile_width_mobile }}vw, (max-width: 999px) 26vw, {{ tile_desktop_vw | ceil }}vw{%- endcapture -%}
 
-                assign tile_label = block.settings.label | default: tile_collection.title
-                assign tile_image = block.settings.image
-                if tile_image == blank and block.settings.image_asset == blank
-                  assign tile_image = tile_collection.featured_image
-                endif
-                assign is_current = false
-                if tile_collection.handle == collection.handle
-                  assign is_current = true
-                endif
-              -%}
+            {%- if colour_filter != blank -%}
+              {%- comment -%}
+                Bedding and bath: the tiles are the colours of this collection's products (its Colour
+                filter). A Colour block whose label or collection matches a colour gives that tile its
+                image and icon; other colours use the colour's swatch.
+              {%- endcomment -%}
+              {%- for colour_value in colour_filter.values -%}
+                {%- if colour_value.count == 0 and colour_value.active == false -%}
+                  {%- continue -%}
+                {%- endif -%}
 
-              <a
-                href="{{ tile_collection.url }}{% if tile_query != blank %}?{{ tile_query }}{% endif %}"
-                class="colour-switcher__tile snap-start group color-scheme color-scheme--{{ section.settings.tile_color_scheme.id }}"
-                data-colour-handle="{{ tile_collection.handle }}"
-                {% if is_current %}aria-current="page"{% endif %}
-                {{ block.shopify_attributes }}
-              >
-                <div class="colour-switcher__media content-box min-h-auto overflow-clip">
-                  <div class="content-box__background-media with-overlay" style="--overlay: {{ section.settings.overlay_color.rgb }} / {{ section.settings.overlay_opacity | divided_by: 100.0 }};">
-                    {%- if tile_image != blank -%}
-                      {%- capture sizes -%}(max-width: 699px) {{ section.settings.tile_width_mobile }}vw, (max-width: 999px) 26vw, {{ tile_desktop_vw | ceil }}vw{%- endcapture -%}
-                      {{- tile_image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: sizes, widths: '300,400,500,600,800,1000,1200', class: 'zoom-image group-hover:zoom', alt: '' -}}
-                    {%- elsif block.settings.image_asset != blank -%}
-                      {%- comment -%}Good Manners' Figma tile (421px square) shipped in assets/ until a larger copy is uploaded to Files{%- endcomment -%}
-                      <img src="{{ block.settings.image_asset | asset_url }}" width="421" height="421" loading="lazy" decoding="async" class="zoom-image group-hover:zoom" alt="">
-                    {%- else -%}
-                      {{- 'collection-apparel-1' | placeholder_svg_tag: 'size-full' -}}
-                    {%- endif -%}
-                  </div>
+                {%- liquid
+                  assign colour_handle = colour_value.label | handleize
+                  assign colour_block = nil
+                  for block in section.blocks
+                    assign block_label_handle = block.settings.label | handleize
+                    if block_label_handle == colour_handle or block.settings.collection.handle == colour_handle
+                      assign colour_block = block
+                      break
+                    endif
+                  endfor
 
-                  <div class="colour-switcher__label text-center">
-                    {%- if block.settings.icon_style != 'none' and block.settings.icon_style != blank -%}
-                      {%- render 'frankys-colour-icon', name: block.settings.icon_style -%}
-                    {%- elsif block.settings.icon != blank -%}
-                      {%- comment -%}Good Manners exports icons at Figma size for a 421px tile, so the file's width sets its share of the tile{%- endcomment -%}
-                      {%- assign icon_width = block.settings.icon.width | times: 100.0 | divided_by: 421 | at_most: 60 | round: 1 -%}
-                      {%- capture icon_style -%}--icon-width: {{ icon_width }}%;{%- endcapture -%}
-                      {{- block.settings.icon | image_url: width: 400 | image_tag: loading: 'lazy', class: 'colour-switcher__icon', alt: '', style: icon_style -}}
-                    {%- endif -%}
-                    <span class="h3">{{ tile_label }}</span>
-                  </div>
-                </div>
-              </a>
-            {%- endfor -%}
+                  assign colour_value_encoded = colour_value.value | url_encode
+                  capture colour_href
+                    echo collection.url | append: '?' | append: colour_filter.param_name | append: '=' | append: colour_value_encoded
+                    if tile_view != blank
+                      echo '&view=' | append: tile_view
+                    endif
+                  endcapture
+                -%}
+
+                {%- render 'frankys-colour-tile',
+                  href: colour_href,
+                  handle: colour_handle,
+                  label: colour_value.label,
+                  block: colour_block,
+                  image: colour_value.image,
+                  swatch_color: colour_value.swatch.color,
+                  is_current: colour_value.active,
+                  sizes: sizes,
+                  section: section
+                -%}
+              {%- endfor -%}
+            {%- else -%}
+              {%- for block in section.blocks -%}
+                {%- liquid
+                  assign tile_collection = block.settings.collection
+                  if tile_collection == blank
+                    continue
+                  endif
+
+                  assign is_current = false
+                  if tile_collection.handle == collection.handle
+                    assign is_current = true
+                  endif
+                  assign tile_label = block.settings.label | default: tile_collection.title
+                -%}
+
+                {%- capture tile_href -%}{{ tile_collection.url }}{% if tile_query != blank %}?{{ tile_query }}{% endif %}{%- endcapture -%}
+                {%- render 'frankys-colour-tile',
+                  href: tile_href,
+                  handle: tile_collection.handle,
+                  label: tile_label,
+                  block: block,
+                  image: tile_collection.featured_image,
+                  is_current: is_current,
+                  sizes: sizes,
+                  section: section
+                -%}
+              {%- endfor -%}
+            {%- endif -%}
           </nav>
 
           <p class="sr-only" aria-live="polite" data-colour-switcher-status></p>
@@ -219,6 +253,17 @@
       "id": "intro",
       "label": "Intro",
       "default": "<p>Start with a colour you love. We’ll take it from there. Explore pieces for every room in complementary shades, designed to mix, match and bring a little more colour into everyday living.</p>"
+    },
+    {
+      "type": "select",
+      "id": "tile_source",
+      "label": "Tiles",
+      "options": [
+        { "value": "blocks", "label": "Colour collections (blocks below)" },
+        { "value": "colour_filter", "label": "Colours in this collection" }
+      ],
+      "default": "blocks",
+      "info": "Colours in this collection: for a category page like Bath, one tile per colour its products come in (needs the Colour filter in Search & Discovery). Blocks below with a matching label add the image and icon."
     },
     {
       "type": "text",

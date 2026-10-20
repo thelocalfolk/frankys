@@ -2,7 +2,8 @@
    FRANKY'S (TLF) P4: Shop by Colour switcher
    Loaded by sections/frankys-colour-switcher.liquid only.
 
-   Baseline: every tile is a normal link to its colour collection.
+   Baseline: every tile is a normal link to its colour collection (placemats) or to
+   the category collection filtered by that colour (bedding, bath).
    Enhancement: intercept the click, fetch the target collection's breadcrumbs,
    header, heading, filters and grid with the Section Rendering API, swap them in
    place, then pushState to the collection URL. Back / forward re-run the swap.
@@ -51,7 +52,7 @@
     connectedCallback() {
       this.list = this.querySelector('[data-colour-switcher-list]');
       this.status = this.querySelector('[data-colour-switcher-status]');
-      this.currentPath = window.location.pathname;
+      this.currentKey = this.pageKey(new URL(window.location.href));
 
       this.list.addEventListener('click', (event) => this.onTileClick(event));
       this.querySelector('[data-colour-switcher-prev]')?.addEventListener('click', () => this.scrollTiles(-1));
@@ -103,21 +104,32 @@
       if (url.origin !== window.location.origin) return;
 
       event.preventDefault();
-      if (url.pathname === this.currentPath && !window.location.search.includes('filter.')) return;
+      if (this.pageKey(url) === this.currentKey) return;
 
       this.swap(url, { push: true });
     }
 
     onPopState() {
-      if (window.location.pathname === this.currentPath) return;
+      if (this.pageKey(new URL(window.location.href)) === this.currentKey) return;
       this.swap(new URL(window.location.href), { push: false });
     }
 
-    // Keep the category scope (product type filter, carried in the tile link) and the
-    // preview template (?view=colour) while QA'ing on the dev theme
+    // A page is its collection plus its filters: placemats tiles change the collection,
+    // bedding and bath tiles change the Colour filter on the same collection
+    pageKey(url) {
+      const filters = Array.from(url.searchParams.entries())
+        .filter(([name]) => name.startsWith('filter.'))
+        .map(([name, value]) => `${name}=${value}`)
+        .sort();
+      return [url.pathname, ...filters].join('&');
+    }
+
+    // Keep the tile's filters (category scope or colour) and the template (?view=)
     pageUrl(url) {
       const pageUrl = new URL(url.pathname, window.location.origin);
-      url.searchParams.getAll('filter.p.product_type').forEach((type) => pageUrl.searchParams.append('filter.p.product_type', type));
+      url.searchParams.forEach((value, name) => {
+        if (name.startsWith('filter.')) pageUrl.searchParams.append(name, value);
+      });
       const view = new URLSearchParams(window.location.search).get('view');
       if (view) pageUrl.searchParams.set('view', view);
       return pageUrl;
@@ -174,8 +186,8 @@
       });
 
       this.setBusy(sections, false);
-      this.currentPath = pageUrl.pathname;
-      this.updateCurrentTile(pageUrl.pathname);
+      this.currentKey = this.pageKey(pageUrl);
+      this.updateCurrentTile(this.currentKey);
 
       if (push) {
         history.pushState({ colourSwitcher: true }, '', pageUrl.toString());
@@ -195,9 +207,9 @@
       }
     }
 
-    updateCurrentTile(pathname) {
+    updateCurrentTile(key) {
       this.tiles.forEach((tile) => {
-        const isCurrent = new URL(tile.href).pathname === pathname;
+        const isCurrent = this.pageKey(new URL(tile.href)) === key;
         tile.toggleAttribute('aria-current', isCurrent);
         if (isCurrent) tile.setAttribute('aria-current', 'page');
       });

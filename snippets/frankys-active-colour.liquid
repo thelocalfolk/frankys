@@ -1,0 +1,12 @@
+{%- doc -%}
+  FRANKY'S (TLF) P4: outputs the colour picked with the collection's Colour filter
+  (e.g. "Beige" on /collections/bath?filter.v.option.colour=Beige), or nothing.
+  Used by the bedding and bath Shop by Colour pages for the heading and breadcrumbs.
+{%- enddoc -%}
+{%- for filter in collection.filters -%}
+  {%- assign frankys_filter_label = filter.label | downcase | strip -%}
+  {%- if frankys_filter_label == 'colour' or frankys_filter_label == 'color' or frankys_filter_label == 'colours' or frankys_filter_label == 'colors' -%}
+    {%- if filter.active_values.size > 0 -%}{{ filter.active_values.first.label }}{%- endif -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
