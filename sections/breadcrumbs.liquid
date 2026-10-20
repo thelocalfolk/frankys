@@ -22,7 +22,20 @@
   # names its category in this section's settings, so the trail reads Home › Bedding › Navy.
   assign crumb_parent = nil
   assign crumb_parent_title = ''
+  assign crumb_current_title = ''
   if request.page_type == 'collection' and template.suffix contains 'colour'
+    # Bedding and bath: the category collection filtered by colour reads Home › Bath › Beige
+    capture active_colour
+      render 'frankys-active-colour'
+    endcapture
+    assign active_colour = active_colour | strip
+  endif
+
+  if request.page_type == 'collection' and template.suffix contains 'colour' and active_colour != blank
+    assign crumb_parent = collection
+    assign crumb_parent_title = section.settings.colour_parent_label
+    assign crumb_current_title = active_colour
+  elsif request.page_type == 'collection' and template.suffix contains 'colour'
     if section.settings.colour_parent != blank
       assign crumb_parent = section.settings.colour_parent
       assign crumb_parent_title = section.settings.colour_parent_label
@@ -78,7 +91,7 @@
         {%- if crumb_collection -%}
           <li class="breadcrumbs__item">
             {%- if request.page_type == 'collection' -%}
-              <span class="breadcrumbs__current" aria-current="page">{{ crumb_collection.title }}</span>
+              <span class="breadcrumbs__current" aria-current="page">{{ crumb_current_title | default: crumb_collection.title }}</span>
             {%- else -%}
               <a href="{{ crumb_collection.url }}" class="breadcrumbs__link">{{ crumb_collection.title }}</a>
             {%- endif -%}

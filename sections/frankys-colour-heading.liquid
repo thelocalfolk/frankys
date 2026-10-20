@@ -10,13 +10,24 @@
 {%- comment -%}Read by the switcher JS to update document.title after an in-place swap{%- endcomment -%}
 <span hidden data-colour-document-title="{% if page_title == blank %}{{ shop.name | escape }}{% else %}{{ page_title | escape }}{% endif %}"></span>
 
+{%- liquid
+  # Bedding and bath pages are the category collection filtered by colour: the heading is the colour
+  assign active_colour = ''
+  if template.suffix contains 'colour'
+    capture active_colour
+      render 'frankys-active-colour'
+    endcapture
+    assign active_colour = active_colour | strip
+  endif
+-%}
+
 {%- unless collection.handle == 'shop-by-colour' -%}
   <div class="color-scheme color-scheme--{{ section.settings.color_scheme.id }}">
     <div class="container colour-heading">
       <div class="prose">
-        <h1 class="h5" tabindex="-1" data-colour-heading>{{ collection.title }}</h1>
+        <h1 class="h5" tabindex="-1" data-colour-heading>{{ active_colour | default: collection.title }}</h1>
 
-        {%- if section.settings.show_description and collection.description != blank -%}
+        {%- if section.settings.show_description and collection.description != blank and active_colour == blank -%}
           <div class="colour-heading__description" data-colour-description style="--line-clamp-count: {{ section.settings.description_lines }};">
             <div class="colour-heading__description-text" data-colour-description-text>
               {{- collection.description -}}

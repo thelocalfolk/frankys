@@ -3,9 +3,7 @@
     "breadcrumbs": {
       "type": "breadcrumbs",
       "settings": {
-        "color_scheme": "",
-        "colour_parent": "throws",
-        "colour_parent_label": "Bedding"
+        "color_scheme": ""
       }
     },
     "colour_switcher": {
@@ -16,21 +14,24 @@
           "settings": {
             "collection": "sage-green",
             "icon_style": "sage-green",
-            "image_asset": "frankys-colour-tile-bedding-sage-green.jpg"
+            "image_asset": "frankys-colour-tile-bedding-sage-green.jpg",
+            "label": "Sage"
           }
         },
         "colour_lilac": {
           "type": "colour",
           "settings": {
             "collection": "lilac",
-            "image_asset": "frankys-colour-tile-bedding-lilac.jpg"
+            "image_asset": "frankys-colour-tile-bedding-lilac.jpg",
+            "label": "Lilac"
           }
         },
         "colour_oat": {
           "type": "colour",
           "settings": {
             "collection": "oat",
-            "image_asset": "frankys-colour-tile-bedding-oat.jpg"
+            "image_asset": "frankys-colour-tile-bedding-oat.jpg",
+            "label": "Oat"
           }
         },
         "colour_milk": {
@@ -38,7 +39,8 @@
           "settings": {
             "collection": "milk",
             "icon_style": "milk",
-            "image_asset": "frankys-colour-tile-bedding-milk.jpg"
+            "image_asset": "frankys-colour-tile-bedding-milk.jpg",
+            "label": "Milk"
           }
         },
         "colour_clay": {
@@ -46,7 +48,8 @@
           "settings": {
             "collection": "clay",
             "icon_style": "clay",
-            "image_asset": "frankys-colour-tile-bedding-clay.jpg"
+            "image_asset": "frankys-colour-tile-bedding-clay.jpg",
+            "label": "Clay"
           }
         },
         "colour_light_blue": {
@@ -54,7 +57,8 @@
           "settings": {
             "collection": "light-blue",
             "icon_style": "light-blue",
-            "image_asset": "frankys-colour-tile-bedding-light-blue.jpg"
+            "image_asset": "frankys-colour-tile-bedding-light-blue.jpg",
+            "label": "Light Blue"
           }
         }
       },
@@ -75,7 +79,8 @@
         "overlay_color": "#000000",
         "overlay_opacity": 0,
         "tile_width_mobile": 34,
-        "tiles_per_row_desktop": 6
+        "tiles_per_row_desktop": 6,
+        "tile_source": "colour_filter"
       }
     },
     "colour_heading": {
@@ -101,13 +106,7 @@
         "show_filter_group_name": false,
         "show_filter_values_count": false,
         "open_filters_by_default": false,
-        "swatch_selector_size": "lg",
-        "hide_in_collections": [
-          "placemats",
-          "coasters",
-          "tableware",
-          "bath"
-        ]
+        "swatch_selector_size": "lg"
       }
     },
     "collections_you_will_love": {

@@ -3,8 +3,7 @@
     "breadcrumbs": {
       "type": "breadcrumbs",
       "settings": {
-        "color_scheme": "",
-        "colour_parent": "bath"
+        "color_scheme": ""
       }
     },
     "colour_switcher": {
@@ -14,21 +13,24 @@
           "type": "colour",
           "settings": {
             "collection": "taupe",
-            "image_asset": "frankys-colour-tile-bath-taupe.jpg"
+            "image_asset": "frankys-colour-tile-bath-taupe.jpg",
+            "label": "Taupe"
           }
         },
         "colour_olive": {
           "type": "colour",
           "settings": {
             "collection": "olive",
-            "image_asset": "frankys-colour-tile-bath-olive.jpg"
+            "image_asset": "frankys-colour-tile-bath-olive.jpg",
+            "label": "Olive"
           }
         },
         "colour_mist": {
           "type": "colour",
           "settings": {
             "collection": "mist",
-            "image_asset": "frankys-colour-tile-bath-mist.jpg"
+            "image_asset": "frankys-colour-tile-bath-mist.jpg",
+            "label": "Mist"
           }
         },
         "colour_beige": {
@@ -36,7 +38,8 @@
           "settings": {
             "collection": "beige",
             "icon_style": "beige",
-            "image_asset": "frankys-colour-tile-bath-beige.jpg"
+            "image_asset": "frankys-colour-tile-bath-beige.jpg",
+            "label": "Beige"
           }
         }
       },
@@ -55,7 +58,8 @@
         "overlay_color": "#000000",
         "overlay_opacity": 0,
         "tile_width_mobile": 34,
-        "tiles_per_row_desktop": 6
+        "tiles_per_row_desktop": 6,
+        "tile_source": "colour_filter"
       }
     },
     "colour_heading": {
@@ -81,10 +85,7 @@
         "show_filter_group_name": false,
         "show_filter_values_count": false,
         "open_filters_by_default": false,
-        "swatch_selector_size": "lg",
-        "only_in_collections": [
-          "bath"
-        ]
+        "swatch_selector_size": "lg"
       }
     },
     "collections_you_will_love": {
