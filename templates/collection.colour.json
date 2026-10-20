@@ -221,7 +221,7 @@
           "type": "button",
           "settings": {
             "text": "Shop Bedding",
-            "url": "shopify://collections/throws",
+            "url": "shopify://collections/bedding",
             "position": "middle_left",
             "style": "solid",
             "background": "#acd0cf",
