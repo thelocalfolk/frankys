@@ -205,7 +205,17 @@
                   assign tile_label = block.settings.label | default: tile_collection.title
                 -%}
 
-                {%- capture tile_href -%}{{ tile_collection.url }}{% if tile_query != blank %}?{{ tile_query }}{% endif %}{%- endcapture -%}
+                {%- liquid
+                  # A colour collection not yet assigned the colour template still opens on it, via ?view=colour
+                  assign this_tile_query = tile_query
+                  if template.suffix == 'colour' and tile_collection.template_suffix != 'colour'
+                    if this_tile_query != blank
+                      assign this_tile_query = this_tile_query | append: '&'
+                    endif
+                    assign this_tile_query = this_tile_query | append: 'view=colour'
+                  endif
+                -%}
+                {%- capture tile_href -%}{{ tile_collection.url }}{% if this_tile_query != blank %}?{{ this_tile_query }}{% endif %}{%- endcapture -%}
                 {%- render 'frankys-colour-tile',
                   href: tile_href,
                   handle: tile_collection.handle,
