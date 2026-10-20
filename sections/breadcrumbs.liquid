@@ -2,8 +2,7 @@
   FRANKY'S (TLF) — Priority 8: breadcrumbs.
   Home › Collection            (collection pages)
   Home › Collection › Product  (product pages)
-  Home › Shop by Colour › Brown (P4: colour template, once the shop-by-colour collection exists)
-  Home › Bedding › Navy        (P4: colour template scoped to a category by its product type filter)
+  Home › Placemats › Navy      (P4: colour templates, category set in this section's settings)
   The collection on product pages is chosen by snippets/breadcrumb-collection-handle.liquid.
 {%- endcomment -%}
 {%- liquid
@@ -19,34 +18,41 @@
   endif
 
   # FRANKY'S (TLF) P4: parent crumb for the colour collections
+  # Each Shop by Colour template (colour = placemats & coasters, colour-bedding, colour-bath)
+  # names its category in this section's settings, so the trail reads Home › Bedding › Navy.
   assign crumb_parent = nil
-  if request.page_type == 'collection' and template.suffix == 'colour'
-    # Shopping one category's colours (?filter.p.product_type=Bedding): Home › Bedding › Navy.
-    # The category is the collection whose handle matches the first product type in the filter,
-    # unless the map setting below says otherwise (e.g. Coasters=placemats).
-    assign scope_type = ''
-    for filter in collection.filters
-      if filter.param_name == 'filter.p.product_type' and filter.active_values.size > 0
-        assign scope_type = filter.active_values.first.value
-      endif
-    endfor
-
-    if scope_type != blank
-      assign scope_handle = scope_type | handleize
-      assign map_lines = section.settings.colour_category_map | newline_to_br | split: '<br />'
-      for map_line in map_lines
-        assign map_parts = map_line | strip | split: '='
-        if map_parts.size == 2
-          assign map_type = map_parts[0] | strip
-          if map_type == scope_type
-            assign scope_handle = map_parts[1] | strip
-          endif
+  assign crumb_parent_title = ''
+  if request.page_type == 'collection' and template.suffix contains 'colour'
+    if section.settings.colour_parent != blank
+      assign crumb_parent = section.settings.colour_parent
+      assign crumb_parent_title = section.settings.colour_parent_label
+    else
+      # No category set: fall back to the product type filter in the URL
+      # (?filter.p.product_type=Bedding), then the all-colours collection.
+      assign scope_type = ''
+      for filter in collection.filters
+        if filter.param_name == 'filter.p.product_type' and filter.active_values.size > 0
+          assign scope_type = filter.active_values.first.value
         endif
       endfor
 
-      assign crumb_parent = collections[scope_handle]
-    elsif collection.handle != 'shop-by-colour'
-      assign crumb_parent = collections['shop-by-colour']
+      if scope_type != blank
+        assign scope_handle = scope_type | handleize
+        assign map_lines = section.settings.colour_category_map | newline_to_br | split: '<br />'
+        for map_line in map_lines
+          assign map_parts = map_line | strip | split: '='
+          if map_parts.size == 2
+            assign map_type = map_parts[0] | strip
+            if map_type == scope_type
+              assign scope_handle = map_parts[1] | strip
+            endif
+          endif
+        endfor
+
+        assign crumb_parent = collections[scope_handle]
+      elsif collection.handle != 'shop-by-colour'
+        assign crumb_parent = collections['shop-by-colour']
+      endif
     endif
 
     if crumb_parent.id == blank
@@ -65,7 +71,7 @@
 
         {%- if crumb_parent -%}
           <li class="breadcrumbs__item">
-            <a href="{{ crumb_parent.url }}" class="breadcrumbs__link">{{ crumb_parent.title }}</a>
+            <a href="{{ crumb_parent.url }}" class="breadcrumbs__link">{{ crumb_parent_title | default: crumb_parent.title }}</a>
           </li>
         {%- endif -%}
 
@@ -108,10 +114,26 @@
       "default": "scheme-1"
     },
     {
+      "type": "header",
+      "content": "Shop by Colour pages"
+    },
+    {
+      "type": "collection",
+      "id": "colour_parent",
+      "label": "Category link",
+      "info": "FRANKY'S (TLF) P4. On Shop by Colour templates, the middle link (e.g. Home › Bedding › Navy)."
+    },
+    {
+      "type": "text",
+      "id": "colour_parent_label",
+      "label": "Category link text",
+      "info": "Defaults to the collection title."
+    },
+    {
       "type": "textarea",
       "id": "colour_category_map",
       "label": "Shop by Colour category links",
-      "info": "FRANKY'S (TLF) P4. On colour pages filtered to a product type, the middle link goes to the collection with the same handle as the type. List exceptions one per line as Product type=collection-handle, e.g. Coasters=placemats.",
+      "info": "Used when Category link is empty. On colour pages filtered to a product type, the middle link goes to the collection with the same handle as the type. List exceptions one per line as Product type=collection-handle, e.g. Coasters=placemats.",
       "default": "Placemats=placemats\nCoasters=placemats"
     }
   ],

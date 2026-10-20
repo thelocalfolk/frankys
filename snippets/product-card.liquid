@@ -126,7 +126,7 @@ based on your desired layout (and remove most of the settings associated), and t
 
   # FRANKY'S (TLF) P4: the new 'colour' template keeps the colour-matched card image
   assign is_colour_template = false
-  if template.suffix == 'color-based-collection' or template.suffix == 'colour'
+  if template.suffix == 'color-based-collection' or template.suffix contains 'colour'
     assign is_colour_template = true
   endif
 
