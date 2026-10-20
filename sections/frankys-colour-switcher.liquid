@@ -123,7 +123,7 @@
                 <div class="colour-switcher__media content-box min-h-auto overflow-clip">
                   <div class="content-box__background-media with-overlay" style="--overlay: {{ section.settings.overlay_color.rgb }} / {{ section.settings.overlay_opacity | divided_by: 100.0 }};">
                     {%- if tile_image != blank -%}
-                      {%- capture sizes -%}(max-width: 699px) {{ section.settings.tile_width_mobile }}vw, (max-width: 999px) 37vw, {{ tile_desktop_vw | ceil }}vw{%- endcapture -%}
+                      {%- capture sizes -%}(max-width: 699px) {{ section.settings.tile_width_mobile }}vw, (max-width: 999px) 26vw, {{ tile_desktop_vw | ceil }}vw{%- endcapture -%}
                       {{- tile_image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: sizes, widths: '300,400,500,600,800,1000,1200', class: 'zoom-image group-hover:zoom', alt: '' -}}
                     {%- elsif block.settings.image_asset != blank -%}
                       {%- comment -%}Good Manners' Figma tile (421px square) shipped in assets/ until a larger copy is uploaded to Files{%- endcomment -%}
@@ -230,20 +230,20 @@
       "id": "tile_width_mobile",
       "label": "Tile width on mobile",
       "info": "Percentage of the screen width. Smaller tiles keep the products closer to the top of the page.",
-      "min": 40,
+      "min": 25,
       "max": 85,
       "step": 1,
       "unit": "%",
-      "default": 70
+      "default": 34
     },
     {
       "type": "range",
       "id": "tiles_per_row_desktop",
       "label": "Tiles visible on desktop",
       "min": 3,
-      "max": 6,
+      "max": 8,
       "step": 1,
-      "default": 4
+      "default": 6
     }
   ],
   "blocks": [

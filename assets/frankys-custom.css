@@ -198,7 +198,7 @@
   inset-inline: 0;
   top: 62.5%;
   transform: translateY(-50%);
-  font-size: clamp(1.25rem, 11.9cqi, 3.125rem);
+  font-size: clamp(.875rem, 11.9cqi, 3.125rem);
   line-height: 1.2;
 }
 
@@ -263,7 +263,7 @@
 
 @media screen and (min-width: 700px) {
   .colour-switcher__list {
-    grid: auto / auto-flow 37vw;
+    grid: auto / auto-flow 26vw;
   }
 }
 
@@ -397,7 +397,7 @@
 
 /* P4: "Collections you will love" names sized to the card like the colour tiles */
 :is([id$="__collections_you_will_love"], [id$="__shop_by_colour"]) .collection-list__item .h3 {
-  font-size: clamp(1.25rem, 11.9cqi, 3.125rem);
+  font-size: clamp(.875rem, 11.9cqi, 3.125rem);
   line-height: 1.2;
 }
 
