@@ -395,10 +395,15 @@
   }
 }
 
-/* P4: "Collections you will love" names sized to the card like the colour tiles */
+/* P4: "Collections you will love" names sized to the card like the colour tiles.
+   9cqi keeps the longest name ("Placemats") on one line inside the card padding,
+   and words never split mid-word. */
 :is([id$="__collections_you_will_love"], [id$="__shop_by_colour"]) .collection-list__item .h3 {
-  font-size: clamp(.875rem, 11.9cqi, 3.125rem);
+  font-size: clamp(.875rem, 9cqi, 3.125rem);
   line-height: 1.2;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: manual;
 }
 
 /* --- FRANKY'S (TLF) P4: Homepage (templates/index.json) --------------------
