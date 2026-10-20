@@ -530,7 +530,7 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "chocolate",
-            "image": "shopify://shop_images/frankys-colour-tile-chocolate.jpg",
+            "image_asset": "frankys-colour-tile-chocolate.jpg",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
@@ -545,7 +545,7 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "sage-green",
-            "image": "shopify://shop_images/frankys-colour-tile-sage-green.jpg",
+            "image_asset": "frankys-colour-tile-sage-green.jpg",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
@@ -560,7 +560,7 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "light-blue",
-            "image": "shopify://shop_images/frankys-colour-tile-light-blue.jpg",
+            "image_asset": "frankys-colour-tile-light-blue.jpg",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
@@ -575,7 +575,7 @@
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "butter",
-            "image": "shopify://shop_images/frankys-colour-tile-butter.jpg",
+            "image_asset": "frankys-colour-tile-butter.jpg",
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
