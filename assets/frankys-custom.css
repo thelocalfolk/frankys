@@ -282,25 +282,25 @@
 /* P4: "Build your own table" (text-with-media on the colour template).
    Figma: 50/50, copy left on #ebe9d1, photo right at 864 x 602; on mobile the
    copy sits above the photo. Section id ends in __build_your_table. */
-:is([id$="__build_your_table"], [id$="__good_taste"]) .color-scheme {
+:is([id$="__build_your_table"], [id$="__good_taste"], [id$="__good_mornings"]) .color-scheme {
   --background: 235 233 209;
 }
 
-:is([id$="__build_your_table"], [id$="__good_taste"]) .section-split__column--image {
+:is([id$="__build_your_table"], [id$="__good_taste"], [id$="__good_mornings"]) .section-split__column--image {
   aspect-ratio: 864 / 602;
 }
 
-:is([id$="__build_your_table"], [id$="__good_taste"]) .section-split__column--image img {
+:is([id$="__build_your_table"], [id$="__good_taste"], [id$="__good_mornings"]) .section-split__column--image img {
   object-fit: cover;
 }
 
 @media screen and (max-width: 999px) {
-  :is([id$="__build_your_table"], [id$="__good_taste"]) .section-split {
+  :is([id$="__build_your_table"], [id$="__good_taste"], [id$="__good_mornings"]) .section-split {
     display: flex;
     flex-direction: column-reverse;
   }
 
-  :is([id$="__build_your_table"], [id$="__good_taste"]) .section-split__column:not(.section-split__column--image) {
+  :is([id$="__build_your_table"], [id$="__good_taste"], [id$="__good_mornings"]) .section-split__column:not(.section-split__column--image) {
     padding-block: var(--section-vertical-spacing);
   }
 }
@@ -327,7 +327,7 @@
   line-height: 1.2;
 }
 
-:is([id$="__build_your_table"], [id$="__good_taste"]) .h3 {
+:is([id$="__build_your_table"], [id$="__good_taste"], [id$="__good_mornings"]) .h3 {
   max-width: 11.5em; /* Figma text box is 553px at 50px: breaks after "table," */
   font-size: clamp(1.875rem, 1.496rem + 1.508vw, 3.125rem);
   line-height: 1.2;

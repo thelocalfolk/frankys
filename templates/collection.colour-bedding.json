@@ -110,6 +110,60 @@
         "swatch_selector_size": "lg"
       }
     },
+    "good_mornings": {
+      "type": "text-with-media",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Good mornings start here.",
+            "heading_tag": "h3",
+            "position": "middle_left",
+            "highlight_effect": "default",
+            "highlight_accent_color": "",
+            "highlight_text_color": ""
+          }
+        },
+        "richtext": {
+          "type": "richtext",
+          "settings": {
+            "text": "<p>Meet Zurich bedding. Soft organic cotton, feel-good colours and a very good reason to stay a little longer. Bring the Frankys feeling to your bedroom.</p>",
+            "position": "middle_left"
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "text": "Shop Bedding",
+            "url": "shopify://collections/throws",
+            "position": "middle_left",
+            "style": "solid",
+            "background": "#acd0cf",
+            "text_color": "#503d35"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "richtext",
+        "button"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "content_position": "end",
+        "content_percentage_width": 50,
+        "overlay_color": "#000000",
+        "overlay_opacity": 20,
+        "add_media_spacing": false,
+        "autoplay_video": true,
+        "primary_image_asset": "frankys-bedding-good-mornings.jpg",
+        "secondary_media_width": 55,
+        "secondary_media_mobile_width": 55,
+        "show_secondary_media_on_mobile": true,
+        "secondary_media_alignment": "place-self-center",
+        "secondary_media_shape": "none"
+      }
+    },
     "collections_you_will_love": {
       "type": "collection-list",
       "blocks": {
@@ -213,6 +267,7 @@
     "colour_switcher",
     "colour_heading",
     "main",
+    "good_mornings",
     "collections_you_will_love"
   ]
 }
