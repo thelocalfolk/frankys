@@ -159,7 +159,8 @@
       ],
       "settings": {
         "color_scheme": "",
-        "title": "Shop Placemats & Coasters by Colour",
+        "eyebrow": "Placemats & Coasters",
+        "title": "Shop by Colour",
         "intro": "<p>Start with a colour you love and set the table from there. Placemats and coasters in shades designed to mix, match and bring a little more colour to every meal.</p>",
         "switcher_title": "Choose your colour",
         "tile_color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",

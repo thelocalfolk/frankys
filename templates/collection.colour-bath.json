@@ -51,7 +51,8 @@
       ],
       "settings": {
         "color_scheme": "",
-        "title": "Shop Bath by Colour",
+        "eyebrow": "Bath",
+        "title": "Shop by Colour",
         "intro": "<p>Start with a colour you love and build your bathroom from there. Towels in shades designed to mix, match and turn daily rituals into something a little more special.</p>",
         "switcher_title": "Choose your colour",
         "tile_color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",

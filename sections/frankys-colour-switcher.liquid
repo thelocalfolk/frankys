@@ -79,9 +79,11 @@
   assign scope_query = scope_query | remove_first: '&'
   assign tile_query = tile_query | remove_first: '&'
 
+  # The category sits in a small eyebrow above "Shop by Colour" (e.g. Placemats & Coasters)
   assign page_title_text = section.settings.title
-  if scope_label != blank and is_all_colours == false
-    assign page_title_text = 'Shop ' | append: scope_label | append: ' by Colour'
+  assign eyebrow_text = section.settings.eyebrow
+  if scope_label != blank and eyebrow_text == blank
+    assign eyebrow_text = scope_label
   endif
 -%}
 
@@ -97,6 +99,10 @@
     <div class="section-stack">
       {%- if section.settings.title != blank or section.settings.intro != blank -%}
         <div class="colour-switcher__intro prose prose-justify-center text-center">
+          {%- if eyebrow_text != blank and is_all_colours == false -%}
+            <p class="subheading">{{ eyebrow_text | escape }}</p>
+          {%- endif -%}
+
           {%- if section.settings.title != blank -%}
             {%- if is_all_colours -%}
               <h1 class="h3">{{ collection.title | default: section.settings.title }}</h1>
@@ -241,6 +247,12 @@
     {
       "type": "header",
       "content": "Page header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Small line above the title naming the category, e.g. Placemats & Coasters."
     },
     {
       "type": "text",
