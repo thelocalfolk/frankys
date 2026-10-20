@@ -81,7 +81,10 @@
         "show_filter_group_name": false,
         "show_filter_values_count": false,
         "open_filters_by_default": false,
-        "swatch_selector_size": "lg"
+        "swatch_selector_size": "lg",
+        "only_in_collections": [
+          "bath"
+        ]
       }
     },
     "collections_you_will_love": {
