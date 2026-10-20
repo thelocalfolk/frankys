@@ -3,7 +3,8 @@
     "breadcrumbs": {
       "type": "breadcrumbs",
       "settings": {
-        "color_scheme": ""
+        "color_scheme": "",
+        "colour_parent": "placemats"
       }
     },
     "colour_switcher": {

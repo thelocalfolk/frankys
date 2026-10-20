@@ -1,7 +1,8 @@
 {%- comment -%}
   FRANKY'S (TLF) P4: Shop by Colour, page header + colour switcher.
-  Used by templates/collection.colour.json on the 16 colour collections and the
-  all-colours collection (handle shop-by-colour).
+  Used by templates/collection.colour.json (placemats & coasters, assigned to the 16 colour
+  collections and the all-colours collection shop-by-colour), and by
+  collection.colour-bedding.json and collection.colour-bath.json (reached with ?view=).
 
   - Every tile is a real <a href> to its collection, so the switcher works and is
     crawlable without JavaScript. assets/frankys-colour-switcher.js enhances it to
@@ -37,7 +38,33 @@
       endfor
     endif
   endfor
+  # No filter in the URL: use the template's own category (Product types setting), so
+  # the bedding template's tiles only ever lead to bedding.
+  if scope_query == blank and section.settings.scope_product_types != blank
+    assign scope_types = section.settings.scope_product_types | split: ','
+    for scope_type in scope_types
+      assign scope_type = scope_type | strip
+      if scope_type != blank
+        assign encoded_value = scope_type | url_encode
+        assign scope_query = scope_query | append: '&filter.p.product_type=' | append: encoded_value
+      endif
+    endfor
+  endif
+
+  # Bedding and bath use their own templates (colour-bedding, colour-bath). Colour collections
+  # are assigned the placemats one, so tiles keep the others with ?view=.
+  assign tile_view = ''
+  if template.suffix != blank and template.suffix != 'colour'
+    assign tile_view = template.suffix
+  endif
+
+  assign tile_query = scope_query
+  if tile_view != blank
+    assign tile_query = tile_query | append: '&view=' | append: tile_view
+  endif
+
   assign scope_query = scope_query | remove_first: '&'
+  assign tile_query = tile_query | remove_first: '&'
 
   assign page_title_text = section.settings.title
   if scope_label != blank and is_all_colours == false
@@ -114,7 +141,7 @@
               -%}
 
               <a
-                href="{{ tile_collection.url }}{% if scope_query != blank %}?{{ scope_query }}{% endif %}"
+                href="{{ tile_collection.url }}{% if tile_query != blank %}?{{ tile_query }}{% endif %}"
                 class="colour-switcher__tile snap-start group color-scheme color-scheme--{{ section.settings.tile_color_scheme.id }}"
                 data-colour-handle="{{ tile_collection.handle }}"
                 {% if is_current %}aria-current="page"{% endif %}
@@ -192,6 +219,12 @@
       "id": "intro",
       "label": "Intro",
       "default": "<p>Start with a colour you love. We’ll take it from there. Explore pieces for every room in complementary shades, designed to mix, match and bring a little more colour into everyday living.</p>"
+    },
+    {
+      "type": "text",
+      "id": "scope_product_types",
+      "label": "Product types",
+      "info": "Keeps this page to one category, e.g. Placemats, Coasters. Comma separated, spelt exactly as in Shopify. Needs Product type switched on as a filter in Search & Discovery."
     },
     {
       "type": "header",
