@@ -506,6 +506,16 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   --text-color: 235 233 209;
 }
 
+/* Homepage colour cards with an icon: laid out like the colour page tiles,
+   icon centred ~37% down and the name 62.5% down */
+[id$="__shop_by_colour"] .content-box:has(> .colour-switcher__icon) > .prose {
+  position: absolute;
+  inset-inline: var(--content-box-spacing);
+  top: 62.5%;
+  transform: translateY(-50%);
+  width: auto;
+}
+
 /* Milk, Butter and Beige tiles are too pale for light text: the lightest brown on each
    that still meets 3:1 contrast for large text (homepage tiles and colour switcher) */
 [id$="__shop_by_colour"] .collection-list__item[href*="/collections/milk"],

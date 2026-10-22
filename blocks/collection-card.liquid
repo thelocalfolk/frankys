@@ -65,6 +65,11 @@
       {%- if content != blank -%}
         {{- content -}}
       {%- endif -%}
+
+      {%- comment -%}FRANKY'S (TLF) P4: colour cards show the same line icon as the colour page tiles (nothing for other collections){%- endcomment -%}
+      {%- if block.settings.open_colour_page and collection != blank -%}
+        {%- render 'frankys-colour-icon', name: collection.handle -%}
+      {%- endif -%}
     </div>
   {%- else -%}
     <div class="v-stack group gap-4 sm:gap-5">
