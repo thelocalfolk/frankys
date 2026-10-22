@@ -523,7 +523,8 @@
             "text_alignment": "left",
             "heading_size": "h5",
             "title_icon": "none",
-            "show_scrolling_title": false
+            "show_scrolling_title": false,
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -538,7 +539,8 @@
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -553,7 +555,8 @@
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -568,7 +571,8 @@
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -583,7 +587,8 @@
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0
+            "overlay_opacity": 0,
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -598,7 +603,8 @@
             "button_style": "outline",
             "overlay_color": "#000000",
             "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-milk.jpg"
+            "image_asset": "frankys-colour-tile-milk.jpg",
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -613,7 +619,8 @@
             "button_style": "outline",
             "overlay_color": "#000000",
             "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-pink.jpg"
+            "image_asset": "frankys-colour-tile-pink.jpg",
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -628,7 +635,8 @@
             "button_style": "outline",
             "overlay_color": "#000000",
             "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-wine.jpg"
+            "image_asset": "frankys-colour-tile-wine.jpg",
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -643,7 +651,8 @@
             "button_style": "outline",
             "overlay_color": "#000000",
             "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-navy.jpg"
+            "image_asset": "frankys-colour-tile-navy.jpg",
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -658,7 +667,8 @@
             "button_style": "outline",
             "overlay_color": "#000000",
             "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-dark-green.jpg"
+            "image_asset": "frankys-colour-tile-dark-green.jpg",
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -673,7 +683,8 @@
             "button_style": "outline",
             "overlay_color": "#000000",
             "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-clay.jpg"
+            "image_asset": "frankys-colour-tile-clay.jpg",
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -688,7 +699,8 @@
             "button_style": "outline",
             "overlay_color": "#000000",
             "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-black.jpg"
+            "image_asset": "frankys-colour-tile-black.jpg",
+            "open_colour_page": true
           },
           "blocks": {}
         },
@@ -703,7 +715,8 @@
             "button_style": "outline",
             "overlay_color": "#000000",
             "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-pearl-grey.jpg"
+            "image_asset": "frankys-colour-tile-pearl-grey.jpg",
+            "open_colour_page": true
           },
           "blocks": {}
         }
