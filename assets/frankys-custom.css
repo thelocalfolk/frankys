@@ -355,6 +355,13 @@
 }
 
 .shopify-section--colour-switcher ~ .shopify-section--main-collection .product-card--bordered,
+/* Product rows: scroll bar instead of arrows on mobile (the bar is in the section markup) */
+@media screen and (max-width: 699px) {
+  .shopify-section--frankys-collection-products .floating-controls__control {
+    display: none;
+  }
+}
+
 .shopify-section--frankys-collection-products .product-card--bordered {
   outline: 0;
 }
