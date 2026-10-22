@@ -506,9 +506,9 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   --text-color: 235 233 209;
 }
 
-/* Milk and Butter tiles are too pale for light text: brown names (homepage tiles and colour switcher) */
-[id$="__shop_by_colour"] .collection-list__item:is([href*="/collections/milk"], [href*="/collections/butter"]),
-.colour-switcher__tile:is([href*="/collections/milk"], [href*="/collections/butter"]) {
+/* Milk, Butter and Beige tiles are too pale for light text: brown names (homepage tiles and colour switcher) */
+[id$="__shop_by_colour"] .collection-list__item:is([href*="/collections/milk"], [href*="/collections/butter"], [href*="/collections/beige"]),
+.colour-switcher__tile:is([href*="/collections/milk"], [href*="/collections/butter"], [href*="/collections/beige"]) {
   --text-color: 80 61 53;
 }
 
