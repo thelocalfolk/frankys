@@ -22,6 +22,25 @@ Display the facets for a given resource.
     {%- comment -%}We always reset to the first page so that when criteria change, the page is restored to the first one{%- endcomment -%}
     <input type="hidden" name="page" value="">
 
+    {%- comment -%}
+      FRANKY'S (TLF) P4: on Shop by Colour pages the Colour filter lives in the tiles, not this form,
+      so keep the picked colour and the template (?view=) when other filters change
+    {%- endcomment -%}
+    {%- if template.suffix contains 'colour' -%}
+      {%- for filter in source.filters -%}
+        {%- assign frankys_filter_label = filter.label | downcase | strip -%}
+        {%- if frankys_filter_label == 'colour' or frankys_filter_label == 'color' or frankys_filter_label == 'colours' or frankys_filter_label == 'colors' -%}
+          {%- for value in filter.active_values -%}
+            <input type="hidden" name="{{ value.param_name }}" value="{{ value.value | escape }}">
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if template.suffix != collection.template_suffix -%}
+        <input type="hidden" name="view" value="{{ template.suffix }}">
+      {%- endif -%}
+    {%- endif -%}
+
     {%- if source.current_type != blank or source.current_vendor != blank -%}
       <input type="hidden" name="q" value="{{ source.current_vendor | default: source.current_type | escape }}">
     {%- endif -%}
@@ -61,6 +80,14 @@ Display the facets for a given resource.
     {%- endif -%}
 
     {%- for filter in source.filters -%}
+      {%- comment -%}FRANKY'S (TLF) P4: the colour switcher already picks the colour, so the Colour filter is hidden on the colour template{%- endcomment -%}
+      {%- if template.suffix contains 'colour' -%}
+        {%- assign frankys_filter_label = filter.label | downcase | strip -%}
+        {%- if frankys_filter_label == 'colour' or frankys_filter_label == 'color' or frankys_filter_label == 'colours' or frankys_filter_label == 'colors' -%}
+          {%- continue -%}
+        {%- endif -%}
+      {%- endif -%}
+
       {%- if filter.param_name == 'filter.v.availability' -%}
         {%- comment -%}
         IMPLEMENTATION NOTE: we are doing an exception for the availability filter, where we display it differently

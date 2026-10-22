@@ -4,6 +4,16 @@
       {%- liquid
         if section.settings.image != blank
           render 'media' with section.settings.image, mobile_media: section.settings.mobile_image, preload: true
+        elsif section.settings.image_asset != blank
+          # FRANKY'S (TLF) P4: photo from theme assets, until a full-size version is uploaded to Files
+          assign asset_src = section.settings.image_asset | asset_url
+          echo '<picture>'
+          if section.settings.mobile_image_asset != blank
+            assign mobile_asset_src = section.settings.mobile_image_asset | asset_url
+            echo '<source media="(max-width: 999px)" srcset="' | append: mobile_asset_src | append: '" width="1206" height="1413">'
+          endif
+          echo '<img src="' | append: asset_src | append: '" width="2560" height="893" fetchpriority="high" decoding="async" alt="">'
+          echo '</picture>'
         else
           echo 'hero-apparel-1' | placeholder_svg_tag: 'size-full'
         endif
@@ -106,6 +116,18 @@
       "id": "mobile_image",
       "label": "t:global.image.mobile_image",
       "info": "t:sections.image_with_text_overlay.mobile_image_size_recommendation"
+    },
+    {
+      "type": "text",
+      "id": "image_asset",
+      "label": "Image (theme file)",
+      "info": "FRANKY'S (TLF). Filename in the theme's assets folder, e.g. frankys-home-hero-bedding.jpg. Used when Image is empty."
+    },
+    {
+      "type": "text",
+      "id": "mobile_image_asset",
+      "label": "Mobile image (theme file)",
+      "info": "FRANKY'S (TLF). Used with Image (theme file) on screens up to 999px wide."
     },
     {
       "type": "color",

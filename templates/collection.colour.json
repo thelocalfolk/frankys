@@ -1,0 +1,365 @@
+{
+  "sections": {
+    "colour_switcher": {
+      "type": "frankys-colour-switcher",
+      "blocks": {
+        "colour_light_blue": {
+          "type": "colour",
+          "settings": {
+            "collection": "light-blue",
+            "image_asset": "frankys-colour-tile-light-blue.jpg",
+            "icon_style": "light-blue"
+          }
+        },
+        "colour_navy": {
+          "type": "colour",
+          "settings": {
+            "collection": "navy",
+            "icon_style": "navy",
+            "image_asset": "frankys-colour-tile-navy.jpg"
+          }
+        },
+        "colour_sage_green": {
+          "type": "colour",
+          "settings": {
+            "collection": "sage-green",
+            "image_asset": "frankys-colour-tile-sage-green.jpg",
+            "icon_style": "sage-green"
+          }
+        },
+        "colour_dark_green": {
+          "type": "colour",
+          "settings": {
+            "collection": "dark-green",
+            "icon_style": "dark-green",
+            "image_asset": "frankys-colour-tile-dark-green.jpg"
+          }
+        },
+        "colour_pink": {
+          "type": "colour",
+          "settings": {
+            "collection": "pink",
+            "icon_style": "pink",
+            "image_asset": "frankys-colour-tile-pink.jpg"
+          }
+        },
+        "colour_nude": {
+          "type": "colour",
+          "settings": {
+            "collection": "nude",
+            "icon_style": "nude",
+            "image_asset": "frankys-colour-tile-nude.jpg"
+          }
+        },
+        "colour_wine": {
+          "type": "colour",
+          "settings": {
+            "collection": "wine",
+            "icon_style": "wine",
+            "image_asset": "frankys-colour-tile-wine.jpg"
+          }
+        },
+        "colour_clay": {
+          "type": "colour",
+          "settings": {
+            "collection": "clay",
+            "icon_style": "clay",
+            "image_asset": "frankys-colour-tile-clay.jpg"
+          }
+        },
+        "colour_brown": {
+          "type": "colour",
+          "settings": {
+            "collection": "brown",
+            "icon_style": "brown",
+            "image_asset": "frankys-colour-tile-brown.jpg"
+          }
+        },
+        "colour_pearl_grey": {
+          "type": "colour",
+          "settings": {
+            "collection": "pearl-grey",
+            "icon_style": "pearl-grey",
+            "image_asset": "frankys-colour-tile-pearl-grey.jpg"
+          }
+        },
+        "colour_dark_grey": {
+          "type": "colour",
+          "settings": {
+            "collection": "dark-grey",
+            "icon_style": "dark-grey",
+            "image_asset": "frankys-colour-tile-dark-grey.jpg"
+          }
+        },
+        "colour_beige": {
+          "type": "colour",
+          "settings": {
+            "collection": "beige",
+            "icon_style": "beige",
+            "image_asset": "frankys-colour-tile-beige.jpg"
+          }
+        },
+        "colour_chocolate": {
+          "type": "colour",
+          "settings": {
+            "collection": "chocolate",
+            "image_asset": "frankys-colour-tile-chocolate.jpg",
+            "icon_style": "chocolate"
+          }
+        },
+        "colour_black": {
+          "type": "colour",
+          "settings": {
+            "collection": "black",
+            "icon_style": "black",
+            "image_asset": "frankys-colour-tile-black.jpg"
+          }
+        },
+        "colour_butter": {
+          "type": "colour",
+          "settings": {
+            "collection": "butter",
+            "image_asset": "frankys-colour-tile-butter.jpg",
+            "icon_style": "butter"
+          }
+        },
+        "colour_milk": {
+          "type": "colour",
+          "settings": {
+            "collection": "milk",
+            "icon_style": "milk",
+            "image_asset": "frankys-colour-tile-milk.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "colour_chocolate",
+        "colour_sage_green",
+        "colour_light_blue",
+        "colour_butter",
+        "colour_navy",
+        "colour_dark_green",
+        "colour_pink",
+        "colour_nude",
+        "colour_wine",
+        "colour_clay",
+        "colour_brown",
+        "colour_pearl_grey",
+        "colour_dark_grey",
+        "colour_beige",
+        "colour_black",
+        "colour_milk"
+      ],
+      "settings": {
+        "color_scheme": "",
+        "eyebrow": "Placemats & Coasters",
+        "title": "Shop by Colour",
+        "intro": "<p>Start with a colour you love and set the table from there. Placemats and coasters in shades designed to mix, match and bring a little more colour to every meal.</p>",
+        "switcher_title": "Choose your colour",
+        "tile_color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",
+        "overlay_color": "#000000",
+        "overlay_opacity": 0,
+        "tile_width_mobile": 34,
+        "tiles_per_row_desktop": 6
+      }
+    },
+    "colour_heading": {
+      "type": "frankys-colour-heading",
+      "settings": {
+        "color_scheme": "",
+        "show_description": true,
+        "description_lines": 2
+      }
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "color_scheme": "",
+        "products_per_page": 36,
+        "products_per_row_mobile": 2,
+        "products_per_row_desktop": 4,
+        "show_product_card_size_selector": false,
+        "quick_links_menu": "",
+        "filter_layout": "drawer",
+        "show_sort_by": false,
+        "show_filters": true,
+        "show_filter_group_name": false,
+        "show_filter_values_count": false,
+        "open_filters_by_default": false,
+        "swatch_selector_size": "lg"
+      }
+    },
+    "good_mornings": {
+      "type": "text-with-media",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Good mornings start here.",
+            "heading_tag": "h3",
+            "position": "middle_left",
+            "highlight_effect": "default",
+            "highlight_accent_color": "",
+            "highlight_text_color": ""
+          }
+        },
+        "richtext": {
+          "type": "richtext",
+          "settings": {
+            "text": "<p>Meet Zurich bedding. Soft organic cotton, feel-good colours and a very good reason to stay a little longer. Bring the Frankys feeling to your bedroom.</p>",
+            "position": "middle_left"
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "text": "Shop Bedding",
+            "url": "shopify://collections/bedding",
+            "position": "middle_left",
+            "style": "solid",
+            "background": "#acd0cf",
+            "text_color": "#503d35"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "richtext",
+        "button"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "content_position": "end",
+        "content_percentage_width": 50,
+        "overlay_color": "#000000",
+        "overlay_opacity": 20,
+        "add_media_spacing": false,
+        "autoplay_video": true,
+        "primary_image_asset": "frankys-bedding-good-mornings.jpg",
+        "secondary_media_width": 55,
+        "secondary_media_mobile_width": 55,
+        "show_secondary_media_on_mobile": true,
+        "secondary_media_alignment": "place-self-center",
+        "secondary_media_shape": "none"
+      }
+    },
+    "curated_bundles": {
+      "type": "frankys-collection-products",
+      "settings": {
+        "color_scheme": "",
+        "title": "Shop Curated Bundles",
+        "collection": "table-settings",
+        "link_text": "Shop All",
+        "link_url": "",
+        "products_count": 8,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 4
+      }
+    },
+    "collections_you_will_love": {
+      "type": "collection-list",
+      "blocks": {
+        "section-header": {
+          "type": "_section-header",
+          "static": true,
+          "settings": {
+            "subheading": "",
+            "title": "Collections you will love",
+            "content": "",
+            "button_text": "Shop Collections",
+            "button_link": "shopify://collections",
+            "button_style": "link",
+            "text_alignment": "left",
+            "heading_size": "h5",
+            "title_icon": "none",
+            "show_scrolling_title": false
+          },
+          "blocks": {}
+        },
+        "collection_card_placemats": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "placemats",
+            "image": "shopify://shop_images/frankys-collection-placemats.jpg",
+            "title": "Placemats",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_coasters": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "coasters",
+            "image": "shopify://shop_images/frankys-collection-coasters.jpg",
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_throws": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "throws",
+            "image": "shopify://shop_images/frankys-collection-bedding.jpg",
+            "title": "Bedding",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_bath": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "bath",
+            "image": "shopify://shop_images/frankys-collection-bath.jpg",
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "collection_card_placemats",
+        "collection_card_coasters",
+        "collection_card_throws",
+        "collection_card_bath"
+      ],
+      "settings": {
+        "color_scheme": "",
+        "items_per_row": 4,
+        "stack_on_mobile": false,
+        "add_horizontal_spacing": true,
+        "content_position": "inside",
+        "column_spacing": "sm",
+        "image_size": "auto"
+      }
+    }
+  },
+  "order": [
+    "colour_switcher",
+    "colour_heading",
+    "main",
+    "good_mornings",
+    "curated_bundles",
+    "collections_you_will_love"
+  ]
+}

@@ -1,0 +1,55 @@
+{%- doc -%}
+  FRANKY'S (TLF) P4: one Shop by Colour tile, used by sections/frankys-colour-switcher.liquid.
+
+  @param {string} href - where the tile goes
+  @param {string} handle - colour handle, read by the switcher JS
+  @param {string} label - colour name shown on the tile
+  @param {object} [block] - the matching Colour block (image, theme file image, icon)
+  @param {object} [image] - image to use when the block has none
+  @param {string} [swatch_color] - background colour when there is no image at all
+  @param {boolean} [is_current] - the colour being viewed
+  @param {string} sizes - image sizes attribute
+  @param {object} section - the switcher section (tile colour scheme and overlay)
+{%- enddoc -%}
+{%- liquid
+  # Block image first, then the block's theme file, then the fallback image
+  assign tile_image = image
+  if block.settings.image != blank
+    assign tile_image = block.settings.image
+  elsif block.settings.image_asset != blank
+    assign tile_image = blank
+  endif
+-%}
+
+<a
+  href="{{ href }}"
+  class="colour-switcher__tile snap-start group color-scheme color-scheme--{{ section.settings.tile_color_scheme.id }}"
+  data-colour-handle="{{ handle }}"
+  {% if is_current %}aria-current="page"{% endif %}
+  {{ block.shopify_attributes }}
+>
+  <div class="colour-switcher__media content-box min-h-auto overflow-clip">
+    <div class="content-box__background-media with-overlay" style="--overlay: {{ section.settings.overlay_color.rgb }} / {{ section.settings.overlay_opacity | divided_by: 100.0 }};{% if swatch_color != blank %} background-color: {{ swatch_color }};{% endif %}">
+      {%- if tile_image != blank -%}
+        {{- tile_image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: sizes, widths: '300,400,500,600,800,1000,1200', class: 'zoom-image group-hover:zoom', alt: '' -}}
+      {%- elsif block.settings.image_asset != blank -%}
+        {%- comment -%}Good Manners' Figma tile (421px square) shipped in assets/ until a larger copy is uploaded to Files{%- endcomment -%}
+        <img src="{{ block.settings.image_asset | asset_url }}" width="421" height="421" loading="lazy" decoding="async" class="zoom-image group-hover:zoom" alt="">
+      {%- elsif swatch_color == blank -%}
+        {{- 'collection-apparel-1' | placeholder_svg_tag: 'size-full' -}}
+      {%- endif -%}
+    </div>
+
+    <div class="colour-switcher__label text-center">
+      {%- if block.settings.icon_style != 'none' and block.settings.icon_style != blank -%}
+        {%- render 'frankys-colour-icon', name: block.settings.icon_style -%}
+      {%- elsif block.settings.icon != blank -%}
+        {%- comment -%}Good Manners exports icons at Figma size for a 421px tile, so the file's width sets its share of the tile{%- endcomment -%}
+        {%- assign icon_width = block.settings.icon.width | times: 100.0 | divided_by: 421 | at_most: 60 | round: 1 -%}
+        {%- capture icon_style -%}--icon-width: {{ icon_width }}%;{%- endcapture -%}
+        {{- block.settings.icon | image_url: width: 400 | image_tag: loading: 'lazy', class: 'colour-switcher__icon', alt: '', style: icon_style -}}
+      {%- endif -%}
+      <span class="h3">{{ label }}</span>
+    </div>
+  </div>
+</a>

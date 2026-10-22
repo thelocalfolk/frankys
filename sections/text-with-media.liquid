@@ -36,6 +36,10 @@
               render 'media', media: section.settings.primary_video, autoplay: section.settings.autoplay_video, loop: section.settings.autoplay_video, controls: show_controls
             elsif section.settings.primary_image != blank
               echo section.settings.primary_image | image_url: width: section.settings.primary_image.width | image_tag: sizes: '(max-width: 699px) 100vw, 50vw', widths: '200,300,400,500,600,800,1000,1200,1400,1600,1800,2000'
+            elsif section.settings.primary_image_asset != blank
+              # FRANKY'S (TLF) P4: photo from theme assets, until a full-size version is uploaded to Files
+              assign asset_src = section.settings.primary_image_asset | asset_url
+              echo '<img src="' | append: asset_src | append: '" width="864" height="602" loading="lazy" decoding="async" alt="">'
             elsif section.settings.secondary_image == blank and section.settings.secondary_video == blank
               echo 'blog-apparel-2' | placeholder_svg_tag: 'size-full'
             endif
@@ -298,6 +302,12 @@
       "id": "primary_image",
       "label": "t:sections.text_with_media.primary_image",
       "info": "t:sections.text_with_media.primary_image_size_recommendations"
+    },
+    {
+      "type": "text",
+      "id": "primary_image_asset",
+      "label": "Image (theme file)",
+      "info": "FRANKY'S (TLF). Filename in the theme's assets folder, e.g. frankys-bedding-good-mornings.jpg. Used when Image is empty."
     },
     {
       "type": "video",
