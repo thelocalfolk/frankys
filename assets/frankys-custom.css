@@ -431,7 +431,7 @@
 }
 
 [id$="__hero"] .h3 {
-  max-width: 14.75em; /* Figma text box is 732px at 50px: breaks after "place" */
+  max-width: 13.4em; /* "A Good Day Starts With A" is ~12.2em, adding "Good" makes ~14.5em: "Good Night" always wraps to line 2 */
   margin-inline: auto;
 }
 
