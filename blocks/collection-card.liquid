@@ -5,9 +5,15 @@
   if section.settings.content_position == 'outside'
     assign color_scheme = section.settings.color_scheme
   endif
+
+  # FRANKY'S (TLF) P4: open a colour collection on the Shop by Colour page (?view=colour until it's assigned the colour template)
+  assign card_href = collection.url | default: '#'
+  if block.settings.open_colour_page and collection != blank and collection.template_suffix != 'colour'
+    assign card_href = card_href | append: '?view=colour'
+  endif
 -%}
 
-<a class="collection-list__item @container/content-box snap-center color-scheme color-scheme--{{ color_scheme.id }}" href="{{ collection.url | default: '#' }}" {{ block.shopify_attributes }}>
+<a class="collection-list__item @container/content-box snap-center color-scheme color-scheme--{{ color_scheme.id }}" href="{{ card_href }}" {{ block.shopify_attributes }}>
   {%- capture image -%}
     {%- liquid
       assign collection_image = block.settings.image
@@ -100,6 +106,13 @@
       "id": "image_asset",
       "label": "Image (theme file)",
       "info": "FRANKY'S (TLF). Filename in the theme's assets folder, e.g. frankys-colour-tile-navy.jpg. Used when Image is empty."
+    },
+    {
+      "type": "checkbox",
+      "id": "open_colour_page",
+      "label": "Open on the Shop by Colour page",
+      "info": "FRANKY'S (TLF). For colour collections. Adds ?view=colour until the collection is assigned the colour template.",
+      "default": false
     },
     {
       "type": "inline_richtext",
