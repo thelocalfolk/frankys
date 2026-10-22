@@ -506,10 +506,21 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   --text-color: 235 233 209;
 }
 
-/* Milk, Butter and Beige tiles are too pale for light text: brown names (homepage tiles and colour switcher) */
-[id$="__shop_by_colour"] .collection-list__item:is([href*="/collections/milk"], [href*="/collections/butter"], [href*="/collections/beige"]),
-.colour-switcher__tile:is([href*="/collections/milk"], [href*="/collections/butter"], [href*="/collections/beige"]) {
-  --text-color: 80 61 53;
+/* Milk, Butter and Beige tiles are too pale for light text: the lightest brown on each
+   that still meets 3:1 contrast for large text (homepage tiles and colour switcher) */
+[id$="__shop_by_colour"] .collection-list__item[href*="/collections/milk"],
+.colour-switcher__tile[href*="/collections/milk"] {
+  --text-color: 169 127 96; /* #a97f60, 3.1:1 on Milk */
+}
+
+[id$="__shop_by_colour"] .collection-list__item[href*="/collections/butter"],
+.colour-switcher__tile[href*="/collections/butter"] {
+  --text-color: 146 107 79; /* #926b4f, 3:1 on Butter */
+}
+
+[id$="__shop_by_colour"] .collection-list__item[href*="/collections/beige"],
+.colour-switcher__tile[href*="/collections/beige"] {
+  --text-color: 159 117 86; /* #9f7556, 3.1:1 on Beige */
 }
 
 /* @frankysaus: three square photos on mobile, six across on desktop */
