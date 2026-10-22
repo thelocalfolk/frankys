@@ -532,6 +532,7 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   --button-background-primary: 172 208 207;
   --button-text-primary: 80 61 53;
   aspect-ratio: 1;
+  container-type: inline-size;
 }
 
 [id$="__category_tiles"] .media-blocks__item img {
@@ -541,7 +542,7 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 [id$="__category_tiles"] .media-blocks__item .h3 {
   max-width: 70%; /* Figma text box is 553px in a 789px tile */
   margin-inline: auto;
-  font-size: clamp(1.875rem, 1.496rem + 1.508vw, 3.125rem);
+  font-size: clamp(1.25rem, 6.3cqi, 3.125rem); /* 50px in a 789px tile: scales with the tile, not the window */
   line-height: 1.2;
   text-align: center;
 }
