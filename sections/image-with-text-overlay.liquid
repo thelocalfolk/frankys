@@ -10,7 +10,7 @@
           echo '<picture>'
           if section.settings.mobile_image_asset != blank
             assign mobile_asset_src = section.settings.mobile_image_asset | asset_url
-            echo '<source media="(max-width: 999px)" srcset="' | append: mobile_asset_src | append: '" width="1206" height="1413">'
+            echo '<source media="(max-width: 999px)" srcset="' | append: mobile_asset_src | append: '" width="1206" height="1508">'
           endif
           echo '<img src="' | append: asset_src | append: '" width="2560" height="893" fetchpriority="high" decoding="async" alt="">'
           echo '</picture>'
