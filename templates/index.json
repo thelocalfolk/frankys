@@ -6,7 +6,7 @@
         "heading": {
           "type": "heading",
           "settings": {
-            "text": "the details that make a place feel like yours.",
+            "text": "A Good Day Starts With A Good Night",
             "heading_size": "h3",
             "html_tag": "h1",
             "indent": "none",
@@ -18,7 +18,7 @@
         "text": {
           "type": "rich-text",
           "settings": {
-            "text": "<p>Frankys brings colour, character and a little more pleasure to the everyday.</p>",
+            "text": "<p>Turns Out, A Considered Home Needs A Place To Lie Down. Meet Frankys Bedding. Soft Organic Cotton, Feel-Good Colours And A Very Good Reason To Stay A Little Longer.</p>",
             "content_width": "md"
           }
         },
@@ -26,7 +26,7 @@
           "type": "button",
           "settings": {
             "text": "Shop Now",
-            "url": "shopify://collections/new-arrivals",
+            "url": "shopify://collections/bedding",
             "open_in_new_tab": false,
             "style": "solid",
             "background": "#acd0cf",
@@ -43,14 +43,16 @@
         "color_scheme": "scheme-3",
         "allow_transparent_header": false,
         "image_size": "auto",
-        "image": "shopify://shop_images/frankys-home-hero.jpg",
-        "mobile_image": "shopify://shop_images/frankys-home-hero-mobile.jpg",
+        "image": "",
+        "mobile_image": "",
         "overlay_color": "#000000",
         "overlay_opacity": 0,
         "enable_sticky_content": false,
         "content_width": "md",
         "desktop_text_position": "sm:place-self-center",
-        "mobile_text_position": "place-self-center"
+        "mobile_text_position": "place-self-center",
+        "image_asset": "frankys-home-hero-bedding.jpg",
+        "mobile_image_asset": "frankys-home-hero-bedding-mobile.jpg"
       }
     },
     "fresh_to_the_table": {
