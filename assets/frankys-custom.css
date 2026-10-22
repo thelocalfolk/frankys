@@ -565,7 +565,8 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   object-fit: cover;
 }
 
-/* "Reasons to love Frankys": light blue band, text in the brand brown */
+/* "Reasons to love Frankys": light blue band, text in the brand brown.
+   Lives in the footer group (sections/footer-group.json), so it shows on every page. */
 [id$="__reasons_to_love"] .color-scheme {
   --text-color: 80 61 53;
 }
