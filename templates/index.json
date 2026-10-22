@@ -523,8 +523,7 @@
             "text_alignment": "left",
             "heading_size": "h5",
             "title_icon": "none",
-            "show_scrolling_title": false,
-            "open_colour_page": true
+            "show_scrolling_title": false
           },
           "blocks": {}
         },

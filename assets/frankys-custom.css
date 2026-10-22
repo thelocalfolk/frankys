@@ -442,6 +442,13 @@
   margin-inline: auto;
 }
 
+/* Hero: a little taller on phones when the section uses a fixed height (theme "md" is 45vmax) */
+@media screen and (max-width: 699px) {
+  [id$="__hero"] .content-box.min-h-md {
+    min-height: clamp(22rem, 52vmax, 38rem);
+  }
+}
+
 /* "At home with Frankys": UGC videos (sections/frankys-ugc-videos.liquid).
    Tall 303 x 540 cards, handle bottom left. About two across on mobile,
    five across on desktop; more cards scroll. */
