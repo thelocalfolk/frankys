@@ -554,6 +554,19 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   text-align: center;
 }
 
+/* "Shop by Colour" tiles: smaller squares in the mobile and tablet carousel (about 2.4 across on a phone) */
+@media screen and (max-width: 699px) {
+  [id$="__shop_by_colour"] .collection-list {
+    --collection-list-grid: auto / auto-flow 40vw;
+  }
+}
+
+@media screen and (min-width: 700px) and (max-width: 999px) {
+  [id$="__shop_by_colour"] .collection-list {
+    --collection-list-grid: auto / auto-flow 26vw;
+  }
+}
+
 /* "Shop by Colour" names are #ebe9d1 in the Figma (not white) */
 [id$="__shop_by_colour"] .collection-list__item {
   --text-color: 235 233 209;
