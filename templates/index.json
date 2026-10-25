@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -8,7 +17,7 @@
           "settings": {
             "text": "A Good Day Starts With A Good Night",
             "heading_size": "h3",
-            "html_tag": "h1",
+            "html_tag": "h2",
             "indent": "none",
             "highlight_effect": "default",
             "highlight_accent_color": "",
@@ -19,7 +28,7 @@
         "text": {
           "type": "rich-text",
           "settings": {
-            "text": "<p>Turns Out, A Considered Home Needs A Place To Lie Down. Meet Frankys Bedding. Soft Organic Cotton, Feel-Good Colours And A Very Good Reason To Stay A Little Longer.</p>",
+            "text": "<p>Colours to wake up to, and a very good reason to stay a little longer.<br/><br/>Turns out a considered home needs a place to lie down.</p>",
             "content_width": "md"
           },
           "blocks": {}
@@ -46,12 +55,12 @@
         "color_scheme": "scheme-3",
         "allow_transparent_header": false,
         "image_size": "md",
-        "image": "shopify://shop_images/Frame_2.png",
-        "mobile_image": "shopify://shop_images/Rectangle_92.png",
+        "image": "shopify://shop_images/2026-10-Hero1-Landscape.jpg",
+        "mobile_image": "shopify://shop_images/2026-10-Hero1.jpg",
         "image_asset": "frankys-home-hero-bedding.jpg",
         "mobile_image_asset": "frankys-home-hero-bedding-mobile.jpg",
         "overlay_color": "#000000",
-        "overlay_opacity": 0,
+        "overlay_opacity": 10,
         "enable_sticky_content": false,
         "content_width": "md",
         "desktop_text_position": "sm:place-self-center",
@@ -372,6 +381,7 @@
             "collection": "placemats",
             "image": "shopify://shop_images/frankys-collection-placemats.jpg",
             "image_asset": "",
+            "open_colour_page": false,
             "title": "Placemats",
             "heading_tag": "h3",
             "button_text": "",
@@ -388,6 +398,7 @@
             "collection": "coasters",
             "image": "shopify://shop_images/frankys-collection-coasters.jpg",
             "image_asset": "",
+            "open_colour_page": false,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
@@ -404,6 +415,7 @@
             "collection": "bedding",
             "image": "shopify://shop_images/frankys-collection-bedding.jpg",
             "image_asset": "",
+            "open_colour_page": false,
             "title": "Bedding",
             "heading_tag": "h3",
             "button_text": "",
@@ -420,6 +432,7 @@
             "collection": "bath",
             "image": "shopify://shop_images/frankys-collection-bath.jpg",
             "image_asset": "",
+            "open_colour_page": false,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
@@ -531,13 +544,13 @@
             "color_scheme": "scheme-3",
             "collection": "chocolate",
             "image_asset": "frankys-colour-tile-chocolate.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -547,13 +560,13 @@
             "color_scheme": "scheme-3",
             "collection": "sage-green",
             "image_asset": "frankys-colour-tile-sage-green.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -563,13 +576,13 @@
             "color_scheme": "scheme-3",
             "collection": "light-blue",
             "image_asset": "frankys-colour-tile-light-blue.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -579,13 +592,13 @@
             "color_scheme": "scheme-3",
             "collection": "butter",
             "image_asset": "frankys-colour-tile-butter.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -595,13 +608,13 @@
             "color_scheme": "scheme-3",
             "collection": "milk",
             "image_asset": "frankys-colour-tile-milk.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -611,13 +624,13 @@
             "color_scheme": "scheme-3",
             "collection": "pink",
             "image_asset": "frankys-colour-tile-pink.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -627,13 +640,13 @@
             "color_scheme": "scheme-3",
             "collection": "wine",
             "image_asset": "frankys-colour-tile-wine.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -643,13 +656,13 @@
             "color_scheme": "scheme-3",
             "collection": "navy",
             "image_asset": "frankys-colour-tile-navy.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -659,13 +672,13 @@
             "color_scheme": "scheme-3",
             "collection": "dark-green",
             "image_asset": "frankys-colour-tile-dark-green.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -675,13 +688,13 @@
             "color_scheme": "scheme-3",
             "collection": "clay",
             "image_asset": "frankys-colour-tile-clay.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -691,13 +704,13 @@
             "color_scheme": "scheme-3",
             "collection": "black",
             "image_asset": "frankys-colour-tile-black.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
@@ -707,13 +720,13 @@
             "color_scheme": "scheme-3",
             "collection": "pearl-grey",
             "image_asset": "frankys-colour-tile-pearl-grey.jpg",
+            "open_colour_page": true,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
+            "overlay_opacity": 0
           },
           "blocks": {}
         },
