@@ -4,12 +4,20 @@
   Used by sections/breadcrumbs.liquid and snippets/microdata-schema.liquid so the
   visible breadcrumbs and the BreadcrumbList schema always match.
 
-  Order of preference on product pages:
-    1. The collection the shopper came from (/collections/x/products/y).
-    2. The first of Franky's main category ranges (same list as the collection
-       pills) that contains this product. Keep category_handles below in sync with
-       the "Collection pills" setting on the collection templates.
+  Order of preference:
+    1. The product's custom.breadcrumb_collection metafield (a Collection reference),
+       when set to a published collection. This is the per-product override — admin
+       chooses the exact breadcrumb collection, so new categories NEVER require a code
+       change. Set this on any product whose breadcrumb should not be left to the
+       automatic rules below (e.g. products in more than one category).
+    2. The collection the shopper came from (/collections/x/products/y), for context,
+       and the collection itself on collection pages.
     3. The first collection that isn't a merchandising / colour collection.
+    4. Nothing.
+
+  Note: there is deliberately no hardcoded category list. Multi-category products are
+  handled by the metafield (step 1); every other product resolves automatically via
+  step 2 or 3, so this snippet needs no upkeep as the catalogue and categories grow.
 
   @param {object} [product]
   @param {object} [collection]
@@ -17,31 +25,35 @@
 {%- liquid
   assign result = ''
 
-  if collection and collection.handle != blank
-    assign result = collection.handle
-  elsif product
-    assign product_handles = product.collections | map: 'handle'
-
-    assign category_handles = 'placemats,napkins,tablecloths,cutlery,utensils,baking-cooking-tools,tea-towels,cushions,throws,bath' | split: ','
-    for category_handle in category_handles
-      if product_handles contains category_handle
-        assign result = category_handle
-        break
-      endif
-    endfor
-
-    if result == blank
-      # FRANKY'S (TLF) P4: shop-by-colour and the 'colour' template are merchandising too
-      assign excluded_handles = 'frontpage,all,best-sellers,new-arrivals,sale,clearance,gifts,homewares,tableware,shop-by-colour' | split: ','
-      for product_collection in product.collections
-        if excluded_handles contains product_collection.handle or product_collection.template_suffix == 'color-based-collection' or product_collection.template_suffix == 'colour'
-          continue
-        endif
-        assign result = product_collection.handle
-        break
-      endfor
+  # 1. Per-product override: custom.breadcrumb_collection (Collection reference).
+  #    .value is the referenced collection object, or nil/blank if unset or if the
+  #    referenced collection was deleted/unpublished — in which case we fall through.
+  if product and product.metafields.custom.breadcrumb_collection != blank
+    assign breadcrumb_collection = product.metafields.custom.breadcrumb_collection.value
+    if breadcrumb_collection != blank and breadcrumb_collection.handle != blank
+      assign result = breadcrumb_collection.handle
     endif
   endif
 
+  # 2. Came-from collection (product reached via /collections/x/products/y), or the
+  #    collection itself on a collection page.
+  if result == blank and collection and collection.handle != blank
+    assign result = collection.handle
+  endif
+
+  # 3. First collection that isn't a merchandising / colour collection.
+  if result == blank and product
+    # FRANKY'S (TLF) P4: shop-by-colour and the 'colour' template are merchandising too
+    assign excluded_handles = 'frontpage,all,best-sellers,new-arrivals,sale,clearance,gifts,homewares,tableware,shop-by-colour' | split: ','
+    for product_collection in product.collections
+      if excluded_handles contains product_collection.handle or product_collection.template_suffix == 'color-based-collection' or product_collection.template_suffix == 'colour'
+        continue
+      endif
+      assign result = product_collection.handle
+      break
+    endfor
+  endif
+
+  # 4. Otherwise: nothing.
   echo result
 -%}
