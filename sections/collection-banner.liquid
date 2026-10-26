@@ -17,14 +17,25 @@
   {%- capture quick_navigation -%}
     {% assign alignment = section.settings.content_position | split: 'place-self-' | last | split: '-' | last %}
 
-    {%- if section.settings.quick_navigation_collections != blank -%}
-      {%- comment -%}
-        FRANKY'S (TLF) P8: collection pills pulled straight from collections picked in the
-        theme editor (no menu needed). Takes priority over the menu below.
-      {%- endcomment -%}
+    {%- liquid
+      # FRANKY'S (TLF) P8: collection pills come from the collection's own custom.collection_pills
+      # metafield (list of collections), so each range sets its sub-categories in admin, e.g.
+      # Bedding > Bedding, Quilt covers, Sheets, Pillowcases. A sub-category without its own list
+      # uses its custom.parent_collection's list, so Sheets shows the same pills with Sheets selected.
+      # The "Collection pills" theme setting is only the fallback when neither is set.
+      assign pill_collections = collection.metafields.custom.collection_pills.value
+      if pill_collections == blank
+        assign pill_collections = collection.metafields.custom.parent_collection.value.metafields.custom.collection_pills.value
+      endif
+      if pill_collections == blank
+        assign pill_collections = section.settings.quick_navigation_collections
+      endif
+    -%}
+
+    {%- if pill_collections != blank -%}
       <nav aria-label="Shop by range">
         <ul class="collection-quick-navigation collection-quick-navigation--pills {% if layout == 'plain' %}justify-{{ alignment }}{% else %}collection-quick-navigation--padded{% endif %} unstyled-list scroll-area bleed">
-          {%- for pill_collection in section.settings.quick_navigation_collections -%}
+          {%- for pill_collection in pill_collections -%}
             {%- assign pill_is_current = false -%}
             {%- if pill_collection.handle == collection.handle -%}
               {%- assign pill_is_current = true -%}
@@ -343,7 +354,7 @@
       "type": "collection_list",
       "id": "quick_navigation_collections",
       "label": "Collection pills",
-      "info": "Franky's: shows these collections as text pills, with the current one highlighted. Used instead of the menu when set.",
+      "info": "Franky's: fallback for collections without a custom.collection_pills metafield (or a parent collection with one). Shown as text pills, current one highlighted, instead of the menu.",
       "limit": 20
     }
   ]
