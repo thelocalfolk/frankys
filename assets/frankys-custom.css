@@ -354,7 +354,6 @@
   border-block-start-width: 0;
 }
 
-.shopify-section--colour-switcher ~ .shopify-section--main-collection .product-card--bordered,
 /* Product rows: scroll bar instead of arrows on mobile (the bar is in the section markup) */
 @media screen and (max-width: 699px) {
   .shopify-section--frankys-collection-products .floating-controls__control {
@@ -362,6 +361,8 @@
   }
 }
 
+/* Split tiles (Steph's design): no outline around each card */
+.shopify-section--colour-switcher ~ .shopify-section--main-collection .product-card--bordered,
 .shopify-section--frankys-collection-products .product-card--bordered {
   outline: 0;
 }

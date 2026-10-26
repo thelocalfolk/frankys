@@ -76,10 +76,6 @@
   assign discount_code = block.settings.discount_code | strip
   assign discount_handles = block.settings.discount_collections | map: 'handle'
 
-  if discount_handles.size == 0
-    assign discount_handles = 'bath,bedding' | split: ','
-  endif
-
   # ---- Pick ------------------------------------------------------------------------------------------------------
   # IDs and types already used, kept as "|"-delimited strings so a single `contains` checks membership.
   assign curated = product.metafields.custom.matching_product.value
