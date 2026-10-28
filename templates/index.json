@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -8,19 +17,21 @@
           "settings": {
             "text": "A Good Day Starts With A Good Night",
             "heading_size": "h3",
-            "html_tag": "h1",
+            "html_tag": "h2",
             "indent": "none",
             "highlight_effect": "default",
             "highlight_accent_color": "",
             "highlight_text_color": ""
-          }
+          },
+          "blocks": {}
         },
         "text": {
           "type": "rich-text",
           "settings": {
-            "text": "<p>Turns Out, A Considered Home Needs A Place To Lie Down. Meet Frankys Bedding. Soft Organic Cotton, Feel-Good Colours And A Very Good Reason To Stay A Little Longer.</p>",
+            "text": "<p>Colours to wake up to, and a very good reason to stay a little longer.<br/><br/>Turns out a considered home needs a place to lie down.</p>",
             "content_width": "md"
-          }
+          },
+          "blocks": {}
         },
         "button": {
           "type": "button",
@@ -31,7 +42,8 @@
             "style": "solid",
             "background": "#acd0cf",
             "text_color": "#503d35"
-          }
+          },
+          "blocks": {}
         }
       },
       "block_order": [
@@ -42,24 +54,24 @@
       "settings": {
         "color_scheme": "scheme-3",
         "allow_transparent_header": false,
-        "image_size": "auto",
-        "image": "",
-        "mobile_image": "",
+        "image_size": "md",
+        "image": "shopify://shop_images/2026-10-Hero1-Landscape.jpg",
+        "mobile_image": "shopify://shop_images/2026-10-Hero1.jpg",
+        "image_asset": "frankys-home-hero-bedding.jpg",
+        "mobile_image_asset": "frankys-home-hero-bedding-mobile.jpg",
         "overlay_color": "#000000",
-        "overlay_opacity": 0,
+        "overlay_opacity": 10,
         "enable_sticky_content": false,
         "content_width": "md",
         "desktop_text_position": "sm:place-self-center",
-        "mobile_text_position": "place-self-center",
-        "image_asset": "frankys-home-hero-bedding.jpg",
-        "mobile_image_asset": "frankys-home-hero-bedding-mobile.jpg"
+        "mobile_text_position": "place-self-center"
       }
     },
     "fresh_to_the_table": {
       "type": "frankys-collection-products",
       "settings": {
         "color_scheme": "scheme-1",
-        "title": "Fresh to the Table",
+        "title": "Freshly Made",
         "collection": "new-arrivals",
         "link_text": "Shop New",
         "link_url": "",
@@ -147,6 +159,7 @@
         "add_media_spacing": false,
         "autoplay_video": true,
         "primary_image": "shopify://shop_images/frankys-home-good-taste.jpg",
+        "primary_image_asset": "",
         "secondary_media_width": 55,
         "secondary_media_mobile_width": 55,
         "show_secondary_media_on_mobile": true,
@@ -213,6 +226,7 @@
         "video_4",
         "video_5"
       ],
+      "disabled": true,
       "settings": {
         "color_scheme": "scheme-1",
         "title": "At home with Frankys",
@@ -291,7 +305,7 @@
             "icon_position": "middle_center",
             "subheading": "",
             "subheading_position": "middle_center",
-            "title": "mix, match &amp; bring more personality to the table.",
+            "title": "mix, match & bring more personality to the table.",
             "heading_tag": "h3",
             "heading_position": "middle_center",
             "scrolling_title": false,
@@ -311,7 +325,7 @@
             "change_color_scheme_on_hover": false,
             "color_scheme": "scheme-3",
             "color_scheme_hover": "scheme-3",
-            "image": "shopify://shop_images/frankys-home-tile-bedding.jpg",
+            "image": "shopify://shop_images/frankys-bedding-reading.jpg",
             "icon": "none",
             "icon_width": 32,
             "mobile_icon_width": 24,
@@ -327,7 +341,7 @@
             "text": "",
             "text_position": "bottom_left",
             "button_style": "solid",
-            "link_url": "shopify://collections/throws",
+            "link_url": "shopify://collections/bedding",
             "link_text": "Shop Bedding",
             "link_position": "bottom_center"
           }
@@ -360,29 +374,14 @@
     "collections_you_will_love": {
       "type": "collection-list",
       "blocks": {
-        "section-header": {
-          "type": "_section-header",
-          "static": true,
-          "settings": {
-            "subheading": "",
-            "title": "Collections you will love",
-            "content": "",
-            "button_text": "Shop Collections",
-            "button_link": "shopify://collections",
-            "button_style": "link",
-            "text_alignment": "left",
-            "heading_size": "h5",
-            "title_icon": "none",
-            "show_scrolling_title": false
-          },
-          "blocks": {}
-        },
         "collection_card_placemats": {
           "type": "collection-card",
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "placemats",
             "image": "shopify://shop_images/frankys-collection-placemats.jpg",
+            "image_asset": "",
+            "open_colour_page": false,
             "title": "Placemats",
             "heading_tag": "h3",
             "button_text": "",
@@ -398,6 +397,8 @@
             "color_scheme": "scheme-3",
             "collection": "coasters",
             "image": "shopify://shop_images/frankys-collection-coasters.jpg",
+            "image_asset": "",
+            "open_colour_page": false,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
@@ -411,8 +412,10 @@
           "type": "collection-card",
           "settings": {
             "color_scheme": "scheme-3",
-            "collection": "throws",
+            "collection": "bedding",
             "image": "shopify://shop_images/frankys-collection-bedding.jpg",
+            "image_asset": "",
+            "open_colour_page": false,
             "title": "Bedding",
             "heading_tag": "h3",
             "button_text": "",
@@ -428,12 +431,31 @@
             "color_scheme": "scheme-3",
             "collection": "bath",
             "image": "shopify://shop_images/frankys-collection-bath.jpg",
+            "image_asset": "",
+            "open_colour_page": false,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
             "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "section-header": {
+          "type": "_section-header",
+          "static": true,
+          "settings": {
+            "subheading": "",
+            "title": "Collections you will love",
+            "content": "",
+            "button_text": "Shop Collections",
+            "button_link": "shopify://collections",
+            "button_style": "link",
+            "text_alignment": "left",
+            "heading_size": "h5",
+            "title_icon": "none",
+            "show_scrolling_title": false
           },
           "blocks": {}
         }
@@ -467,14 +489,16 @@
             "highlight_effect": "default",
             "highlight_accent_color": "",
             "highlight_text_color": ""
-          }
+          },
+          "blocks": {}
         },
         "text": {
           "type": "rich-text",
           "settings": {
             "text": "<p>Start with a blank table, then mix, match and layer your favourite Frankys pieces to bring it to life.</p>",
             "content_width": "sm"
-          }
+          },
+          "blocks": {}
         },
         "button": {
           "type": "button",
@@ -485,7 +509,8 @@
             "style": "solid",
             "background": "#acd0cf",
             "text_color": "#503d35"
-          }
+          },
+          "blocks": {}
         }
       },
       "block_order": [
@@ -493,12 +518,15 @@
         "text",
         "button"
       ],
+      "disabled": true,
       "settings": {
         "color_scheme": "scheme-3",
         "allow_transparent_header": false,
         "image_size": "auto",
         "image": "shopify://shop_images/frankys-home-set-the-table.jpg",
         "mobile_image": "shopify://shop_images/frankys-home-set-the-table-mobile.jpg",
+        "image_asset": "",
+        "mobile_image_asset": "",
         "overlay_color": "#000000",
         "overlay_opacity": 0,
         "enable_sticky_content": false,
@@ -510,6 +538,198 @@
     "shop_by_colour": {
       "type": "collection-list",
       "blocks": {
+        "collection_card_chocolate": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "chocolate",
+            "image_asset": "frankys-colour-tile-chocolate.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_sage_green": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "sage-green",
+            "image_asset": "frankys-colour-tile-sage-green.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_light_blue": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "light-blue",
+            "image_asset": "frankys-colour-tile-light-blue.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_butter": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "butter",
+            "image_asset": "frankys-colour-tile-butter.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_milk": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "milk",
+            "image_asset": "frankys-colour-tile-milk.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_pink": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "pink",
+            "image_asset": "frankys-colour-tile-pink.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_wine": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "wine",
+            "image_asset": "frankys-colour-tile-wine.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_navy": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "navy",
+            "image_asset": "frankys-colour-tile-navy.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_dark_green": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "dark-green",
+            "image_asset": "frankys-colour-tile-dark-green.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_clay": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "clay",
+            "image_asset": "frankys-colour-tile-clay.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_black": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "black",
+            "image_asset": "frankys-colour-tile-black.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "collection_card_pearl_grey": {
+          "type": "collection-card",
+          "settings": {
+            "color_scheme": "scheme-3",
+            "collection": "pearl-grey",
+            "image_asset": "frankys-colour-tile-pearl-grey.jpg",
+            "open_colour_page": true,
+            "title": "{{ closest.collection.title }}",
+            "heading_tag": "h3",
+            "button_text": "",
+            "button_style": "outline",
+            "overlay_color": "#000000",
+            "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
         "section-header": {
           "type": "_section-header",
           "static": true,
@@ -524,198 +744,6 @@
             "heading_size": "h5",
             "title_icon": "none",
             "show_scrolling_title": false
-          },
-          "blocks": {}
-        },
-        "collection_card_chocolate": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "chocolate",
-            "image_asset": "frankys-colour-tile-chocolate.jpg",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_sage_green": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "sage-green",
-            "image_asset": "frankys-colour-tile-sage-green.jpg",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_light_blue": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "light-blue",
-            "image_asset": "frankys-colour-tile-light-blue.jpg",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_butter": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "butter",
-            "image_asset": "frankys-colour-tile-butter.jpg",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_milk": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "milk",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-milk.jpg",
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_pink": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "pink",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-pink.jpg",
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_wine": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "wine",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-wine.jpg",
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_navy": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "navy",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-navy.jpg",
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_dark_green": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "dark-green",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-dark-green.jpg",
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_clay": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "clay",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-clay.jpg",
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_black": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "black",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-black.jpg",
-            "open_colour_page": true
-          },
-          "blocks": {}
-        },
-        "collection_card_pearl_grey": {
-          "type": "collection-card",
-          "settings": {
-            "color_scheme": "scheme-3",
-            "collection": "pearl-grey",
-            "title": "{{ closest.collection.title }}",
-            "heading_tag": "h3",
-            "button_text": "",
-            "button_style": "outline",
-            "overlay_color": "#000000",
-            "overlay_opacity": 0,
-            "image_asset": "frankys-colour-tile-pearl-grey.jpg",
-            "open_colour_page": true
           },
           "blocks": {}
         }
