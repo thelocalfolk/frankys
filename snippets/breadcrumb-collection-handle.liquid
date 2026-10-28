@@ -12,10 +12,12 @@
        automatic rules below (e.g. products in more than one category).
     2. The collection the shopper came from (/collections/x/products/y), for context,
        and the collection itself on collection pages.
-    3. The first collection that isn't a merchandising / colour collection.
+    3. The first collection that isn't a merchandising / colour collection: not ticked
+       "Hide from breadcrumbs" (collection metafield custom.hide_from_breadcrumbs) and not
+       on a colour template.
     4. Nothing.
 
-  Note: there is deliberately no hardcoded category list. Multi-category products are
+  Note: there is deliberately no hardcoded collection list. Multi-category products are
   handled by the metafield (step 1); every other product resolves automatically via
   step 2 or 3, so this snippet needs no upkeep as the catalogue and categories grow.
 
@@ -42,11 +44,12 @@
   endif
 
   # 3. First collection that isn't a merchandising / colour collection.
+  #    Merchandising collections (Best Sellers, Sale, Gifts, Home page...) are ticked in admin
+  #    with the collection metafield custom.hide_from_breadcrumbs (True or false), so new ones
+  #    need no code change. Colour collections are skipped by their template.
   if result == blank and product
-    # FRANKY'S (TLF) P4: shop-by-colour and the 'colour' template are merchandising too
-    assign excluded_handles = 'frontpage,all,best-sellers,new-arrivals,sale,clearance,gifts,homewares,tableware,shop-by-colour' | split: ','
     for product_collection in product.collections
-      if excluded_handles contains product_collection.handle or product_collection.template_suffix == 'color-based-collection' or product_collection.template_suffix == 'colour'
+      if product_collection.metafields.custom.hide_from_breadcrumbs.value == true or product_collection.template_suffix == 'color-based-collection' or product_collection.template_suffix == 'colour'
         continue
       endif
       assign result = product_collection.handle
