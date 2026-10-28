@@ -162,6 +162,17 @@ based on your desired layout (and remove most of the settings associated), and t
     assign card_url = card_url | within: collection
     assign title_url = product.url | within: collection
   endif
+
+  # FRANKY'S (TLF): collection card cover. An "empty placemat" image shown at rest on hover-capable
+  # devices, fading on hover to reveal the product's featured image (the plate). The metafield must be
+  # type "Image" so .value can be passed to image_url. When it's unset, card_cover is blank and the
+  # card behaves exactly as before (full fallback, nothing breaks). Touch devices never load the cover
+  # (it's a CSS background declared only inside @media (hover:hover) — see the <style> block below).
+  assign card_cover_media = product.metafields.custom.card_cover.value
+  assign has_card_cover = false
+  if card_cover_media != blank
+    assign has_card_cover = true
+  endif
 -%}
 
 <product-card class="{{ product_card_classes }} color-scheme color-scheme--{{ color_scheme.id }}" {% if reveal and settings.stagger_products %}reveal-on-scroll="true"{% endif %} handle="{{ product.handle | escape }}">
@@ -173,13 +184,13 @@ based on your desired layout (and remove most of the settings associated), and t
 
   <div class="product-card__figure">
     {%- if show_badges and show_badges_along_info != true -%}
-      {%- render 'product-badges', 
+      {%- render 'product-badges',
         product: product,
         context: 'card',
         show_custom_badge: true,
         show_sold_out_badge: settings.product_card_show_sold_out_badge,
         show_discount_badge: settings.product_card_show_discount,
-        direction: 'column', 
+        direction: 'column',
         vertical_text: settings.product_card_show_badges_vertically,
         class: settings.product_card_badges_placement,
         alignment: badges_alignment
@@ -205,8 +216,15 @@ based on your desired layout (and remove most of the settings associated), and t
 
         {{- card_featured_media | image_url: width: card_featured_media.width | image_tag: loading: main_media_loading_strategy, sizes: sizes, widths: '200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800', class: main_image_classes -}}
 
+        {%- comment -%} FRANKY'S: empty-placemat cover (desktop only). A CSS background, so touch devices never download it. {%- endcomment -%}
+        {%- if has_card_cover -%}
+          <div class="product-card__image product-card__image--cover" style="--card-cover-image: url('{{ card_cover_media | image_url: width: 1000 }}')" aria-hidden="true"></div>
+        {%- endif -%}
+
         {%- liquid
-          if show_secondary_image and product.media.size > 1
+          # FRANKY'S: when a card cover is set, skip the theme's secondary hover image so hover reveals
+          # the featured image (the plate), not product.media[1].
+          if has_card_cover == false and show_secondary_image and product.media.size > 1
             assign next_media = product.media[card_featured_media.position] | default: product.media[1]
 
             if next_media != blank
@@ -218,6 +236,32 @@ based on your desired layout (and remove most of the settings associated), and t
         {{- 'image' | placeholder_svg_tag -}}
       {%- endif -%}
     </a>
+
+    {%- comment -%}
+      FRANKY'S: card cover styles. Rendered only when this product has a cover (so most cards emit nothing),
+      and output per-card as a plain <style> to match the theme's product-cross-sell convention. For
+      production you can move this single rule into your theme CSS (e.g. beside .product-card__image--secondary)
+      and delete this block — behaviour is identical either way.
+        - Touch / no-hover (incl. mobile, ~78% of traffic): background-image is never set, so the cover is
+          invisible AND never downloaded; the card shows the featured image (gallery image 1) exactly as now.
+        - Hover-capable (desktop): the empty placemat shows at rest and fades out on hover to reveal the plate.
+    {%- endcomment -%}
+    {%- if has_card_cover -%}
+      <style>
+        .product-card__media { position: relative; }
+        .product-card__image--cover {
+          position: absolute; inset: 0; background-size: cover; background-position: center;
+          opacity: 0; pointer-events: none; border-radius: inherit;
+        }
+        @media (hover: hover) {
+          .product-card__image--cover { background-image: var(--card-cover-image); opacity: 1; transition: opacity 320ms ease; }
+          .product-card:hover .product-card__image--cover { opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .product-card__image--cover { transition: none; }
+        }
+      </style>
+    {%- endif -%}
 
     {%- if show_quick_buy and product.available -%}
       <div class="product-card__quick-buy {% if settings.product_card_info_position == 'inside' and settings.product_card_info_vertical_alignment == 'end' %}product-card__quick-buy--top-mobile{% endif %} {% if show_product_size_selector %}no-touch:hidden{% endif %}">
@@ -311,7 +355,7 @@ based on your desired layout (and remove most of the settings associated), and t
                 for option_value in product_option.values limit: limit
                   render 'option-value', type: 'swatch', param_name: param_name, option_value: option_value, option_position: product_option.position, force_unselected: true, output_variant_media: true, size: 'sm', show_tight: settings.product_card_show_tight_swatches
                 endfor
-  
+
                 if product_option.values.size > limit
                   assign remaining_values = product_option.values.size | minus: limit
 
