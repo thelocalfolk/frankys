@@ -5,21 +5,22 @@
   visible breadcrumbs and the BreadcrumbList schema always match.
 
   Order of preference:
-    1. The product's custom.breadcrumb_collection metafield (a Collection reference),
+    1. The collection the shopper came from (/collections/x/products/y; product cards on
+       collection pages link this way), and the collection itself on collection pages.
+       Google indexes the canonical /products/y, so this step never applies to it.
+    2. The product's custom.breadcrumb_collection metafield (a Collection reference),
        when set to a published collection. This is the per-product override — admin
        chooses the exact breadcrumb collection, so new categories NEVER require a code
        change. Set this on any product whose breadcrumb should not be left to the
-       automatic rules below (e.g. products in more than one category).
-    2. The collection the shopper came from (/collections/x/products/y), for context,
-       and the collection itself on collection pages.
+       automatic rule below (e.g. products in more than one category).
     3. The first collection that isn't a merchandising / colour collection: not ticked
        "Hide from breadcrumbs" (collection metafield custom.hide_from_breadcrumbs) and not
        on a colour template.
     4. Nothing.
 
   Note: there is deliberately no hardcoded collection list. Multi-category products are
-  handled by the metafield (step 1); every other product resolves automatically via
-  step 2 or 3, so this snippet needs no upkeep as the catalogue and categories grow.
+  handled by the metafield (step 2); every other product resolves automatically via
+  step 1 or 3, so this snippet needs no upkeep as the catalogue and categories grow.
 
   @param {object} [product]
   @param {object} [collection]
@@ -27,20 +28,20 @@
 {%- liquid
   assign result = ''
 
-  # 1. Per-product override: custom.breadcrumb_collection (Collection reference).
+  # 1. Came-from collection (product reached via /collections/x/products/y), or the
+  #    collection itself on a collection page.
+  if collection and collection.handle != blank
+    assign result = collection.handle
+  endif
+
+  # 2. Per-product override: custom.breadcrumb_collection (Collection reference).
   #    .value is the referenced collection object, or nil/blank if unset or if the
   #    referenced collection was deleted/unpublished — in which case we fall through.
-  if product and product.metafields.custom.breadcrumb_collection != blank
+  if result == blank and product and product.metafields.custom.breadcrumb_collection != blank
     assign breadcrumb_collection = product.metafields.custom.breadcrumb_collection.value
     if breadcrumb_collection != blank and breadcrumb_collection.handle != blank
       assign result = breadcrumb_collection.handle
     endif
-  endif
-
-  # 2. Came-from collection (product reached via /collections/x/products/y), or the
-  #    collection itself on a collection page.
-  if result == blank and collection and collection.handle != blank
-    assign result = collection.handle
   endif
 
   # 3. First collection that isn't a merchandising / colour collection.
