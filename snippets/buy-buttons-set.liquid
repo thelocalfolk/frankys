@@ -64,6 +64,13 @@
   @param {string} [custom_subtitle] - subtitle for the custom option. Defaults to "Any number"
   @param {string} [custom_back_label] - label for the back control. Defaults to "Back"
   @param {string} [set_color_scheme] - colour scheme class suffix. Defaults to '' (inherit the page's scheme)
+
+  FRANKY'S (TLF) PDP: options for the Figma product page layout (all default to the original look)
+  @param {boolean} [show_subtitles] - subtitles under each set size ("Most popular"...). Defaults to true
+  @param {boolean} [show_label] - visible "Quantity: Set of 6" label above the pills. Defaults to false
+  @param {boolean} [show_count_on_button] - "(6)" after the button label. Defaults to true
+  @param {boolean} [show_total] - "Total" line above the button (price x set size). Defaults to false
+  @param {string} [style] - "cards" (default) or "pills"
 {%- enddoc -%}
 
 {%- liquid
@@ -100,6 +107,13 @@
     # SET: default to '' so the picker INHERITS the product page's colour scheme (matches the
     # real Add to Cart button). Pass a scheme explicitly only if you want the block to contrast.
     assign set_color_scheme = set_color_scheme | default: ''
+
+    # FRANKY'S (TLF) PDP: Figma layout options
+    assign show_subtitles = show_subtitles | default: true, allow_false: true
+    assign show_label = show_label | default: false, allow_false: true
+    assign show_count_on_button = show_count_on_button | default: true, allow_false: true
+    assign show_total = show_total | default: false, allow_false: true
+    assign set_style = style | default: 'cards'
 
     # strip all spaces once, so every entry is clean without a per-item strip
     assign set_sizes = set_sizes | default: '4,6,8' | remove: ' '
@@ -152,7 +166,9 @@
       assign prefix_escaped = set_size_prefix | escape
       for size in set_sizes_list
         assign subtitle = ''
-        if set_subtitles != blank
+        if show_subtitles == false
+          assign subtitle = ''
+        elsif set_subtitles != blank
           assign subtitle = subtitles_list[forloop.index0] | strip
         else
           case size
@@ -225,9 +241,11 @@
           # JS keeps this in sync using the same "( qty )" format on selection change.
           capture button_content
             echo set_base_label
-            echo ' ('
-            echo default_set
-            echo ')'
+            if show_count_on_button
+              echo ' ('
+              echo default_set
+              echo ')'
+            endif
           endcapture
         endif
       %}
@@ -276,12 +294,14 @@
                 below stays static — identical for every instance and safe to repeat.
               {%- endcomment -%}
               <set-quantity
-                class="set-quantity v-stack gap-3{% if set_color_scheme != blank %} color-scheme--{{ set_color_scheme | escape }}{% endif %}"
+                class="set-quantity set-quantity--{{ set_style | escape }} v-stack gap-3{% if set_color_scheme != blank %} color-scheme--{{ set_color_scheme | escape }}{% endif %}"
                 style="--set-columns: {{ option_count }}; --set-radius: {{ settings.button_border_radius | default: 8 }}px;"
               >
                 <script type="application/json" class="set-quantity__config">
                   {
                     "defaultSet": {{ default_set }},
+                    "showCount": {{ show_count_on_button | json }},
+                    "sizePrefix": {{ set_size_prefix | json }},
                     "defaultVariantId": "{{ current_variant.id }}",
                     "defaultPrice": {{ current_variant.price | default: 0 }},
                     "moneyFormat": {{ shop.money_format | json }},
@@ -302,6 +322,13 @@
                 <fieldset class="set-quantity__fieldset v-stack gap-2">
                   <legend class="set-quantity__legend">{{ set_button_label | escape }}</legend>
 
+                  {%- if show_label -%}
+                    <p class="set-quantity__label" aria-hidden="true">
+                      <span class="text-subdued">{{ 'product.quantity.label' | t }}:</span>
+                      <span data-set-label>{{ set_size_prefix | escape }}{{ default_set }}</span>
+                    </p>
+                  {%- endif -%}
+
                   {%- if show_custom -%}
                     <div class="set-quantity__stack" data-set-switch data-mode="presets">
                       <div class="set-quantity__layer set-quantity__layer--presets" data-layer="presets">
@@ -311,7 +338,9 @@
                             <input type="radio" class="set-option__input" data-set-size name="{{ set_radio_name }}" form="{{ set_radio_form }}" value="custom">
                             <span class="set-option__card">
                               <span class="set-option__title">{{ custom_title | escape }}</span>
-                              <span class="set-option__subtitle text-subdued text-sm">{{ custom_subtitle | escape }}</span>
+                              {%- if show_subtitles -%}
+                                <span class="set-option__subtitle text-subdued text-sm">{{ custom_subtitle | escape }}</span>
+                              {%- endif -%}
                             </span>
                           </label>
                         </div>
@@ -348,6 +377,13 @@
                   Stock's conditional collapse-quantity-selector class exists to sit a selector flush
                   against the button; with no selector here, a plain gap-2 is correct (deviation 3).
                 {%- endcomment -%}
+                {%- if show_total -%}
+                  <div class="set-quantity__total">
+                    <span>{{ 'cart.general.total' | t }}</span>
+                    <span data-set-total aria-live="polite">{{ current_variant.price | times: default_set | money }}</span>
+                  </div>
+                {%- endif -%}
+
                 <div class="h-stack custom__buy_button gap-2">
                   {%- render 'button', content: button_content, type: 'submit', disabled: button_disabled, secondary: show_payment_button, style: atc_button_style, background: atc_button_background, text_color: atc_button_text_color, stretch: true -%}
                 </div>
@@ -474,6 +510,12 @@
             }
           }
 
+          // FRANKY'S (TLF) PDP: picking a colour re-renders this block, so carry the shopper's set size over.
+          this.restoreState();
+
+          this.labelEl = this.querySelector('[data-set-label]');
+          this.totalEl = this.querySelector('[data-set-total]');
+
           this.addEventListener('change', (e) => { if (e.target.matches('[data-set-size]')) this.onSetChange(); });
           if (this.customInput) {
             this.customInput.addEventListener('input', () => this.update());
@@ -494,6 +536,36 @@
           // Sections re-render on variant change; drop the old listeners so they don't stack up.
           if (!this.variantEvents) return;
           this.variantEvents.forEach((evt) => document.removeEventListener(evt, this.onVariantChange));
+        }
+
+        restoreState() {
+          const saved = this.form && SetQuantity.state[this.form.id];
+          if (!saved) return;
+          const radio = this.querySelector('[data-set-size][value="' + saved.choice + '"]');
+          if (!radio) return;
+          radio.checked = true;
+          if (saved.choice === 'custom') {
+            if (this.customInput) this.customInput.value = saved.qty;
+            this.setMode('custom');
+          } else {
+            this.lastPreset = saved.choice;
+          }
+        }
+
+        formatMoney(cents) {
+          const fmt = (decimals, thousands, decimal) => {
+            const parts = (cents / 100).toFixed(decimals).split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
+            return parts.join(decimal);
+          };
+          return String(this.config.moneyFormat || '').replace(/<[^>]*>/g, '').replace(/\{\{\s*(\w+)\s*\}\}/, (_, key) => {
+            switch (key) {
+              case 'amount_no_decimals': return fmt(0, ',', '.');
+              case 'amount_with_comma_separator': return fmt(2, '.', ',');
+              case 'amount_no_decimals_with_comma_separator': return fmt(0, '.', ',');
+              default: return fmt(2, ',', '.');
+            }
+          });
         }
 
         // Respect the variant's Shopify quantity rules so /cart/add can't reject the submit.
@@ -558,13 +630,24 @@
 
           // SET (GMC fix): show the chosen set SIZE on the button, never a dollar total.
           // Editing a text node preserves sibling elements (spinner, icons) inside the button.
-          if (this.labelNode) this.labelNode.nodeValue = this.baseLabel + ' (' + qty + ')';
+          if (this.labelNode) this.labelNode.nodeValue = this.config.showCount === false ? this.baseLabel : this.baseLabel + ' (' + qty + ')';
+
+          // FRANKY'S (TLF) PDP: visible label and running total.
+          if (this.labelEl) this.labelEl.textContent = (this.config.sizePrefix || '') + qty;
+          if (this.totalEl) {
+            const price = this.config.variants[this.getVariantId()];
+            this.totalEl.textContent = this.formatMoney((price != null ? price : this.config.defaultPrice) * qty);
+          }
+
+          const checked = this.querySelector('[data-set-size]:checked');
+          if (this.form && checked) SetQuantity.state[this.form.id] = { choice: checked.value, qty };
 
           // SET: let the "Complete the set" suggestions follow the chosen set size.
           this.dispatchEvent(new CustomEvent('set:change', { bubbles: true, detail: { quantity: qty } }));
         }
       }
 
+      SetQuantity.state = {};
       customElements.define('set-quantity', SetQuantity);
     })();
   </script>

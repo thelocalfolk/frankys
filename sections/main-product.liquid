@@ -360,6 +360,60 @@ document.addEventListener('variant:change', function(event) {
       ]
     },
     {
+      "type": "features",
+      "name": "Features & benefits",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Franky's: icon points from a product metafield, then the product description, in an accordion."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Features & benefits"
+        },
+        {
+          "type": "text",
+          "id": "metafield",
+          "label": "Product metafield",
+          "info": "namespace.key. A list of metaobjects with a \"label\" text field and an optional \"icon\" file field, or a list of text.",
+          "default": "custom.features"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_description",
+          "label": "Show product description",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "lifestyle_images",
+      "name": "Lifestyle photos",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Franky's: a strip of portrait photos from a product metafield. Hidden when the product has none."
+        },
+        {
+          "type": "text",
+          "id": "metafield",
+          "label": "Product metafield",
+          "info": "namespace.key of a list of files.",
+          "default": "custom.lifestyle_images"
+        }
+      ]
+    },
+    {
       "type": "product_pills",
       "name": "Product pills",
       "limit": 1,

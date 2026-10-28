@@ -1,0 +1,80 @@
+{%- comment -%}
+  FRANKY'S (TLF) PDP: the three alternating photo and text panels under the product page buy box in the Figma
+  ("The Foundation Of A Good Table", "Made For The Beautiful Mess", "A Setting Of Your Own").
+
+  Panels come from a product metafield (default custom.stories): a list of metaobjects with the fields
+  "heading" (text), "text" (multi-line or rich text) and "image" (file). One set of panels can be shared by every
+  product in a range. Outputs nothing when the product has none.
+{%- endcomment -%}
+
+{%- liquid
+  assign metafield_key = section.settings.metafield | default: 'custom.stories' | strip | split: '.'
+  assign stories = product.metafields[metafield_key.first][metafield_key.last].value
+-%}
+
+{%- if stories != blank -%}
+  <div class="color-scheme color-scheme--{{ section.settings.color_scheme.id }}">
+    <div class="container product-stories">
+      {%- for story in stories -%}
+        {%- assign image = story.image.value -%}
+
+        <div class="product-stories__item {% cycle 'product-stories__item--image-end', 'product-stories__item--image-start' %}">
+          <div class="product-stories__text prose">
+            {%- if story.heading != blank -%}
+              <h2 class="h3">{{ story.heading.value | escape }}</h2>
+            {%- endif -%}
+
+            {%- if story.text != blank -%}
+              {%- if story.text.type == 'rich_text_field' -%}
+                {{- story.text | metafield_tag -}}
+              {%- else -%}
+                <p>{{ story.text.value | escape | newline_to_br }}</p>
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+
+          {%- if image != blank -%}
+            <div class="product-stories__image">
+              {{- image | image_url: width: 1600 | image_tag: loading: 'lazy', sizes: '(max-width: 699px) 100vw, 50vw', widths: '400,600,800,1000,1200,1600', alt: image.alt -}}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product stories",
+  "class": "shopify-section--product-stories",
+  "tag": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "FRANKY'S (TLF) PDP. Alternating photo and text panels from a product metafield. Hidden when the product has none."
+    },
+    {
+      "type": "text",
+      "id": "metafield",
+      "label": "Product metafield",
+      "info": "namespace.key of a list of metaobjects with \"heading\", \"text\" and \"image\" fields.",
+      "default": "custom.stories"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:global.colors.scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product stories"
+    }
+  ]
+}
+{% endschema %}
