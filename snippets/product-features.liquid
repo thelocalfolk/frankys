@@ -1,0 +1,57 @@
+{%- doc -%}
+  FRANKY'S (TLF) PDP: "Features & benefits" on the product page, as in the Figma: an accordion (open by default) with
+  icon points, then the product description.
+
+  Points come from the product metafield set in the block (default custom.features):
+  - a list of metaobjects with a "label" text field and an optional "icon" file field, so one set of points can be
+    shared by every product in a range, or
+  - a list of single line text (points without icons).
+
+  @param {object} product - the product
+  @param {object} block - the features block
+{%- enddoc -%}
+
+{%- liquid
+  assign metafield_key = block.settings.metafield | default: 'custom.features' | strip | split: '.'
+  assign features = product.metafields[metafield_key.first][metafield_key.last].value
+
+  if block.settings.show_description
+    assign product_description = product.description | remove_first: '<meta charset="utf-8">'
+  endif
+-%}
+
+{%- if features != blank or product_description != blank -%}
+  {%- capture content -%}
+    {%- if features != blank -%}
+      <ul class="product-features" role="list">
+        {%- for feature in features -%}
+          {%- liquid
+            assign label = feature
+            assign icon = blank
+            if feature.label != blank
+              assign label = feature.label.value
+              assign icon = feature.icon.value
+            endif
+          -%}
+          <li class="product-features__item">
+            {%- if icon != blank -%}
+              {{- icon | image_url: width: 64 | image_tag: width: 24, height: 24, loading: 'lazy', alt: '', class: 'product-features__icon' -}}
+            {%- endif -%}
+            <span>{{ label | escape }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if product_description != blank -%}
+      <div class="prose">{{ product_description }}</div>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- render 'accordion',
+    title: block.settings.title,
+    content: content,
+    open: block.settings.open,
+    block: block
+  -%}
+{%- endif -%}

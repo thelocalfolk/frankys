@@ -401,6 +401,39 @@ no need to manually pass the section as it is globally available)
             -%}
 
           {%- when 'buy_buttons' -%}
+            {%- comment -%}
+              FRANKY'S (TLF) PDP: products sold in sets get the Set of 4 / 6 / 8 / Custom picker. Set sizes come from the
+              product metafield custom.set_sizes (e.g. "4, 6, 8" or a list of integers); the "upsell" template keeps its
+              default 4, 6, 8.
+            {%- endcomment -%}
+            {%- liquid
+              assign set_sizes = product.metafields.custom.set_sizes.value
+              if product.metafields.custom.set_sizes.type contains 'list.'
+                assign set_sizes = set_sizes | join: ','
+              endif
+              assign set_button_label = 'product.general.add_to_cart_button' | t
+            -%}
+
+            {%- if set_sizes != blank or product.template_suffix == 'upsell' -%}
+              {%- render 'buy-buttons-set',
+                  product: product,
+                  form_id: product_form_id,
+                  set_sizes: set_sizes,
+                  show_payment_button: block.settings.show_payment_button,
+                  show_gift_card_recipient: block.settings.show_gift_card_recipient,
+                  atc_button_style: block.settings.atc_button_style,
+                  atc_button_background: block.settings.atc_button_background,
+                  atc_button_text_color: block.settings.atc_button_text_color,
+                  payment_button_background: block.settings.payment_button_background,
+                  payment_button_text_color: block.settings.payment_button_text_color,
+                  set_button_label: set_button_label,
+                  style: 'pills',
+                  show_subtitles: false,
+                  show_label: true,
+                  show_count_on_button: false,
+                  show_total: true
+              -%}
+            {%- else -%}
             {%- render 'buy-buttons',
                 product: product,
                 form_id: product_form_id,
@@ -414,6 +447,13 @@ no need to manually pass the section as it is globally available)
                 payment_button_background: block.settings.payment_button_background,
                 payment_button_text_color: block.settings.payment_button_text_color
             -%}
+            {%- endif -%}
+
+          {%- when 'features' -%}
+            {%- render 'product-features', product: product, block: block -%}
+
+          {%- when 'lifestyle_images' -%}
+            {%- render 'product-lifestyle-images', product: product, block: block -%}
 
           {%- when 'volume_pricing' -%}
             {%- render 'volume-pricing-table', variant: product.selected_or_first_available_variant -%}

@@ -1,0 +1,27 @@
+{%- doc -%}
+  FRANKY'S (TLF) PDP: strip of portrait lifestyle photos under the add to cart, as in the Figma. Swipes sideways when
+  there are more photos than fit.
+
+  Photos come from the product metafield set in the block (default custom.lifestyle_images, list of files). Upload
+  them to Shopify Files, web-optimised.
+
+  @param {object} product - the product
+  @param {object} block - the lifestyle_images block
+{%- enddoc -%}
+
+{%- liquid
+  assign metafield_key = block.settings.metafield | default: 'custom.lifestyle_images' | strip | split: '.'
+  assign images = product.metafields[metafield_key.first][metafield_key.last].value
+-%}
+
+{%- if images != blank -%}
+  <div class="product-lifestyle-images scroll-area bleed sm:unbleed snap-x" role="list">
+    {%- for image in images -%}
+      {%- if image.media_type == 'image' -%}
+        <div class="product-lifestyle-images__item snap-start" role="listitem">
+          {{- image | image_url: width: 600 | image_tag: loading: 'lazy', sizes: '(max-width: 699px) 30vw, 180px', widths: '200,300,400,600', alt: image.alt -}}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+{%- endif -%}
