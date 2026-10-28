@@ -1,29 +1,24 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "breadcrumbs": {
-      "type": "breadcrumbs",
-      "settings": {
-        "color_scheme": "",
-        "colour_parent": "placemats"
-      }
-    },
     "colour_switcher": {
       "type": "frankys-colour-switcher",
       "blocks": {
-        "colour_light_blue": {
+        "colour_chocolate": {
           "type": "colour",
           "settings": {
-            "collection": "light-blue",
-            "image_asset": "frankys-colour-tile-light-blue.jpg",
-            "icon_style": "light-blue"
-          }
-        },
-        "colour_navy": {
-          "type": "colour",
-          "settings": {
-            "collection": "navy",
-            "icon_style": "navy",
-            "image_asset": "frankys-colour-tile-navy.jpg"
+            "collection": "chocolate",
+            "image_asset": "frankys-colour-tile-chocolate.jpg",
+            "icon_style": "chocolate",
+            "label": ""
           }
         },
         "colour_sage_green": {
@@ -31,95 +26,17 @@
           "settings": {
             "collection": "sage-green",
             "image_asset": "frankys-colour-tile-sage-green.jpg",
-            "icon_style": "sage-green"
+            "icon_style": "sage-green",
+            "label": ""
           }
         },
-        "colour_dark_green": {
+        "colour_light_blue": {
           "type": "colour",
           "settings": {
-            "collection": "dark-green",
-            "icon_style": "dark-green",
-            "image_asset": "frankys-colour-tile-dark-green.jpg"
-          }
-        },
-        "colour_pink": {
-          "type": "colour",
-          "settings": {
-            "collection": "pink",
-            "icon_style": "pink",
-            "image_asset": "frankys-colour-tile-pink.jpg"
-          }
-        },
-        "colour_nude": {
-          "type": "colour",
-          "settings": {
-            "collection": "nude",
-            "icon_style": "nude",
-            "image_asset": "frankys-colour-tile-nude.jpg"
-          }
-        },
-        "colour_wine": {
-          "type": "colour",
-          "settings": {
-            "collection": "wine",
-            "icon_style": "wine",
-            "image_asset": "frankys-colour-tile-wine.jpg"
-          }
-        },
-        "colour_clay": {
-          "type": "colour",
-          "settings": {
-            "collection": "clay",
-            "icon_style": "clay",
-            "image_asset": "frankys-colour-tile-clay.jpg"
-          }
-        },
-        "colour_brown": {
-          "type": "colour",
-          "settings": {
-            "collection": "brown",
-            "icon_style": "brown",
-            "image_asset": "frankys-colour-tile-brown.jpg"
-          }
-        },
-        "colour_pearl_grey": {
-          "type": "colour",
-          "settings": {
-            "collection": "pearl-grey",
-            "icon_style": "pearl-grey",
-            "image_asset": "frankys-colour-tile-pearl-grey.jpg"
-          }
-        },
-        "colour_dark_grey": {
-          "type": "colour",
-          "settings": {
-            "collection": "dark-grey",
-            "icon_style": "dark-grey",
-            "image_asset": "frankys-colour-tile-dark-grey.jpg"
-          }
-        },
-        "colour_beige": {
-          "type": "colour",
-          "settings": {
-            "collection": "beige",
-            "icon_style": "beige",
-            "image_asset": "frankys-colour-tile-beige.jpg"
-          }
-        },
-        "colour_chocolate": {
-          "type": "colour",
-          "settings": {
-            "collection": "chocolate",
-            "image_asset": "frankys-colour-tile-chocolate.jpg",
-            "icon_style": "chocolate"
-          }
-        },
-        "colour_black": {
-          "type": "colour",
-          "settings": {
-            "collection": "black",
-            "icon_style": "black",
-            "image_asset": "frankys-colour-tile-black.jpg"
+            "collection": "light-blue",
+            "image_asset": "frankys-colour-tile-light-blue.jpg",
+            "icon_style": "light-blue",
+            "label": ""
           }
         },
         "colour_butter": {
@@ -127,15 +44,116 @@
           "settings": {
             "collection": "butter",
             "image_asset": "frankys-colour-tile-butter.jpg",
-            "icon_style": "butter"
+            "icon_style": "butter",
+            "label": ""
+          }
+        },
+        "colour_navy": {
+          "type": "colour",
+          "settings": {
+            "collection": "navy",
+            "image_asset": "frankys-colour-tile-navy.jpg",
+            "icon_style": "navy",
+            "label": ""
+          }
+        },
+        "colour_dark_green": {
+          "type": "colour",
+          "settings": {
+            "collection": "dark-green",
+            "image_asset": "frankys-colour-tile-dark-green.jpg",
+            "icon_style": "dark-green",
+            "label": ""
+          }
+        },
+        "colour_pink": {
+          "type": "colour",
+          "settings": {
+            "collection": "pink",
+            "image_asset": "frankys-colour-tile-pink.jpg",
+            "icon_style": "pink",
+            "label": ""
+          }
+        },
+        "colour_nude": {
+          "type": "colour",
+          "settings": {
+            "collection": "nude",
+            "image_asset": "frankys-colour-tile-nude.jpg",
+            "icon_style": "nude",
+            "label": ""
+          }
+        },
+        "colour_wine": {
+          "type": "colour",
+          "settings": {
+            "collection": "wine",
+            "image_asset": "frankys-colour-tile-wine.jpg",
+            "icon_style": "wine",
+            "label": ""
+          }
+        },
+        "colour_clay": {
+          "type": "colour",
+          "settings": {
+            "collection": "clay",
+            "image_asset": "frankys-colour-tile-clay.jpg",
+            "icon_style": "clay",
+            "label": ""
+          }
+        },
+        "colour_brown": {
+          "type": "colour",
+          "settings": {
+            "collection": "brown",
+            "image_asset": "frankys-colour-tile-brown.jpg",
+            "icon_style": "brown",
+            "label": ""
+          }
+        },
+        "colour_pearl_grey": {
+          "type": "colour",
+          "settings": {
+            "collection": "pearl-grey",
+            "image_asset": "frankys-colour-tile-pearl-grey.jpg",
+            "icon_style": "pearl-grey",
+            "label": ""
+          }
+        },
+        "colour_dark_grey": {
+          "type": "colour",
+          "settings": {
+            "collection": "dark-grey",
+            "image_asset": "frankys-colour-tile-dark-grey.jpg",
+            "icon_style": "dark-grey",
+            "label": ""
+          }
+        },
+        "colour_beige": {
+          "type": "colour",
+          "settings": {
+            "collection": "beige",
+            "image_asset": "frankys-colour-tile-beige.jpg",
+            "icon_style": "beige",
+            "label": ""
+          }
+        },
+        "colour_black": {
+          "type": "colour",
+          "settings": {
+            "collection": "black",
+            "image_asset": "frankys-colour-tile-black.jpg",
+            "icon_style": "black",
+            "label": ""
           }
         },
         "colour_milk": {
           "type": "colour",
           "settings": {
             "collection": "milk",
+            "image_asset": "frankys-colour-tile-milk.jpg",
             "icon_style": "milk",
-            "image_asset": "frankys-colour-tile-milk.jpg"
+            "label": ""
           }
         }
       },
@@ -162,6 +180,8 @@
         "eyebrow": "Placemats & Coasters",
         "title": "Shop by Colour",
         "intro": "<p>Start with a colour you love and set the table from there. Placemats and coasters in shades designed to mix, match and bring a little more colour to every meal.</p>",
+        "tile_source": "blocks",
+        "scope_product_types": "",
         "switcher_title": "Choose your colour",
         "tile_color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",
         "overlay_color": "#000000",
@@ -266,29 +286,14 @@
     "collections_you_will_love": {
       "type": "collection-list",
       "blocks": {
-        "section-header": {
-          "type": "_section-header",
-          "static": true,
-          "settings": {
-            "subheading": "",
-            "title": "Collections you will love",
-            "content": "",
-            "button_text": "Shop Collections",
-            "button_link": "shopify://collections",
-            "button_style": "link",
-            "text_alignment": "left",
-            "heading_size": "h5",
-            "title_icon": "none",
-            "show_scrolling_title": false
-          },
-          "blocks": {}
-        },
         "collection_card_placemats": {
           "type": "collection-card",
           "settings": {
             "color_scheme": "scheme-3",
             "collection": "placemats",
             "image": "shopify://shop_images/frankys-collection-placemats.jpg",
+            "image_asset": "",
+            "open_colour_page": false,
             "title": "Placemats",
             "heading_tag": "h3",
             "button_text": "",
@@ -304,6 +309,8 @@
             "color_scheme": "scheme-3",
             "collection": "coasters",
             "image": "shopify://shop_images/frankys-collection-coasters.jpg",
+            "image_asset": "",
+            "open_colour_page": false,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
@@ -317,8 +324,10 @@
           "type": "collection-card",
           "settings": {
             "color_scheme": "scheme-3",
-            "collection": "throws",
+            "collection": "bedding",
             "image": "shopify://shop_images/frankys-collection-bedding.jpg",
+            "image_asset": "",
+            "open_colour_page": false,
             "title": "Bedding",
             "heading_tag": "h3",
             "button_text": "",
@@ -334,12 +343,31 @@
             "color_scheme": "scheme-3",
             "collection": "bath",
             "image": "shopify://shop_images/frankys-collection-bath.jpg",
+            "image_asset": "",
+            "open_colour_page": false,
             "title": "{{ closest.collection.title }}",
             "heading_tag": "h3",
             "button_text": "",
             "button_style": "outline",
             "overlay_color": "#000000",
             "overlay_opacity": 0
+          },
+          "blocks": {}
+        },
+        "section-header": {
+          "type": "_section-header",
+          "static": true,
+          "settings": {
+            "subheading": "",
+            "title": "Collections you will love",
+            "content": "",
+            "button_text": "Shop Collections",
+            "button_link": "shopify://collections",
+            "button_style": "link",
+            "text_alignment": "left",
+            "heading_size": "h5",
+            "title_icon": "none",
+            "show_scrolling_title": false
           },
           "blocks": {}
         }
@@ -358,6 +386,13 @@
         "content_position": "inside",
         "column_spacing": "sm",
         "image_size": "auto"
+      }
+    },
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {
+        "color_scheme": "",
+        "colour_parent": "placemats"
       }
     }
   },
