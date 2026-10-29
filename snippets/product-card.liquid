@@ -170,7 +170,7 @@ based on your desired layout (and remove most of the settings associated), and t
   # (it's a CSS background declared only inside @media (hover:hover) — see the <style> block below).
   assign card_cover_media = product.metafields.custom.card_cover.value
   assign has_card_cover = false
-  if card_cover_media != blank
+  if card_cover_media != blank and is_colour_template == false
     assign has_card_cover = true
   endif
 -%}
