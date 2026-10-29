@@ -1,22 +1,17 @@
 {%- doc -%}
-  FRANKY'S (TLF) PDP: "Complete the look" tick list from the Figma product page. Each row is a product category
-  (placemats, coasters, napkins, tablecloth, cutlery). Ticking a row adds that category's matching piece with the
-  main product, in one add to cart, and the Total above the button includes it.
+  FRANKY'S (TLF) PDP: "Complete the look" from the Figma product page, working like the set-builder prototype
+  (claude.ai/artifact/ADqAhj5Nx8mm817ux7Aswt). Each row is a product category (placemats, coasters, napkins, tablecloth,
+  cutlery). Ticking a row adds a matching piece; the row then opens to change quantity, range and colour. The Total
+  above the button includes ticked rows, and Add to Cart adds everything in one request.
 
-  HOW EACH ROW'S PIECE IS PICKED (server-side, re-rendered when the colour changes)
-    1. Products in the row's collection. Rows whose collection holds the current product are hidden (no "Placemats"
-       row on a placemat).
-    2. Same range first: products that are also in the current product's range collection (product metafield
-       custom.range, else the first of the product's collections listed in the block's "Range collections").
-       Then products whose name starts with the same word (Lorient Placemat -> Lorient Coaster), then any product in
-       the row's collection.
-    3. Same colour: the variant whose Colour/Color option matches the chosen colour. Products without a colour option
-       use their first available variant. If nothing in the collection comes in that colour (cutlery is Gold / Silver
-       / Black, linens use their own colour names), the row still shows with the first available piece.
-
-  QUANTITY: "Match set size" rows add the set size picked in the set picker (e.g. 6 coasters with 6 placemats); "One"
-  rows add 1 (a tablecloth, a set of napkins). Each row shows "From" the lowest price in its collection; the Total
-  adds the picked piece's own price, no bundle discount.
+  This snippet only outputs the rows and their product data; assets/frankys-complete-the-look.js does the picking:
+    - Colour follows the product's chosen colour. Same range first (Lorient Placemat -> Lorient Coaster), then the
+      cheapest range made in that exact colour, then the range with the closest colour (by swatch). Rows outside the
+      product's range are marked "Mix".
+    - Ranges are the first word of the product name, so the three Peru Cutlery Set products are one range.
+    - Quantity options come from how many place settings one piece covers: the row's "Covers" setting, a "Set of N"
+      in the product name, or the product metafield custom.builder_covers_settings (same as the table builder).
+  Rows whose collection holds the current product are hidden (no "Placemats" row on a placemat).
 
   @param {object} product - the product whose page this is
   @param {object} block - the complete_the_look block
@@ -28,171 +23,133 @@
   assign current_variant = product.selected_or_first_available_variant
   assign product_collection_handles = product.collections | map: 'handle'
 
-  # ---- Chosen colour --------------------------------------------------------------------------------------------
-  assign chosen_colour = blank
+  # ---- Chosen colour and its swatch -----------------------------------------------------------------------------
+  assign hero_colour = ''
+  assign hero_swatch = ''
   for option in product.options_with_values
     assign option_name = option.name | downcase | strip
     if colour_names contains option_name
-      assign chosen_colour = current_variant.options[forloop.index0] | downcase | strip
+      assign hero_colour = current_variant.options[forloop.index0]
+      for value in option.values
+        if value == hero_colour
+          capture hero_swatch
+            render 'setting-builder-swatch', value: value
+          endcapture
+          break
+        endif
+      endfor
       break
     endif
   endfor
 
-  # ---- Range ----------------------------------------------------------------------------------------------------
-  assign range_handle = blank
-  assign range_metafield = product.metafields.custom.range
-
-  if range_metafield != blank
-    if range_metafield.type == 'collection_reference'
-      assign range_handle = range_metafield.value.handle
-    else
-      assign range_handle = range_metafield.value | handleize
-    endif
-  endif
-
-  if range_handle == blank
-    assign range_handles = block.settings.range_collections | map: 'handle'
-    for handle in product_collection_handles
-      if range_handles contains handle
-        assign range_handle = handle
-        break
-      endif
-    endfor
-  endif
-
-  assign range_name = product.title | split: ' ' | first | downcase
+  assign hero_range = product.title | split: ' ' | first | downcase
 -%}
 
 {%- capture rows -%}
   {%- for i in (1..5) -%}
     {%- liquid
-      assign label_key = 'item_' | append: i | append: '_label'
       assign collection_key = 'item_' | append: i | append: '_collection'
-      assign icon_key = 'item_' | append: i | append: '_icon'
-      assign image_key = 'item_' | append: i | append: '_image'
-      assign quantity_key = 'item_' | append: i | append: '_quantity'
-
       assign row_collection = block.settings[collection_key]
       if row_collection == blank or product_collection_handles contains row_collection.handle
         continue
       endif
 
-      # Pick the piece: same range (pass 1), same first word of the name (pass 2), anything in the collection (pass 3),
-      # all in the chosen colour; then anything available in any colour (pass 4)
-      assign pick = nil
-      assign pick_variant = nil
-
-      for pass in (1..4)
-        if pass == 1 and range_handle == blank
-          continue
-        endif
-
-        for candidate in row_collection.products limit: 50
-          if candidate.id == product.id or candidate.available == false
-            continue
-          endif
-
-          if pass == 2
-            assign candidate_name = candidate.title | split: ' ' | first | downcase
-            if candidate_name != range_name
-              continue
-            endif
-          endif
-
-          if pass == 1
-            assign candidate_handles = candidate.collections | map: 'handle'
-            unless candidate_handles contains range_handle
-              continue
-            endunless
-          endif
-
-          assign colour_index = nil
-          for option in candidate.options_with_values
-            assign option_name = option.name | downcase | strip
-            if colour_names contains option_name
-              assign colour_index = forloop.index0
-              break
-            endif
-          endfor
-
-          assign candidate_variant = nil
-          if colour_index == nil or chosen_colour == blank or pass == 4
-            assign candidate_variant = candidate.selected_or_first_available_variant
-          else
-            for variant in candidate.variants
-              assign variant_colour = variant.options[colour_index] | downcase | strip
-              if variant.available and variant_colour == chosen_colour
-                assign candidate_variant = variant
-                break
-              endif
-            endfor
-          endif
-
-          if candidate_variant != nil and candidate_variant.available
-            assign pick = candidate
-            assign pick_variant = candidate_variant
-            break
-          endif
-        endfor
-
-        if pick != nil
-          break
-        endif
-      endfor
-
-      if pick == nil
-        continue
-      endif
-
-      assign match_set = true
-      if block.settings[quantity_key] == 'one'
-        assign match_set = false
-      endif
-
       # "From" price: the cheapest available product in the row's collection
       assign from_price = nil
-      for candidate in row_collection.products limit: 50
+      assign product_count = 0
+      for candidate in row_collection.products limit: 40
         if candidate.available == false or candidate.id == product.id
           continue
         endif
+        assign product_count = product_count | plus: 1
         if from_price == nil or candidate.price_min < from_price
           assign from_price = candidate.price_min
         endif
       endfor
 
-      assign from_price_money = from_price | money
+      if product_count == 0
+        continue
+      endif
+
+      assign label_key = 'item_' | append: i | append: '_label'
+      assign icon_key = 'item_' | append: i | append: '_icon'
+      assign image_key = 'item_' | append: i | append: '_image'
+      assign covers_key = 'item_' | append: i | append: '_covers'
 
       assign label = block.settings[label_key] | default: row_collection.title
       assign icon = block.settings[icon_key]
       assign image = block.settings[image_key]
+      assign covers = block.settings[covers_key] | default: 1, allow_false: true
+      assign from_price_money = from_price | money
       assign input_id = 'complete-the-look-' | append: block.id | append: '-' | append: i
     -%}
 
-    <li class="complete-the-look__row">
-      <input type="checkbox" class="checkbox" id="{{ input_id }}" value="{{ pick_variant.id }}"
-             data-look-item="{{ i }}" data-price="{{ pick_variant.price }}" data-match-set="{{ match_set }}">
-      <label class="complete-the-look__label" for="{{ input_id }}">
-        <span class="complete-the-look__icon" aria-hidden="true">
-          {%- if image != blank -%}
-            {{- image | image_url: width: 96 | image_tag: width: 32, height: 32, loading: 'lazy', alt: '' -}}
-          {%- elsif icon != blank and icon != 'none' -%}
-            {%- assign icon_file = 'frankys-icon-' | append: icon | append: '.svg' -%}
-            {{- icon_file | inline_asset_content -}}
-          {%- endif -%}
-        </span>
-        <span class="complete-the-look__name">
-          {{- label | escape -}}
-          <span class="sr-only">: {{ pick.title | escape }}{% if pick_variant.title != 'Default Title' %}, {{ pick_variant.title | escape }}{% endif %}</span>
-        </span>
-        <span class="complete-the-look__price">{{ 'product.price.from_price_html' | t: price_min: from_price_money }}</span>
-      </label>
+    <li class="complete-the-look__row" data-row="{{ i }}">
+      <script type="application/json" data-row-products>
+        {
+          "covers": {{ covers | json }},
+          "products": [
+            {%- assign first = true -%}
+            {%- for candidate in row_collection.products limit: 40 -%}
+              {%- if candidate.available == false or candidate.id == product.id -%}{%- continue -%}{%- endif -%}
+              {%- unless first -%},{%- endunless -%}
+              {%- render 'setting-builder-product-json', product: candidate -%}
+              {%- assign first = false -%}
+            {%- endfor -%}
+          ]
+        }
+      </script>
+
+      <div class="complete-the-look__head">
+        <input type="checkbox" class="checkbox" id="{{ input_id }}" data-row-toggle>
+        <label class="complete-the-look__label" for="{{ input_id }}">
+          <span class="complete-the-look__icon" aria-hidden="true">
+            {%- if image != blank -%}
+              {{- image | image_url: width: 96 | image_tag: width: 32, height: 32, loading: 'lazy', alt: '' -}}
+            {%- elsif icon != blank and icon != 'none' -%}
+              {%- assign icon_file = 'frankys-icon-' | append: icon | append: '.svg' -%}
+              {{- icon_file | inline_asset_content -}}
+            {%- endif -%}
+          </span>
+          <span class="complete-the-look__name">{{ label | escape }}</span>
+          <span class="complete-the-look__price" data-row-price>{{ 'product.price.from_price_html' | t: price_min: from_price_money }}</span>
+        </label>
+      </div>
+
+      <div class="complete-the-look__options" data-row-options hidden></div>
     </li>
   {%- endfor -%}
 {%- endcapture -%}
 
 {%- assign rows = rows | strip -%}
 {%- if rows != blank -%}
-  <complete-the-look class="complete-the-look" form="{{ form_id | escape }}" {{ block.shopify_attributes }}>
+  <complete-the-look
+    class="complete-the-look"
+    form="{{ form_id | escape }}"
+    data-hero-range="{{ hero_range | escape }}"
+    data-hero-colour="{{ hero_colour | escape }}"
+    data-hero-swatch="{{ hero_swatch | strip | escape }}"
+    {{ block.shopify_attributes }}
+  >
+    <script type="application/json" data-look-config>
+      {
+        "moneyFormat": {{ shop.money_format | json }},
+        "strings": {
+          "range": {{ 'product.complete_the_look.range' | t | json }},
+          "colour": {{ 'product.complete_the_look.colour' | t | json }},
+          "quantity": {{ 'product.complete_the_look.quantity' | t | json }},
+          "mix": {{ 'product.complete_the_look.mix' | t | json }},
+          "inColour": {{ 'product.complete_the_look.in_colour' | t: range: '{range}', colour: '{colour}' | json }},
+          "closestColour": {{ 'product.complete_the_look.closest_colour' | t: range: '{range}', colour: '{colour}' | json }},
+          "setOf": {{ 'product.complete_the_look.set_of' | t: count: '{count}' | json }},
+          "sets": {{ 'product.complete_the_look.sets' | t: count: '{count}' | json }},
+          "oneSet": {{ 'product.complete_the_look.one_set' | t | json }},
+          "one": {{ 'product.complete_the_look.one' | t | json }},
+          "two": {{ 'product.complete_the_look.two' | t | json }}
+        }
+      }
+    </script>
+
     <fieldset class="complete-the-look__fieldset">
       {%- if block.settings.title != blank -%}
         <legend class="complete-the-look__title">{{ block.settings.title | escape }}</legend>
@@ -203,112 +160,5 @@
     </fieldset>
   </complete-the-look>
 
-  <script>
-    (function () {
-      if (customElements.get('complete-the-look')) return;
-
-      // Ticked rows survive the re-render that a colour change triggers, keyed by form and row number.
-      const ticked = {};
-
-      class CompleteTheLook extends HTMLElement {
-        connectedCallback() {
-          // On first load this element comes before the buy buttons, so wait for the form to exist.
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.init(), { once: true });
-          } else {
-            this.init();
-          }
-        }
-
-        init() {
-          this.formId = this.getAttribute('form');
-          this.form = document.getElementById(this.formId);
-          this.setSize = this.readSetSize();
-
-          (ticked[this.formId] || []).forEach((row) => {
-            const input = this.querySelector('[data-look-item="' + row + '"]');
-            if (input) input.checked = true;
-          });
-
-          this.abort = new AbortController();
-          const signal = this.abort.signal;
-          this.addEventListener('change', () => this.update(), { signal });
-          document.addEventListener('set:change', (event) => {
-            if (!this.form || !this.form.contains(event.target)) return;
-            this.setSize = event.detail.quantity;
-            this.update();
-          }, { signal });
-
-          // Runs before the theme's own submit handler (capture on the form's ancestor), so the theme posts the
-          // main product and the ticked pieces together as one items[] add.
-          if (this.form) {
-            this.form.parentElement.addEventListener('submit', (event) => this.beforeSubmit(event), { capture: true, signal });
-          }
-
-          this.update();
-        }
-
-        disconnectedCallback() {
-          if (this.abort) this.abort.abort();
-        }
-
-        readSetSize() {
-          const input = this.form && this.form.querySelector('[data-set-quantity]');
-          return input ? parseInt(input.value, 10) || 1 : 1;
-        }
-
-        checkedInputs() {
-          return Array.from(this.querySelectorAll('[data-look-item]:checked'));
-        }
-
-        quantityFor(input) {
-          return input.dataset.matchSet === 'true' ? this.setSize : 1;
-        }
-
-        // Added to the set picker's Total
-        extraCents() {
-          return this.checkedInputs().reduce((sum, input) => sum + parseInt(input.dataset.price, 10) * this.quantityFor(input), 0);
-        }
-
-        update() {
-          ticked[this.formId] = this.checkedInputs().map((input) => input.dataset.lookItem);
-
-          const setQuantity = this.form && this.form.querySelector('set-quantity');
-          if (setQuantity && typeof setQuantity.update === 'function') setQuantity.update(true);
-        }
-
-        beforeSubmit(event) {
-          if (event.target !== this.form) return;
-          const extras = this.checkedInputs();
-          if (!extras.length) return;
-
-          const idInput = this.form.elements.namedItem('id');
-          const quantityInput = this.form.elements.namedItem('quantity');
-          const lines = [{ id: idInput.value, quantity: quantityInput ? quantityInput.value : 1 }];
-          extras.forEach((input) => lines.push({ id: input.value, quantity: this.quantityFor(input) }));
-
-          const added = [];
-          lines.forEach((line, index) => {
-            ['id', 'quantity'].forEach((key) => {
-              const hidden = document.createElement('input');
-              hidden.type = 'hidden';
-              hidden.name = 'items[' + index + '][' + key + ']';
-              hidden.value = line[key];
-              this.form.appendChild(hidden);
-              added.push(hidden);
-            });
-          });
-
-          // The theme builds its FormData synchronously in its submit handler; put the form back straight after.
-          [idInput, quantityInput].forEach((input) => { if (input) input.disabled = true; });
-          setTimeout(() => {
-            added.forEach((input) => input.remove());
-            [idInput, quantityInput].forEach((input) => { if (input) input.disabled = false; });
-          });
-        }
-      }
-
-      customElements.define('complete-the-look', CompleteTheLook);
-    })();
-  </script>
+  <script src="{{ 'frankys-complete-the-look.js' | asset_url }}" defer></script>
 {%- endif -%}

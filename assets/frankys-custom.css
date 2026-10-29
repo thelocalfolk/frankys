@@ -879,11 +879,14 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 }
 
 .complete-the-look__row {
+  border-block-end: 1px solid rgb(var(--text-color) / .12);
+}
+
+.complete-the-look__head {
   display: flex;
   align-items: center;
   gap: .75rem;
   min-height: 3.25rem;
-  border-block-end: 1px solid rgb(var(--text-color) / .12);
 }
 
 .complete-the-look__label {
@@ -917,4 +920,79 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 
 .complete-the-look__price {
   white-space: nowrap;
+}
+
+/* Ticked row: quantity, range and colour choices (assets/frankys-complete-the-look.js) */
+.complete-the-look__options {
+  display: grid;
+  gap: .5rem;
+  padding: 0 0 1rem;
+  padding-inline-start: 2.25rem; /* lines up under the icon */
+}
+
+.complete-the-look__options[hidden] {
+  display: none;
+}
+
+.complete-the-look__summary {
+  margin: 0;
+  opacity: .8;
+}
+
+.complete-the-look__sub {
+  margin: .25rem 0 0;
+  font-size: var(--text-xs);
+  opacity: .7;
+}
+
+.complete-the-look__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .375rem;
+}
+
+.complete-the-look__pill {
+  min-height: 2.25rem;
+  padding: .25rem .875rem;
+  border: 1px solid rgb(var(--text-color) / .2);
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.complete-the-look__pill[aria-pressed="true"] {
+  border-color: currentColor;
+}
+
+.complete-the-look__swatch {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid rgb(var(--text-color) / .15);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.complete-the-look__swatch[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px rgb(var(--background)), 0 0 0 3px currentColor;
+}
+
+.complete-the-look__pill:focus-visible,
+.complete-the-look__swatch:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.complete-the-look__mix {
+  display: inline-block;
+  padding: 0 .3rem;
+  border-radius: 4px;
+  background: rgb(var(--text-color) / .08);
+  font-size: .625rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  vertical-align: .1em;
 }

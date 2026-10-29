@@ -80,6 +80,19 @@
     }
   },
   "product": {
+    "complete_the_look": {
+      "range": "Range",
+      "colour": "Colour",
+      "quantity": "Quantity",
+      "mix": "Mix",
+      "in_colour": "{{ range }} in {{ colour }}",
+      "closest_colour": "{{ range }}, closest colour is {{ colour }}",
+      "set_of": "Set of {{ count }}",
+      "sets": "{{ count }} sets",
+      "one_set": "1 set",
+      "one": "One",
+      "two": "Two"
+    },
     "general": {
       "description": "Description",
       "add_to_cart_button": "Add to cart",

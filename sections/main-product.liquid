@@ -366,7 +366,7 @@ document.addEventListener('variant:change', function(event) {
       "settings": [
         {
           "type": "paragraph",
-          "content": "Franky's: tick boxes that add a matching piece (same range and colour) with the product, in one add to cart."
+          "content": "Franky's: tick a row to add a matching piece (same range and colour, or the closest colour) with the product, in one add to cart. Shoppers can change quantity, range and colour once ticked."
         },
         {
           "type": "text",
@@ -417,14 +417,14 @@ document.addEventListener('variant:change', function(event) {
           "info": "Replaces the icon above."
         },
         {
-          "type": "select",
-          "id": "item_1_quantity",
-          "label": "Quantity",
-          "options": [
-            { "value": "match", "label": "Match the set size" },
-            { "value": "one", "label": "One" }
-          ],
-          "default": "match"
+          "type": "range",
+          "id": "item_1_covers",
+          "label": "Place settings one piece covers",
+          "info": "0 = one per table (tablecloth). Products named \"Set of N\" or with the metafield custom.builder_covers_settings override this.",
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "default": 1
         },
         {
           "type": "header",
@@ -463,14 +463,14 @@ document.addEventListener('variant:change', function(event) {
           "info": "Replaces the icon above."
         },
         {
-          "type": "select",
-          "id": "item_2_quantity",
-          "label": "Quantity",
-          "options": [
-            { "value": "match", "label": "Match the set size" },
-            { "value": "one", "label": "One" }
-          ],
-          "default": "match"
+          "type": "range",
+          "id": "item_2_covers",
+          "label": "Place settings one piece covers",
+          "info": "0 = one per table (tablecloth). Products named \"Set of N\" or with the metafield custom.builder_covers_settings override this.",
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "default": 1
         },
         {
           "type": "header",
@@ -509,14 +509,14 @@ document.addEventListener('variant:change', function(event) {
           "info": "Replaces the icon above."
         },
         {
-          "type": "select",
-          "id": "item_3_quantity",
-          "label": "Quantity",
-          "options": [
-            { "value": "match", "label": "Match the set size" },
-            { "value": "one", "label": "One" }
-          ],
-          "default": "match"
+          "type": "range",
+          "id": "item_3_covers",
+          "label": "Place settings one piece covers",
+          "info": "0 = one per table (tablecloth). Products named \"Set of N\" or with the metafield custom.builder_covers_settings override this.",
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "default": 1
         },
         {
           "type": "header",
@@ -555,14 +555,14 @@ document.addEventListener('variant:change', function(event) {
           "info": "Replaces the icon above."
         },
         {
-          "type": "select",
-          "id": "item_4_quantity",
-          "label": "Quantity",
-          "options": [
-            { "value": "match", "label": "Match the set size" },
-            { "value": "one", "label": "One" }
-          ],
-          "default": "one"
+          "type": "range",
+          "id": "item_4_covers",
+          "label": "Place settings one piece covers",
+          "info": "0 = one per table (tablecloth). Products named \"Set of N\" or with the metafield custom.builder_covers_settings override this.",
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "default": 0
         },
         {
           "type": "header",
@@ -601,14 +601,14 @@ document.addEventListener('variant:change', function(event) {
           "info": "Replaces the icon above."
         },
         {
-          "type": "select",
-          "id": "item_5_quantity",
-          "label": "Quantity",
-          "options": [
-            { "value": "match", "label": "Match the set size" },
-            { "value": "one", "label": "One" }
-          ],
-          "default": "match"
+          "type": "range",
+          "id": "item_5_covers",
+          "label": "Place settings one piece covers",
+          "info": "0 = one per table (tablecloth). Products named \"Set of N\" or with the metafield custom.builder_covers_settings override this.",
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "default": 4
         }
       ]
     },
