@@ -360,6 +360,259 @@ document.addEventListener('variant:change', function(event) {
       ]
     },
     {
+      "type": "complete_the_look",
+      "name": "Complete the look",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Franky's: tick boxes that add a matching piece (same range and colour) with the product, in one add to cart."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Complete the look:"
+        },
+        {
+          "type": "collection_list",
+          "id": "range_collections",
+          "label": "Range collections",
+          "info": "Pieces from the same range as the product are picked first. The product metafield custom.range (collection) overrides this."
+        },
+        {
+          "type": "header",
+          "content": "Row 1"
+        },
+        {
+          "type": "text",
+          "id": "item_1_label",
+          "label": "Label",
+          "default": "Placemats"
+        },
+        {
+          "type": "collection",
+          "id": "item_1_collection",
+          "label": "Collection",
+          "info": "The row picks its piece from here. Hidden on products in this collection."
+        },
+        {
+          "type": "select",
+          "id": "item_1_icon",
+          "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "placemats", "label": "Placemat" },
+            { "value": "coasters", "label": "Coaster" },
+            { "value": "napkins", "label": "Napkins" },
+            { "value": "tablecloth", "label": "Tablecloth" },
+            { "value": "cutlery", "label": "Cutlery" }
+          ],
+          "default": "placemats"
+        },
+        {
+          "type": "image_picker",
+          "id": "item_1_image",
+          "label": "Custom icon",
+          "info": "Replaces the icon above."
+        },
+        {
+          "type": "select",
+          "id": "item_1_quantity",
+          "label": "Quantity",
+          "options": [
+            { "value": "match", "label": "Match the set size" },
+            { "value": "one", "label": "One" }
+          ],
+          "default": "match"
+        },
+        {
+          "type": "header",
+          "content": "Row 2"
+        },
+        {
+          "type": "text",
+          "id": "item_2_label",
+          "label": "Label",
+          "default": "Coasters"
+        },
+        {
+          "type": "collection",
+          "id": "item_2_collection",
+          "label": "Collection",
+          "info": "The row picks its piece from here. Hidden on products in this collection."
+        },
+        {
+          "type": "select",
+          "id": "item_2_icon",
+          "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "placemats", "label": "Placemat" },
+            { "value": "coasters", "label": "Coaster" },
+            { "value": "napkins", "label": "Napkins" },
+            { "value": "tablecloth", "label": "Tablecloth" },
+            { "value": "cutlery", "label": "Cutlery" }
+          ],
+          "default": "coasters"
+        },
+        {
+          "type": "image_picker",
+          "id": "item_2_image",
+          "label": "Custom icon",
+          "info": "Replaces the icon above."
+        },
+        {
+          "type": "select",
+          "id": "item_2_quantity",
+          "label": "Quantity",
+          "options": [
+            { "value": "match", "label": "Match the set size" },
+            { "value": "one", "label": "One" }
+          ],
+          "default": "match"
+        },
+        {
+          "type": "header",
+          "content": "Row 3"
+        },
+        {
+          "type": "text",
+          "id": "item_3_label",
+          "label": "Label",
+          "default": "Napkins"
+        },
+        {
+          "type": "collection",
+          "id": "item_3_collection",
+          "label": "Collection",
+          "info": "The row picks its piece from here. Hidden on products in this collection."
+        },
+        {
+          "type": "select",
+          "id": "item_3_icon",
+          "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "placemats", "label": "Placemat" },
+            { "value": "coasters", "label": "Coaster" },
+            { "value": "napkins", "label": "Napkins" },
+            { "value": "tablecloth", "label": "Tablecloth" },
+            { "value": "cutlery", "label": "Cutlery" }
+          ],
+          "default": "napkins"
+        },
+        {
+          "type": "image_picker",
+          "id": "item_3_image",
+          "label": "Custom icon",
+          "info": "Replaces the icon above."
+        },
+        {
+          "type": "select",
+          "id": "item_3_quantity",
+          "label": "Quantity",
+          "options": [
+            { "value": "match", "label": "Match the set size" },
+            { "value": "one", "label": "One" }
+          ],
+          "default": "match"
+        },
+        {
+          "type": "header",
+          "content": "Row 4"
+        },
+        {
+          "type": "text",
+          "id": "item_4_label",
+          "label": "Label",
+          "default": "Table cloth"
+        },
+        {
+          "type": "collection",
+          "id": "item_4_collection",
+          "label": "Collection",
+          "info": "The row picks its piece from here. Hidden on products in this collection."
+        },
+        {
+          "type": "select",
+          "id": "item_4_icon",
+          "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "placemats", "label": "Placemat" },
+            { "value": "coasters", "label": "Coaster" },
+            { "value": "napkins", "label": "Napkins" },
+            { "value": "tablecloth", "label": "Tablecloth" },
+            { "value": "cutlery", "label": "Cutlery" }
+          ],
+          "default": "tablecloth"
+        },
+        {
+          "type": "image_picker",
+          "id": "item_4_image",
+          "label": "Custom icon",
+          "info": "Replaces the icon above."
+        },
+        {
+          "type": "select",
+          "id": "item_4_quantity",
+          "label": "Quantity",
+          "options": [
+            { "value": "match", "label": "Match the set size" },
+            { "value": "one", "label": "One" }
+          ],
+          "default": "one"
+        },
+        {
+          "type": "header",
+          "content": "Row 5"
+        },
+        {
+          "type": "text",
+          "id": "item_5_label",
+          "label": "Label",
+          "default": "Cutlery"
+        },
+        {
+          "type": "collection",
+          "id": "item_5_collection",
+          "label": "Collection",
+          "info": "The row picks its piece from here. Hidden on products in this collection."
+        },
+        {
+          "type": "select",
+          "id": "item_5_icon",
+          "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "placemats", "label": "Placemat" },
+            { "value": "coasters", "label": "Coaster" },
+            { "value": "napkins", "label": "Napkins" },
+            { "value": "tablecloth", "label": "Tablecloth" },
+            { "value": "cutlery", "label": "Cutlery" }
+          ],
+          "default": "cutlery"
+        },
+        {
+          "type": "image_picker",
+          "id": "item_5_image",
+          "label": "Custom icon",
+          "info": "Replaces the icon above."
+        },
+        {
+          "type": "select",
+          "id": "item_5_quantity",
+          "label": "Quantity",
+          "options": [
+            { "value": "match", "label": "Match the set size" },
+            { "value": "one", "label": "One" }
+          ],
+          "default": "match"
+        }
+      ]
+    },
+    {
       "type": "features",
       "name": "Features & benefits",
       "limit": 1,
