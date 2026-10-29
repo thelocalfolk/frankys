@@ -3,8 +3,9 @@
   icon points, then the product description.
 
   Points come from the product metafield set in the block (default custom.features):
-  - a list of metaobjects with a "label" text field and an optional "icon" file field, so one set of points can be
-    shared by every product in a range, or
+  - a list of metaobjects with a "label" text field and an optional "icon" field, so one set of points can be shared
+    by every product in a range. The icon is either a file (image) or the name of a theme icon, e.g. "leather" for
+    assets/frankys-icon-leather.svg (leather, wipe-clean, spill, mix-match), or
   - a list of single line text (points without icons).
 
   @param {object} product - the product
@@ -35,7 +36,12 @@
           -%}
           <li class="product-features__item">
             {%- if icon != blank -%}
-              {{- icon | image_url: width: 64 | image_tag: width: 24, height: 24, loading: 'lazy', alt: '', class: 'product-features__icon' -}}
+              {%- if feature.icon.type contains 'file_reference' -%}
+                {{- icon | image_url: width: 64 | image_tag: width: 24, height: 24, loading: 'lazy', alt: '', class: 'product-features__icon' -}}
+              {%- else -%}
+                {%- assign icon_file = 'frankys-icon-' | append: icon | handleize | append: '.svg' -%}
+                <span class="product-features__icon" aria-hidden="true">{{ icon_file | inline_asset_content }}</span>
+              {%- endif -%}
             {%- endif -%}
             <span>{{ label | escape }}</span>
           </li>

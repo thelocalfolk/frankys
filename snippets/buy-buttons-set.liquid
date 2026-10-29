@@ -71,6 +71,7 @@
   @param {boolean} [show_count_on_button] - "(6)" after the button label. Defaults to true
   @param {boolean} [show_total] - "Total" line above the button (price x set size). Defaults to false
   @param {string} [style] - "cards" (default) or "pills"
+  @param {string} [after_picker] - HTML shown between the set sizes and the Total (the "Complete the look" list)
 {%- enddoc -%}
 
 {%- liquid
@@ -377,6 +378,8 @@
                   Stock's conditional collapse-quantity-selector class exists to sit a selector flush
                   against the button; with no selector here, a plain gap-2 is correct (deviation 3).
                 {%- endcomment -%}
+                {{- after_picker -}}
+
                 {%- if show_total -%}
                   <div class="set-quantity__total">
                     <span>{{ 'cart.general.total' | t }}</span>
@@ -618,7 +621,8 @@
           return (el && el.value) || this.config.defaultVariantId;
         }
 
-        update() {
+        // silent: called by "Complete the look" to refresh the Total, without announcing a set change
+        update(silent) {
           const qty = this.getSetSize();
           if (this.quantityInput) this.quantityInput.value = qty;
 
@@ -636,13 +640,16 @@
           if (this.labelEl) this.labelEl.textContent = (this.config.sizePrefix || '') + qty;
           if (this.totalEl) {
             const price = this.config.variants[this.getVariantId()];
-            this.totalEl.textContent = this.formatMoney((price != null ? price : this.config.defaultPrice) * qty);
+            const look = this.form && document.querySelector('complete-the-look[form="' + this.form.id + '"]');
+            const extra = look && typeof look.extraCents === 'function' ? look.extraCents() : 0;
+            this.totalEl.textContent = this.formatMoney((price != null ? price : this.config.defaultPrice) * qty + extra);
           }
 
           const checked = this.querySelector('[data-set-size]:checked');
           if (this.form && checked) SetQuantity.state[this.form.id] = { choice: checked.value, qty };
 
           // SET: let the "Complete the set" suggestions follow the chosen set size.
+          if (silent === true) return;
           this.dispatchEvent(new CustomEvent('set:change', { bubbles: true, detail: { quantity: qty } }));
         }
       }
