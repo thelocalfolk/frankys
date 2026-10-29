@@ -15,7 +15,8 @@
        / Black, linens use their own colour names), the row still shows with the first available piece.
 
   QUANTITY: "Match set size" rows add the set size picked in the set picker (e.g. 6 coasters with 6 placemats); "One"
-  rows add 1 (a tablecloth). Prices are the pieces' own prices, no bundle discount.
+  rows add 1 (a tablecloth, a set of napkins). Each row shows "From" the lowest price in its collection; the Total
+  adds the picked piece's own price, no bundle discount.
 
   @param {object} product - the product whose page this is
   @param {object} block - the complete_the_look block
@@ -60,7 +61,6 @@
   endif
 
   assign range_name = product.title | split: ' ' | first | downcase
-  assign default_set = 6
 -%}
 
 {%- capture rows -%}
@@ -149,10 +149,18 @@
         assign match_set = false
       endif
 
-      assign row_quantity = 1
-      if match_set
-        assign row_quantity = default_set
-      endif
+      # "From" price: the cheapest available product in the row's collection
+      assign from_price = nil
+      for candidate in row_collection.products limit: 50
+        if candidate.available == false or candidate.id == product.id
+          continue
+        endif
+        if from_price == nil or candidate.price_min < from_price
+          assign from_price = candidate.price_min
+        endif
+      endfor
+
+      assign from_price_money = from_price | money
 
       assign label = block.settings[label_key] | default: row_collection.title
       assign icon = block.settings[icon_key]
@@ -176,7 +184,7 @@
           {{- label | escape -}}
           <span class="sr-only">: {{ pick.title | escape }}{% if pick_variant.title != 'Default Title' %}, {{ pick_variant.title | escape }}{% endif %}</span>
         </span>
-        <span class="complete-the-look__price" data-look-price>{{ pick_variant.price | times: row_quantity | money }}</span>
+        <span class="complete-the-look__price">{{ 'product.price.from_price_html' | t: price_min: from_price_money }}</span>
       </label>
     </li>
   {%- endfor -%}
@@ -215,7 +223,6 @@
         init() {
           this.formId = this.getAttribute('form');
           this.form = document.getElementById(this.formId);
-          this.moneyFormat = {{ shop.money_format | json }};
           this.setSize = this.readSetSize();
 
           (ticked[this.formId] || []).forEach((row) => {
@@ -263,28 +270,7 @@
           return this.checkedInputs().reduce((sum, input) => sum + parseInt(input.dataset.price, 10) * this.quantityFor(input), 0);
         }
 
-        formatMoney(cents) {
-          const fmt = (decimals, thousands, decimal) => {
-            const parts = (cents / 100).toFixed(decimals).split('.');
-            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
-            return parts.join(decimal);
-          };
-          return String(this.moneyFormat || '').replace(/<[^>]*>/g, '').replace(/\{\{\s*(\w+)\s*\}\}/, (_, key) => {
-            switch (key) {
-              case 'amount_no_decimals': return fmt(0, ',', '.');
-              case 'amount_with_comma_separator': return fmt(2, '.', ',');
-              case 'amount_no_decimals_with_comma_separator': return fmt(0, '.', ',');
-              default: return fmt(2, ',', '.');
-            }
-          });
-        }
-
         update() {
-          this.querySelectorAll('[data-look-item]').forEach((input) => {
-            const price = input.closest('li').querySelector('[data-look-price]');
-            if (price) price.textContent = this.formatMoney(parseInt(input.dataset.price, 10) * this.quantityFor(input));
-          });
-
           ticked[this.formId] = this.checkedInputs().map((input) => input.dataset.lookItem);
 
           const setQuantity = this.form && this.form.querySelector('set-quantity');
