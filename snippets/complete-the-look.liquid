@@ -22,28 +22,29 @@
   assign colour_names = 'color,colour' | split: ','
   assign current_variant = product.selected_or_first_available_variant
   assign product_collection_handles = product.collections | map: 'handle'
+  assign hero_range = product.title | split: ' ' | first | downcase
 
-  # ---- Chosen colour and its swatch -----------------------------------------------------------------------------
+  # Chosen colour, and its option value (for the swatch below)
   assign hero_colour = ''
-  assign hero_swatch = ''
+  assign hero_value = nil
   for option in product.options_with_values
     assign option_name = option.name | downcase | strip
     if colour_names contains option_name
       assign hero_colour = current_variant.options[forloop.index0]
       for value in option.values
         if value == hero_colour
-          capture hero_swatch
-            render 'setting-builder-swatch', value: value
-          endcapture
+          assign hero_value = value
           break
         endif
       endfor
       break
     endif
   endfor
-
-  assign hero_range = product.title | split: ' ' | first | downcase
 -%}
+
+{%- capture hero_swatch -%}
+  {%- if hero_value != nil -%}{%- render 'setting-builder-swatch', value: hero_value -%}{%- endif -%}
+{%- endcapture -%}
 
 {%- capture rows -%}
   {%- for i in (1..5) -%}
@@ -79,7 +80,10 @@
       assign label = block.settings[label_key] | default: row_collection.title
       assign icon = block.settings[icon_key]
       assign image = block.settings[image_key]
-      assign covers = block.settings[covers_key] | default: 1, allow_false: true
+      assign covers = block.settings[covers_key]
+      if covers == blank
+        assign covers = 1
+      endif
       assign from_price_money = from_price | money
       assign input_id = 'complete-the-look-' | append: block.id | append: '-' | append: i
     -%}
