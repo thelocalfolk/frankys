@@ -1102,9 +1102,15 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   background-size: 11px 9px;
 }
 
+/* The theme fades labels of unticked boxes to 70%; the Figma shows them at full colour */
+.complete-the-look .checkbox:not(:disabled, :checked) ~ label {
+  opacity: 1;
+}
+
+/* 12px: the Figma's 13px Satoshi reads smaller than Inter at the same size */
 .complete-the-look__label {
   gap: 1.25rem;
-  font-size: .8125rem;
+  font-size: .75rem;
   line-height: 2;
   color: rgb(var(--text-color));
 }
@@ -1142,15 +1148,5 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   .product-info .product-title {
     font-size: 1.875rem;
     line-height: 1.2;
-  }
-
-  /* Colour swatches: 40px, ~21px apart */
-  .product-info .variant-picker .color-swatch {
-    --swatch-width: 2.5rem;
-    --swatch-height: 2.5rem;
-  }
-
-  .product-info .variant-picker__option-values {
-    gap: 1.3125rem;
   }
 }
