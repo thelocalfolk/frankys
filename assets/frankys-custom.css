@@ -753,18 +753,13 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   border-radius: var(--input-border-radius);
 }
 
-/* Custom quantity reads as the selected choice: the selected pill's outline, the pills' text size, a firm number */
-.product-info .set-quantity--pills .set-quantity__custom-bar {
+/* Stepper under the set pills (stepper mode): any number, including 1, with the pills' hairline outline */
+.set-quantity--pills .set-quantity__stepper {
+  align-self: flex-start;
   border: .5px solid rgb(var(--text-color));
-  box-shadow: inset 0 0 0 .5px rgb(var(--text-color));
-  font-size: .75rem;
 }
 
-.product-info .set-quantity--pills .set-quantity__stepper {
-  border: .5px solid rgb(var(--text-color) / .3);
-}
-
-.product-info .set-quantity--pills .set-quantity__custom-input {
+.set-quantity--pills .set-quantity__custom-input {
   font-size: .875rem;
 }
 
