@@ -31,34 +31,40 @@
     "announcement-bar": {
       "type": "announcement-bar",
       "blocks": {
-        "message_3GQ4Xi": {
-          "type": "message",
-          "disabled": true,
-          "settings": {
-            "text": "Spend $200+, the coasters are on us"
-          }
-        },
         "message_9UtHi9": {
           "type": "message",
-          "disabled": true,
           "settings": {
-            "text": "<a href=\"https://frankys.com.au/discount/midyear\" title=\"https://frankys.com.au/discount/midyear\">15% off with 'midyear' at checkout</a>"
+            "text": "20% off sitewide sale"
+          }
+        },
+        "message_3GQ4Xi": {
+          "type": "message",
+          "settings": {
+            "text": "First 100 orders over $200, get 2x Linea HandTowels free"
+          }
+        },
+        "message_pCyxMn": {
+          "type": "message",
+          "settings": {
+            "text": "First 50 orders over $300, get 2x Linea Bath Sheets free"
           }
         },
         "message-2": {
           "type": "message",
+          "disabled": true,
           "settings": {
             "text": "Free Shipping Over $100"
           }
         }
       },
       "block_order": [
-        "message_3GQ4Xi",
         "message_9UtHi9",
+        "message_3GQ4Xi",
+        "message_pCyxMn",
         "message-2"
       ],
       "settings": {
-        "color_scheme": "scheme-ab638e9e-399f-4d21-afce-66f27607b782",
+        "color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",
         "enable_sticky": false,
         "show_on_homepage_only": false,
         "autoplay": true,

@@ -87,6 +87,11 @@ only way to do it on Shopify right now.
     {%- endcomment -%}
 
     <div class="relative">
+      {%- if product != blank and product.compare_at_price_max > product.price -%}
+        {%- assign frk_saving = product.compare_at_price_max | minus: product.price -%}
+        {%- assign frk_pct = frk_saving | times: 100.0 | divided_by: product.compare_at_price_max | round -%}
+        <span class="frk-pdp-seal" aria-hidden="true">{{ 'product.general.sale_seal_html' | t: percent: frk_pct }}</span>
+      {%- endif -%}
       <scroll-carousel adaptive-height id="{{ product_gallery_carousel_id }}" class="product-gallery__carousel scroll-area bleed md:unbleed" role="region">
         {%- if product != blank -%}
           {%- assign image_index = 0 -%}
