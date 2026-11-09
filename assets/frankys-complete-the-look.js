@@ -192,7 +192,7 @@
         const isSetOf = /set of \d+/i.test(this.current(row).title);
         return [1, 2, 3].map((units) => ({
           units,
-          label: isSetOf ? s.setOf.replace('{count}', covers * units) : (units === 1 ? s.oneSet : s.sets.replace('{count}', units))
+          label: isSetOf ? s.setOf.replace('__count__', covers * units) : (units === 1 ? s.oneSet : s.sets.replace('__count__', units))
         }));
       }
       const sizes = [2, 4, 6, 8];
@@ -251,7 +251,7 @@
 
       const range = row.ranges[row.range];
       const exact = option.colour === this.heroColour;
-      const summary = (exact ? s.inColour : s.closestColour).replace('{range}', range.name).replace('{colour}', option.colour);
+      const summary = (exact ? s.inColour : s.closestColour).replace('__range__', range.name).replace('__colour__', option.colour);
       const isMix = row.range !== this.heroRange;
 
       const pills = (kind, items) => items.map((item) =>
