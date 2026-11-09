@@ -296,7 +296,8 @@
 
       const idInput = this.form.elements.namedItem('id');
       const quantityInput = this.form.elements.namedItem('quantity');
-      const lines = [{ id: idInput.value, quantity: quantityInput ? quantityInput.value : 1 }].concat(extras);
+      // The cart lists the last line of an items[] add first, so the product goes last to sit at the top of the cart
+      const lines = extras.slice().reverse().concat([{ id: idInput.value, quantity: quantityInput ? quantityInput.value : 1 }]);
 
       const added = [];
       lines.forEach((line, index) => {
