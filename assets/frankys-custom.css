@@ -753,6 +753,21 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   border-radius: var(--input-border-radius);
 }
 
+/* Custom quantity reads as the selected choice: the selected pill's outline, the pills' text size, a firm number */
+.product-info .set-quantity--pills .set-quantity__custom-bar {
+  border: .5px solid rgb(var(--text-color));
+  box-shadow: inset 0 0 0 .5px rgb(var(--text-color));
+  font-size: .75rem;
+}
+
+.product-info .set-quantity--pills .set-quantity__stepper {
+  border: .5px solid rgb(var(--text-color) / .3);
+}
+
+.product-info .set-quantity--pills .set-quantity__custom-input {
+  font-size: .875rem;
+}
+
 /* Thin-lined pills on the product page, for both the set picker and the theme's variant picker (Eliza, 9 Nov 2026):
    85 x 32, hairline outline as in the Figma; 12px text, the same as the Complete the Look rows (Eliza 9 Nov). Colour swatches are not .block-swatch, so they're unaffected. */
 .product-info .block-swatch {
