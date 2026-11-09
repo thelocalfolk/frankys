@@ -314,6 +314,13 @@
       "default": "scheme-3"
     },
     {
+      "type": "color_scheme",
+      "id": "tile_color_scheme_pale",
+      "label": "Tile text colour scheme on pale tiles",
+      "info": "Used by Colour blocks set to dark text, and by pale swatch-only tiles, so names stay easy to read.",
+      "default": "scheme-1"
+    },
+    {
       "type": "color",
       "id": "overlay_color",
       "label": "Image overlay",
@@ -408,6 +415,17 @@
           "id": "label",
           "label": "Label",
           "info": "Defaults to the collection title."
+        },
+        {
+          "type": "select",
+          "id": "label_tone",
+          "label": "Name and icon colour",
+          "options": [
+            { "value": "light", "label": "Light (tile text colour scheme)" },
+            { "value": "dark", "label": "Dark (pale tile colour scheme)" }
+          ],
+          "default": "light",
+          "info": "Use Dark on pale tiles like Milk, Pink or Light Blue."
         }
       ]
     }

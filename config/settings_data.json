@@ -19,8 +19,8 @@
     "success_color": "#0F2D29",
     "warning_color": "#7C2E30",
     "text_font": "inter_n5",
-    "text_font_size_mobile": 12,
-    "text_font_size_desktop": 14,
+    "text_font_size_mobile": 14,
+    "text_font_size_desktop": 16,
     "text_font_text_transform": "normal",
     "text_font_letter_spacing": 0,
     "heading_font": "inter_n5",
@@ -31,8 +31,8 @@
     "subheading_font": "inter_n5",
     "subheading_text_transform": "lowercase",
     "subheading_icon": "none",
-    "button_font_size_mobile": 12,
-    "button_font_size_desktop": 14,
+    "button_font_size_mobile": 14,
+    "button_font_size_desktop": 15,
     "button_text_transform": "lowercase",
     "heading_default_highlight_effect": "underline_pencil",
     "button_animation": "up",
@@ -289,6 +289,23 @@
           "heading_highlight_text_color": "#0f2d29",
           "input_background": "#acd0cf",
           "input_text_color": "#0f2d29"
+        }
+      },
+      "scheme-71cd7c5c-28cb-4191-b0ff-9448fdec9133": {
+        "settings": {
+          "text_color": "#3f2f28",
+          "background": "rgba(0,0,0,0)",
+          "background_gradient": "",
+          "secondary_background": "#ebe9d1",
+          "primary_button_background": "#3f2f28",
+          "primary_button_text_color": "#fffaf4",
+          "subheading_background": "",
+          "subheading_border_color": "rgba(0,0,0,0)",
+          "subheading_text_color": "#3f2f28",
+          "heading_highlight_accent_color": "#3f2f28",
+          "heading_highlight_text_color": "#fffaf4",
+          "input_background": "#fffaf4",
+          "input_text_color": "#3f2f28"
         }
       }
     }

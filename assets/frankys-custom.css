@@ -35,7 +35,7 @@
 }
 
 .breadcrumbs__link {
-  color: rgb(var(--text-color) / .65);
+  color: rgb(var(--text-color) / .78);
   text-underline-offset: 3px;
   transition: color .2s ease;
 }
@@ -477,7 +477,7 @@
 
   [id$="__hero"] .prose p {
     max-width: none;
-    font-size: .8125rem;
+    font-size: var(--text-base);
     line-height: 1.6;
   }
 }
@@ -624,9 +624,11 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   }
 }
 
-/* "Shop by Colour" names are #ebe9d1 in the Figma (not white) */
+/* "Shop by Colour" name and icon colours come from each card's colour scheme: the cream
+   (#ebe9d1, as in the Figma) scheme on dark tiles, the pale-tile scheme (deep brown) on pale
+   ones. The scheme is only used for its text colour, like the colour page tiles. */
 [id$="__shop_by_colour"] .collection-list__item {
-  --text-color: 235 233 209;
+  background: none;
 }
 
 /* Homepage colour cards with an icon: laid out like the colour page tiles,
@@ -649,23 +651,6 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   [id$="__shop_by_colour"] .content-box:has(> .colour-switcher__icon) .h3 {
     font-size: clamp(.875rem, 11.9cqi, 3.125rem);
   }
-}
-
-/* Milk, Butter and Beige tiles are too pale for light text: the lightest brown on each
-   that still meets 3:1 contrast for large text (homepage tiles and colour switcher) */
-[id$="__shop_by_colour"] .collection-list__item[href*="/collections/milk"],
-.colour-switcher__tile[href*="/collections/milk"] {
-  --text-color: 169 127 96; /* #a97f60, 3.1:1 on Milk */
-}
-
-[id$="__shop_by_colour"] .collection-list__item[href*="/collections/butter"],
-.colour-switcher__tile[href*="/collections/butter"] {
-  --text-color: 146 107 79; /* #926b4f, 3:1 on Butter */
-}
-
-[id$="__shop_by_colour"] .collection-list__item[href*="/collections/beige"],
-.colour-switcher__tile[href*="/collections/beige"] {
-  --text-color: 159 117 86; /* #9f7556, 3.1:1 on Beige */
 }
 
 /* @frankysaus: three square photos on mobile, six across on desktop */
@@ -936,13 +921,13 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 
 .complete-the-look__summary {
   margin: 0;
-  opacity: .8;
+  opacity: .85;
 }
 
 .complete-the-look__sub {
   margin: .25rem 0 0;
   font-size: var(--text-xs);
-  opacity: .7;
+  opacity: .78;
 }
 
 .complete-the-look__group {
@@ -991,8 +976,36 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   padding: 0 .3rem;
   border-radius: 4px;
   background: rgb(var(--text-color) / .08);
-  font-size: .625rem;
+  font-size: var(--text-xs);
   letter-spacing: .06em;
   text-transform: uppercase;
   vertical-align: .1em;
+}
+
+/* --- Readability: faded text that still meets 4.5:1 ---------------------
+   Stretch fades secondary text to 50-70% of the text colour, which on Franky's
+   cream (#fffaf4) and sand (#ebe9d1) backgrounds is only 2.5-4.2:1. 78% of the
+   brand brown is 5.2:1 on cream and 4.7:1 on sand (WCAG AA for body text).
+   Same selectors as theme.css, so theme.css stays untouched. Disabled options
+   and hover-only fades are left as they are. */
+.text-subdued,
+.link-faded,
+.search-tabs [slot="tab"]:not([aria-selected="true"]),
+.facets:has(.accordion.is-open) :where(.accordion:not(.is-open) .accordion__summary, .facets__availability-control .subheading),
+.select:has(option[value=""]:checked),
+.gift-card__code {
+  color: rgb(var(--text-color) / .78);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgb(var(--text-color) / .78);
+}
+
+.tab-pills > button[role="tab"] {
+  color: rgb(var(--text-color) / .78);
+}
+
+.block-swatch {
+  color: rgb(var(--text-color) / .85);
 }

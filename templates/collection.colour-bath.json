@@ -14,7 +14,8 @@
           "settings": {
             "collection": "taupe",
             "image_asset": "frankys-colour-tile-bath-taupe.jpg",
-            "label": "Taupe"
+            "label": "Taupe",
+            "label_tone": "dark"
           }
         },
         "colour_olive": {
@@ -22,7 +23,8 @@
           "settings": {
             "collection": "olive",
             "image_asset": "frankys-colour-tile-bath-olive.jpg",
-            "label": "Olive"
+            "label": "Olive",
+            "label_tone": "light"
           }
         },
         "colour_mist": {
@@ -30,7 +32,8 @@
           "settings": {
             "collection": "mist",
             "image_asset": "frankys-colour-tile-bath-mist.jpg",
-            "label": "Mist"
+            "label": "Mist",
+            "label_tone": "dark"
           }
         },
         "colour_beige": {
@@ -39,7 +42,8 @@
             "collection": "beige",
             "icon_style": "beige",
             "image_asset": "frankys-colour-tile-bath-beige.jpg",
-            "label": "Beige"
+            "label": "Beige",
+            "label_tone": "dark"
           }
         }
       },
@@ -60,7 +64,8 @@
         "overlay_opacity": 0,
         "tile_width_mobile": 34,
         "tiles_per_row_desktop": 6,
-        "tile_source": "colour_filter"
+        "tile_source": "colour_filter",
+        "tile_color_scheme_pale": "scheme-71cd7c5c-28cb-4191-b0ff-9448fdec9133"
       }
     },
     "colour_heading": {

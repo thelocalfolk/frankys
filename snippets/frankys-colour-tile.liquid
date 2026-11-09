@@ -9,7 +9,7 @@
   @param {string} [swatch_color] - background colour when there is no image at all
   @param {boolean} [is_current] - the colour being viewed
   @param {string} sizes - image sizes attribute
-  @param {object} section - the switcher section (tile colour scheme and overlay)
+  @param {object} section - the switcher section (tile colour schemes and overlay)
 {%- enddoc -%}
 {%- liquid
   # Block image first, then the block's theme file, then the fallback image
@@ -19,11 +19,23 @@
   elsif block.settings.image_asset != blank
     assign tile_image = blank
   endif
+
+  # Name and icon colour: the "pale tile" scheme when the Colour block asks for dark text,
+  # or, for a tile that only shows its swatch, when the swatch is pale
+  assign tile_scheme = section.settings.tile_color_scheme
+  if block.settings.label_tone == 'dark'
+    assign tile_scheme = section.settings.tile_color_scheme_pale
+  elsif block == blank and tile_image == blank and swatch_color != blank
+    assign swatch_brightness = swatch_color | color_brightness
+    if swatch_brightness > 150
+      assign tile_scheme = section.settings.tile_color_scheme_pale
+    endif
+  endif
 -%}
 
 <a
   href="{{ href }}"
-  class="colour-switcher__tile snap-start group color-scheme color-scheme--{{ section.settings.tile_color_scheme.id }}"
+  class="colour-switcher__tile snap-start group color-scheme color-scheme--{{ tile_scheme.id }}"
   data-colour-handle="{{ handle }}"
   {% if is_current %}aria-current="page"{% endif %}
   {{ block.shopify_attributes }}
