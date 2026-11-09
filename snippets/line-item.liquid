@@ -6,10 +6,11 @@ This component renders a single line item product information, and is used on or
 @param {boolean} [show_quantity_selector] - if true, a quantity selector is displayed inside the line item
 @param {boolean} [hide_unit_price] - if set to true, we hide the unit price. We do that in the cart drawer to simplify it
 @param {boolean} [show_low_stock] - FRANKY'S (TLF) P9: if true, shows "Only X left" when tracked stock is genuinely low
+@param {string} [in_setting_group] - FRANKY'S (TLF) P1: the _setting name when this line is part of a built setting (adds a class so the lines read as one group)
 @param {object} [section]
 {%- enddoc -%}
 
-<line-item class="line-item">
+<line-item class="line-item{% if in_setting_group != blank %} line-item--in-setting{% endif %}">
   {%- if line_item.image != blank -%}
     <a href="{{ line_item.url }}" class="line-item__media">
       {{- line_item.image | image_url: width: line_item.image.width | image_tag: loading: 'lazy', sizes: '(max-width: 699px) 80px, 96px', widths: '80,96,160,192' -}}
