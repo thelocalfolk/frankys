@@ -15,7 +15,8 @@
             "collection": "sage-green",
             "icon_style": "sage-green",
             "image_asset": "frankys-colour-tile-bedding-sage-green.jpg",
-            "label": "Sage"
+            "label": "Sage",
+            "label_tone": "dark"
           }
         },
         "colour_lilac": {
@@ -23,7 +24,8 @@
           "settings": {
             "collection": "lilac",
             "image_asset": "frankys-colour-tile-bedding-lilac.jpg",
-            "label": "Lilac"
+            "label": "Lilac",
+            "label_tone": "dark"
           }
         },
         "colour_oat": {
@@ -31,7 +33,8 @@
           "settings": {
             "collection": "oat",
             "image_asset": "frankys-colour-tile-bedding-oat.jpg",
-            "label": "Oat"
+            "label": "Oat",
+            "label_tone": "dark"
           }
         },
         "colour_milk": {
@@ -40,7 +43,8 @@
             "collection": "milk",
             "icon_style": "milk",
             "image_asset": "frankys-colour-tile-bedding-milk.jpg",
-            "label": "Milk"
+            "label": "Milk",
+            "label_tone": "dark"
           }
         },
         "colour_clay": {
@@ -49,7 +53,8 @@
             "collection": "clay",
             "icon_style": "clay",
             "image_asset": "frankys-colour-tile-bedding-clay.jpg",
-            "label": "Clay"
+            "label": "Clay",
+            "label_tone": "dark"
           }
         },
         "colour_light_blue": {
@@ -58,7 +63,8 @@
             "collection": "light-blue",
             "icon_style": "light-blue",
             "image_asset": "frankys-colour-tile-bedding-light-blue.jpg",
-            "label": "Light Blue"
+            "label": "Light Blue",
+            "label_tone": "dark"
           }
         }
       },
@@ -81,7 +87,8 @@
         "overlay_opacity": 0,
         "tile_width_mobile": 34,
         "tiles_per_row_desktop": 6,
-        "tile_source": "colour_filter"
+        "tile_source": "colour_filter",
+        "tile_color_scheme_pale": "scheme-71cd7c5c-28cb-4191-b0ff-9448fdec9133"
       }
     },
     "colour_heading": {

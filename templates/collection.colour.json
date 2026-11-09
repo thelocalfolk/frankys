@@ -18,7 +18,8 @@
             "collection": "chocolate",
             "image_asset": "frankys-colour-tile-chocolate.jpg",
             "icon_style": "chocolate",
-            "label": ""
+            "label": "",
+            "label_tone": "light"
           }
         },
         "colour_sage_green": {
@@ -27,7 +28,8 @@
             "collection": "sage-green",
             "image_asset": "frankys-colour-tile-sage-green.jpg",
             "icon_style": "sage-green",
-            "label": ""
+            "label": "",
+            "label_tone": "dark"
           }
         },
         "colour_light_blue": {
@@ -36,7 +38,8 @@
             "collection": "light-blue",
             "image_asset": "frankys-colour-tile-light-blue.jpg",
             "icon_style": "light-blue",
-            "label": ""
+            "label": "",
+            "label_tone": "dark"
           }
         },
         "colour_butter": {
@@ -45,7 +48,8 @@
             "collection": "butter",
             "image_asset": "frankys-colour-tile-butter.jpg",
             "icon_style": "butter",
-            "label": ""
+            "label": "",
+            "label_tone": "dark"
           }
         },
         "colour_navy": {
@@ -54,7 +58,8 @@
             "collection": "navy",
             "image_asset": "frankys-colour-tile-navy.jpg",
             "icon_style": "navy",
-            "label": ""
+            "label": "",
+            "label_tone": "light"
           }
         },
         "colour_dark_green": {
@@ -63,7 +68,8 @@
             "collection": "dark-green",
             "image_asset": "frankys-colour-tile-dark-green.jpg",
             "icon_style": "dark-green",
-            "label": ""
+            "label": "",
+            "label_tone": "light"
           }
         },
         "colour_pink": {
@@ -72,7 +78,8 @@
             "collection": "pink",
             "image_asset": "frankys-colour-tile-pink.jpg",
             "icon_style": "pink",
-            "label": ""
+            "label": "",
+            "label_tone": "dark"
           }
         },
         "colour_nude": {
@@ -81,7 +88,8 @@
             "collection": "nude",
             "image_asset": "frankys-colour-tile-nude.jpg",
             "icon_style": "nude",
-            "label": ""
+            "label": "",
+            "label_tone": "dark"
           }
         },
         "colour_wine": {
@@ -90,7 +98,8 @@
             "collection": "wine",
             "image_asset": "frankys-colour-tile-wine.jpg",
             "icon_style": "wine",
-            "label": ""
+            "label": "",
+            "label_tone": "light"
           }
         },
         "colour_clay": {
@@ -99,7 +108,8 @@
             "collection": "clay",
             "image_asset": "frankys-colour-tile-clay.jpg",
             "icon_style": "clay",
-            "label": ""
+            "label": "",
+            "label_tone": "light"
           }
         },
         "colour_brown": {
@@ -108,7 +118,8 @@
             "collection": "brown",
             "image_asset": "frankys-colour-tile-brown.jpg",
             "icon_style": "brown",
-            "label": ""
+            "label": "",
+            "label_tone": "light"
           }
         },
         "colour_pearl_grey": {
@@ -117,7 +128,8 @@
             "collection": "pearl-grey",
             "image_asset": "frankys-colour-tile-pearl-grey.jpg",
             "icon_style": "pearl-grey",
-            "label": ""
+            "label": "",
+            "label_tone": "dark"
           }
         },
         "colour_dark_grey": {
@@ -126,7 +138,8 @@
             "collection": "dark-grey",
             "image_asset": "frankys-colour-tile-dark-grey.jpg",
             "icon_style": "dark-grey",
-            "label": ""
+            "label": "",
+            "label_tone": "light"
           }
         },
         "colour_beige": {
@@ -135,7 +148,8 @@
             "collection": "beige",
             "image_asset": "frankys-colour-tile-beige.jpg",
             "icon_style": "beige",
-            "label": ""
+            "label": "",
+            "label_tone": "dark"
           }
         },
         "colour_black": {
@@ -144,7 +158,8 @@
             "collection": "black",
             "image_asset": "frankys-colour-tile-black.jpg",
             "icon_style": "black",
-            "label": ""
+            "label": "",
+            "label_tone": "light"
           }
         },
         "colour_milk": {
@@ -153,7 +168,8 @@
             "collection": "milk",
             "image_asset": "frankys-colour-tile-milk.jpg",
             "icon_style": "milk",
-            "label": ""
+            "label": "",
+            "label_tone": "dark"
           }
         }
       },
@@ -187,7 +203,8 @@
         "overlay_color": "#000000",
         "overlay_opacity": 0,
         "tile_width_mobile": 34,
-        "tiles_per_row_desktop": 6
+        "tiles_per_row_desktop": 6,
+        "tile_color_scheme_pale": "scheme-71cd7c5c-28cb-4191-b0ff-9448fdec9133"
       }
     },
     "colour_heading": {

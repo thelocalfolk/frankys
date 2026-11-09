@@ -558,7 +558,7 @@
         "collection_card_chocolate": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",
             "collection": "chocolate",
             "image_asset": "frankys-colour-tile-chocolate.jpg",
             "open_colour_page": true,
@@ -574,7 +574,7 @@
         "collection_card_sage_green": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-71cd7c5c-28cb-4191-b0ff-9448fdec9133",
             "collection": "sage-green",
             "image_asset": "frankys-colour-tile-sage-green.jpg",
             "open_colour_page": true,
@@ -590,7 +590,7 @@
         "collection_card_light_blue": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-71cd7c5c-28cb-4191-b0ff-9448fdec9133",
             "collection": "light-blue",
             "image_asset": "frankys-colour-tile-light-blue.jpg",
             "open_colour_page": true,
@@ -606,7 +606,7 @@
         "collection_card_butter": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-71cd7c5c-28cb-4191-b0ff-9448fdec9133",
             "collection": "butter",
             "image_asset": "frankys-colour-tile-butter.jpg",
             "open_colour_page": true,
@@ -622,7 +622,7 @@
         "collection_card_milk": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-71cd7c5c-28cb-4191-b0ff-9448fdec9133",
             "collection": "milk",
             "image_asset": "frankys-colour-tile-milk.jpg",
             "open_colour_page": true,
@@ -638,7 +638,7 @@
         "collection_card_pink": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-71cd7c5c-28cb-4191-b0ff-9448fdec9133",
             "collection": "pink",
             "image_asset": "frankys-colour-tile-pink.jpg",
             "open_colour_page": true,
@@ -654,7 +654,7 @@
         "collection_card_wine": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",
             "collection": "wine",
             "image_asset": "frankys-colour-tile-wine.jpg",
             "open_colour_page": true,
@@ -670,7 +670,7 @@
         "collection_card_navy": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",
             "collection": "navy",
             "image_asset": "frankys-colour-tile-navy.jpg",
             "open_colour_page": true,
@@ -686,7 +686,7 @@
         "collection_card_dark_green": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",
             "collection": "dark-green",
             "image_asset": "frankys-colour-tile-dark-green.jpg",
             "open_colour_page": true,
@@ -702,7 +702,7 @@
         "collection_card_clay": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",
             "collection": "clay",
             "image_asset": "frankys-colour-tile-clay.jpg",
             "open_colour_page": true,
@@ -718,7 +718,7 @@
         "collection_card_black": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-718c97c6-0655-4f76-aa0a-6fc7ddebe3da",
             "collection": "black",
             "image_asset": "frankys-colour-tile-black.jpg",
             "open_colour_page": true,
@@ -734,7 +734,7 @@
         "collection_card_pearl_grey": {
           "type": "collection-card",
           "settings": {
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-71cd7c5c-28cb-4191-b0ff-9448fdec9133",
             "collection": "pearl-grey",
             "image_asset": "frankys-colour-tile-pearl-grey.jpg",
             "open_colour_page": true,
