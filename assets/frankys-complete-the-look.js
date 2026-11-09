@@ -250,9 +250,6 @@
       if (!row.selected) { row.options.innerHTML = ''; return; }
 
       const range = row.ranges[row.range];
-      const exact = option.colour === this.heroColour;
-      const summary = (exact ? s.inColour : s.closestColour).replace('__range__', range.name).replace('__colour__', option.colour);
-      const isMix = row.range !== this.heroRange;
 
       const pills = (kind, items) => items.map((item) =>
         `<button type="button" class="complete-the-look__pill" data-pick="${kind}" data-value="${this.escape(item.value)}" aria-pressed="${item.on}">${item.html}</button>`
@@ -263,15 +260,15 @@
       const ranges = Object.values(row.ranges).sort((a, b) => a.name.localeCompare(b.name));
       const rangePills = ranges.length > 1 ? pills('range', ranges.map((r) => ({
         value: r.key, on: r.key === row.range,
-        html: this.escape(r.name) + (r.key !== this.heroRange && !r.colours[this.heroColour] ? ` <span class="complete-the-look__mix">${this.escape(s.mix)}</span>` : '')
+        html: this.escape(r.name)
       }))) : '';
 
       const swatches = Object.values(range.colours).map((c) =>
         `<button type="button" class="complete-the-look__swatch" data-pick="colour" data-value="${this.escape(c.colour)}" aria-pressed="${c.colour === row.colour}" aria-label="${this.escape(c.colour)}" title="${this.escape(c.colour)}" style="background: ${this.escape(c.swatch || c.colour)}"></button>`
       ).join('');
 
+      // FRANKY'S (TLF) PDP: no "closest colour" / "Mix" explanation shown (Eliza, 9 Nov 2026); the matching is unchanged
       row.options.innerHTML = `
-        <p class="complete-the-look__summary text-sm">${this.escape(summary)}${isMix ? ` <span class="complete-the-look__mix">${this.escape(s.mix)}</span>` : ''}</p>
         <div class="complete-the-look__group" role="group" aria-label="${this.escape(s.quantity)}">${quantity}</div>
         ${rangePills ? `<p class="complete-the-look__sub">${this.escape(s.range)}</p><div class="complete-the-look__group" role="group" aria-label="${this.escape(s.range)}">${rangePills}</div>` : ''}
         <p class="complete-the-look__sub">${this.escape(s.colour)}: ${this.escape(option.colour)}</p>

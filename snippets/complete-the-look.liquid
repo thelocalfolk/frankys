@@ -6,8 +6,8 @@
 
   This snippet only outputs the rows and their product data; assets/frankys-complete-the-look.js does the picking:
     - Colour follows the product's chosen colour. Same range first (Lorient Placemat -> Lorient Coaster), then the
-      cheapest range made in that exact colour, then the range with the closest colour (by swatch). Rows outside the
-      product's range are marked "Mix".
+      cheapest range made in that exact colour, then the range with the closest colour (by swatch). The choice isn't
+      explained on the page (no "closest colour" / "Mix" note; Eliza, 9 Nov 2026).
     - Ranges are the first word of the product name, so the three Peru Cutlery Set products are one range.
     - Quantity options come from how many place settings one piece covers: the row's "Covers" setting, a "Set of N"
       in the product name, or the product metafield custom.builder_covers_settings (same as the table builder).
@@ -142,9 +142,6 @@
           "range": {{ 'product.complete_the_look.range' | t | json }},
           "colour": {{ 'product.complete_the_look.colour' | t | json }},
           "quantity": {{ 'product.complete_the_look.quantity' | t | json }},
-          "mix": {{ 'product.complete_the_look.mix' | t | json }},
-          "inColour": {{ 'product.complete_the_look.in_colour' | t: range: '__range__', colour: '__colour__' | json }},
-          "closestColour": {{ 'product.complete_the_look.closest_colour' | t: range: '__range__', colour: '__colour__' | json }},
           "setOf": {{ 'product.complete_the_look.set_of' | t: count: '__count__' | json }},
           "sets": {{ 'product.complete_the_look.sets' | t: count: '__count__' | json }},
           "oneSet": {{ 'product.complete_the_look.one_set' | t | json }},
