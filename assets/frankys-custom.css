@@ -996,3 +996,52 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   text-transform: uppercase;
   vertical-align: .1em;
 }
+
+/* ------------------------------------------------------------------------------------------------------------------
+   FRANKY'S (TLF) PDP: buy panel closer to the Figma (9 Nov 2026)
+   ------------------------------------------------------------------------------------------------------------------ */
+
+/* Set pills: compact and left-aligned like the Figma, not stretched across the column */
+.set-quantity--pills .set-option {
+  flex: none;
+  min-width: 5.5rem;
+}
+
+.set-quantity--pills .set-option__card {
+  min-height: 2.5rem;
+  padding-inline: 1.25rem;
+  font-size: var(--text-xs);
+}
+
+/* Complete the look: outlined tick box and smaller row text, as in the Figma */
+.complete-the-look .checkbox {
+  --checkbox-size: 1.25rem;
+  flex: none;
+  background-color: transparent;
+  border: 1px solid rgb(var(--text-color) / .6);
+}
+
+.complete-the-look .checkbox:checked {
+  background-color: rgb(var(--text-color));
+  border-color: rgb(var(--text-color));
+}
+
+.complete-the-look__label {
+  font-size: var(--text-sm);
+}
+
+/* Trust line under the add to cart: centred (the text block's own "prose-justify-start" kept it left) */
+.product-info__block-item[data-block-type="buy-buttons"] + .product-info__block-item[data-block-type="text"] .prose {
+  text-align: center;
+}
+
+.product-info__block-item[data-block-type="buy-buttons"] + .product-info__block-item[data-block-type="text"] .prose > * {
+  margin-inline: auto;
+}
+
+/* Product title a step smaller on desktop, as in the Figma (theme h3 is ~42px there) */
+@media screen and (min-width: 1000px) {
+  .product-info .product-title {
+    font-size: 2rem;
+  }
+}
