@@ -75,6 +75,42 @@ only way to do it on Shopify right now.
         endif
       endif
     endfor
+
+    # FRANKY'S (TLF) PDP: Franky's photos name their colour in the alt text ("Lorient Placemat in Navy - ..."), not
+    # with the "#Colour_Navy" tag above. Hide photos named for another colour, so the gallery shows the chosen colour's
+    # photos plus the ones that name no colour, as in the Figma. The longest matching value wins, so "Light Blue"
+    # isn't read as "Blue". Only runs when no photo uses the "#" tag.
+    unless filtered_indexes.size > 0
+      assign colour_option = nil
+      for option in product.options_with_values
+        assign option_name = option.name | downcase | strip
+        if option_name == 'colour' or option_name == 'color'
+          assign colour_option = option
+          break
+        endif
+      endfor
+
+      if colour_option != nil
+        assign selected_colour = colour_option.selected_value | downcase | strip
+        for media in product.media
+          if media == default_media
+            continue
+          endif
+          assign media_alt = media.alt | downcase
+          assign media_colour = ''
+          for value in colour_option.values
+            assign value_name = value | downcase | strip
+            if media_alt contains value_name and value_name.size > media_colour.size
+              assign media_colour = value_name
+            endif
+          endfor
+          if media_colour != '' and media_colour != selected_colour
+            assign media_position = media.position | sort
+            assign filtered_indexes = filtered_indexes | concat: media_position
+          endif
+        endfor
+      endif
+    endunless
   endif
 %}
 
