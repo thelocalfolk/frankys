@@ -998,39 +998,117 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 }
 
 /* ------------------------------------------------------------------------------------------------------------------
-   FRANKY'S (TLF) PDP: buy panel closer to the Figma (9 Nov 2026)
+   FRANKY'S (TLF) PDP: buy panel to the Figma spec ("PDP - Desktop" 136:2336, 9 Nov 2026). Sizes are the Figma's own
+   (desktop artboard is 1:1 px). The Figma sets body copy in Satoshi; the site font (Inter) is kept here.
    ------------------------------------------------------------------------------------------------------------------ */
 
-/* Set pills: compact and left-aligned like the Figma, not stretched across the column */
+/* Labels and pills in title case, as in the Figma ("Colour:", "Set Of 6", "Complete The Look:") */
+.product-info :is(.variant-picker__option-info, .set-quantity__label, .set-option__title, .complete-the-look__title,
+  .complete-the-look__name, .complete-the-look__price, .set-quantity__total) {
+  text-transform: capitalize;
+}
+
+/* Hidden checkbox/legend text keeps its own case */
+.product-info .sr-only {
+  text-transform: none;
+}
+
+/* Colour and quantity labels: 13px, label part 50% and bold */
+.product-info .variant-picker__option-info,
+.set-quantity--pills .set-quantity__label {
+  font-size: .8125rem;
+  font-weight: 700;
+}
+
+.product-info .variant-picker__option-info .text-subdued,
+.set-quantity--pills .set-quantity__label .text-subdued {
+  color: rgb(var(--text-color) / .5);
+}
+
+/* Short description: 13px, 1.5 line height */
+.product-short-description {
+  font-size: .8125rem;
+  line-height: 1.5;
+}
+
+/* Set pills: 85 x 32, hairline outline, 10px text, left-aligned */
+.set-quantity--pills .set-quantity__options {
+  gap: .3125rem;
+}
+
 .set-quantity--pills .set-option {
   flex: none;
-  min-width: 5.5rem;
+  min-width: 5.3125rem;
 }
 
 .set-quantity--pills .set-option__card {
-  min-height: 2.5rem;
-  padding-inline: 1.25rem;
-  font-size: var(--text-xs);
+  min-height: 2rem;
+  padding: .25rem 1rem;
+  border: .5px solid rgb(var(--text-color));
+  font-size: .625rem;
 }
 
-/* Complete the look: outlined tick box and smaller row text, as in the Figma */
+/* Selected pill: a firmer outline */
+.set-quantity--pills .set-option__input:checked + .set-option__card {
+  box-shadow: inset 0 0 0 .5px rgb(var(--text-color));
+}
+
+/* Complete the look: 13px bold title, 55px ruled rows, 21px square hairline tick box, 13px text */
+.complete-the-look__title {
+  font-size: .8125rem;
+  font-weight: 700;
+}
+
+.complete-the-look__list,
+.complete-the-look__row {
+  border-color: rgb(var(--text-color) / .15);
+}
+
+.complete-the-look__head {
+  gap: .6875rem;
+  min-height: 3.4375rem;
+}
+
 .complete-the-look .checkbox {
-  --checkbox-size: 1.25rem;
+  --checkbox-size: 1.3125rem;
   flex: none;
   background-color: transparent;
-  border: 1px solid rgb(var(--text-color) / .6);
+  border: .5px solid rgb(var(--text-color));
+  border-radius: 0;
 }
 
 .complete-the-look .checkbox:checked {
   background-color: rgb(var(--text-color));
-  border-color: rgb(var(--text-color));
+  background-size: 11px 9px;
 }
 
 .complete-the-look__label {
-  font-size: var(--text-sm);
+  gap: 1.25rem;
+  font-size: .8125rem;
+  line-height: 2;
+  color: rgb(var(--text-color));
 }
 
-/* Trust line under the add to cart: centred (the text block's own "prose-justify-start" kept it left) */
+/* Total: 20px */
+.set-quantity__total {
+  margin-block-start: 1.75rem;
+  font-size: 1.25rem;
+}
+
+/* Add to cart: 48px, 13px title case */
+.product-info .buy-buttons .button[type="submit"] {
+  min-height: 3rem;
+  font-size: .8125rem;
+  text-transform: capitalize;
+}
+
+/* Trust line under the add to cart: 13px, centred, title case */
+.product-info__block-item[data-block-type="buy-buttons"] + .product-info__block-item[data-block-type="text"] {
+  font-size: .8125rem;
+  text-transform: capitalize;
+  word-spacing: .1em;
+}
+
 .product-info__block-item[data-block-type="buy-buttons"] + .product-info__block-item[data-block-type="text"] .prose {
   text-align: center;
 }
@@ -1039,9 +1117,20 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   margin-inline: auto;
 }
 
-/* Product title a step smaller on desktop, as in the Figma (theme h3 is ~42px there) */
 @media screen and (min-width: 1000px) {
+  /* Title: 30px medium */
   .product-info .product-title {
-    font-size: 2rem;
+    font-size: 1.875rem;
+    line-height: 1.2;
+  }
+
+  /* Colour swatches: 40px, ~21px apart */
+  .product-info .variant-picker .color-swatch {
+    --swatch-width: 2.5rem;
+    --swatch-height: 2.5rem;
+  }
+
+  .product-info .variant-picker__option-values {
+    gap: 1.3125rem;
   }
 }
