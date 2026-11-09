@@ -14,6 +14,7 @@
       "blocks": {
         "heading": {
           "type": "heading",
+          "disabled": true,
           "settings": {
             "text": "A Good Day Starts With A Good Night",
             "heading_size": "h3",
@@ -27,6 +28,7 @@
         },
         "text": {
           "type": "rich-text",
+          "disabled": true,
           "settings": {
             "text": "<p>Colours to wake up to, and a very good reason to stay a little longer.<br/><br/>Turns out a considered home needs a place to lie down.</p>",
             "content_width": "md"
@@ -35,6 +37,7 @@
         },
         "button": {
           "type": "button",
+          "disabled": true,
           "settings": {
             "text": "Shop Now",
             "url": "shopify://collections/bedding",
@@ -53,14 +56,14 @@
       ],
       "settings": {
         "color_scheme": "scheme-3",
-        "allow_transparent_header": false,
-        "image_size": "md",
-        "image": "shopify://shop_images/2026-10-Hero1-Landscape.jpg",
-        "mobile_image": "shopify://shop_images/2026-10-Hero1.jpg",
+        "allow_transparent_header": true,
+        "image_size": "lg",
+        "image": "shopify://shop_images/BFCM26-Hero2-Desktop_7b14e1b3-d5b8-4819-9631-a8c6f14f4b04.jpg",
+        "mobile_image": "shopify://shop_images/BFCM26-Hero2-Mobile_56859682-e978-417b-8895-5bc0fb370adf.jpg",
         "image_asset": "frankys-home-hero-bedding.jpg",
         "mobile_image_asset": "frankys-home-hero-bedding-mobile.jpg",
         "overlay_color": "#000000",
-        "overlay_opacity": 10,
+        "overlay_opacity": 0,
         "enable_sticky_content": false,
         "content_width": "md",
         "desktop_text_position": "sm:place-self-center",
@@ -69,11 +72,25 @@
     },
     "fresh_to_the_table": {
       "type": "frankys-collection-products",
+      "disabled": true,
       "settings": {
         "color_scheme": "scheme-1",
         "title": "Freshly Made",
         "collection": "new-arrivals",
         "link_text": "Shop New",
+        "link_url": "",
+        "products_count": 8,
+        "products_per_row_mobile": "2",
+        "products_per_row_desktop": 4
+      }
+    },
+    "frankys_collection_products_yiLrBf": {
+      "type": "frankys-collection-products",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "title": "Crowd favourites",
+        "collection": "best-sellers",
+        "link_text": "Shop Best-Sellers",
         "link_url": "",
         "products_count": 8,
         "products_per_row_mobile": "2",
@@ -968,6 +985,7 @@
   "order": [
     "hero",
     "fresh_to_the_table",
+    "frankys_collection_products_yiLrBf",
     "made_for_living",
     "good_taste",
     "crowd_favourites",

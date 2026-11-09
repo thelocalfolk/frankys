@@ -47,7 +47,7 @@
     "product_card_show_color_swatches": true,
     "product_card_swatches_position": "outside",
     "product_card_rating_mode": "count",
-    "product_card_badges_placement": "place-self-start-center",
+    "product_card_badges_placement": "place-self-start-end",
     "product_card_show_badges_vertically": false,
     "product_card_show_sold_out_badge": true,
     "product_card_show_discount": true,
