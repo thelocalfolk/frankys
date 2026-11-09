@@ -134,6 +134,7 @@
     },
     "quantity": {
       "label": "Quantity",
+      "set_label": "Set",
       "change_quantity": "Change quantity",
       "increase_quantity": "Increase quantity",
       "decrease_quantity": "Decrease quantity",

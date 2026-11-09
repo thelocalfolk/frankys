@@ -735,7 +735,8 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
    FRANKY'S (TLF) PDP: product page as in the Figma ("PDP - Desktop" / "PDP - Mobile")
    ------------------------------------------------------------------------------------------------------------------ */
 
-/* Set picker as pills (snippets/buy-buttons-set.liquid, style: 'pills'): "Quantity: Set of 6" above a row of pills */
+/* Set picker as pills (snippets/buy-buttons-set.liquid, style: 'pills'): "Set: Set of 6" above a row of the theme's
+   own .block-swatch buttons, laid out like the native variant picker (.variant-picker__option-values h-stack gap-3 wrap) */
 .set-quantity--pills .set-quantity__label {
   font-size: var(--text-sm);
 }
@@ -743,36 +744,13 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 .set-quantity--pills .set-quantity__options {
   display: flex;
   flex-wrap: wrap;
-  gap: .5rem;
-}
-
-.set-quantity--pills .set-option {
-  flex: 1 1 0;
-  min-width: 4.5rem;
-}
-
-.set-quantity--pills .set-option__card {
-  min-height: 2.75rem; /* 44px tap target */
-  padding: .25rem .75rem;
-  border-radius: 999px;
-  font-size: var(--text-sm);
-}
-
-.set-quantity--pills .set-option__title {
-  font-weight: inherit;
-}
-
-/* Selected pill: darker outline, as in the Figma (not a filled button) */
-.set-quantity--pills .set-option__input:checked + .set-option__card {
-  border-color: currentColor;
-  background-color: transparent;
-  color: inherit;
+  gap: .75rem;
 }
 
 .set-quantity--pills .set-quantity__custom-bar {
-  min-height: 2.75rem;
-  padding-block: .25rem;
-  border-radius: 999px;
+  min-height: 0;
+  padding: .25rem .5rem;
+  border-radius: var(--input-border-radius);
 }
 
 /* "Total $100" line above the add to cart */
@@ -1022,9 +1000,8 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
    (desktop artboard is 1:1 px). The Figma sets body copy in Satoshi; the site font (Inter) is kept here.
    ------------------------------------------------------------------------------------------------------------------ */
 
-/* Labels and pills in title case, as in the Figma ("Colour:", "Set Of 6", "Complete The Look:") */
-.product-info :is(.variant-picker__option-info, .set-quantity__label, .set-option__title, .complete-the-look__title,
-  .complete-the-look__name, .complete-the-look__price, .set-quantity__total) {
+/* Complete the look and total in title case, as in the Figma ("Complete The Look:"). Set and colour labels keep their own case, like the theme's variant picker */
+.product-info :is(.complete-the-look__title, .complete-the-look__name, .complete-the-look__price, .set-quantity__total) {
   text-transform: capitalize;
 }
 
@@ -1049,28 +1026,6 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 .product-short-description {
   font-size: .8125rem;
   line-height: 1.5;
-}
-
-/* Set pills: 85 x 32, hairline outline, 10px text, left-aligned */
-.set-quantity--pills .set-quantity__options {
-  gap: .3125rem;
-}
-
-.set-quantity--pills .set-option {
-  flex: none;
-  min-width: 5.3125rem;
-}
-
-.set-quantity--pills .set-option__card {
-  min-height: 2rem;
-  padding: .25rem 1rem;
-  border: .5px solid rgb(var(--text-color));
-  font-size: .625rem;
-}
-
-/* Selected pill: a firmer outline */
-.set-quantity--pills .set-option__input:checked + .set-option__card {
-  box-shadow: inset 0 0 0 .5px rgb(var(--text-color));
 }
 
 /* Complete the look: 13px bold title, 55px ruled rows, 21px square hairline tick box, 13px text */

@@ -163,6 +163,15 @@
     assign qty_max = current_variant.quantity_rule.max
 
     # ---- SET: build the preset cards once, used by both layouts ---------------
+    # FRANKY'S (TLF) PDP: pills reuse the theme's .block-swatch, so they match the native variant picker
+    if set_style == 'pills'
+      assign set_card_class = 'block-swatch'
+      assign set_title_class = ''
+    else
+      assign set_card_class = 'set-option__card'
+      assign set_title_class = 'set-option__title'
+    endif
+
     capture set_preset_cards
       assign prefix_escaped = set_size_prefix | escape
       for size in set_sizes_list
@@ -200,8 +209,12 @@
           echo ' checked'
         endif
         echo '>'
-        echo '<span class="set-option__card">'
-        echo '<span class="set-option__title">'
+        echo '<span class="'
+        echo set_card_class
+        echo '">'
+        echo '<span class="'
+        echo set_title_class
+        echo '">'
         echo prefix_escaped
         echo size_escaped
         echo '</span>'
@@ -325,7 +338,7 @@
 
                   {%- if show_label -%}
                     <p class="set-quantity__label" aria-hidden="true">
-                      <span class="text-subdued">{{ 'product.quantity.label' | t }}:</span>
+                      <span class="text-subdued">{% if set_style == 'pills' %}{{ 'product.quantity.set_label' | t }}{% else %}{{ 'product.quantity.label' | t }}{% endif %}:</span>
                       <span data-set-label>{{ set_size_prefix | escape }}{{ default_set }}</span>
                     </p>
                   {%- endif -%}
@@ -337,8 +350,8 @@
                           {{ set_preset_cards }}
                           <label class="set-option set-option--custom">
                             <input type="radio" class="set-option__input" data-set-size name="{{ set_radio_name }}" form="{{ set_radio_form }}" value="custom">
-                            <span class="set-option__card">
-                              <span class="set-option__title">{{ custom_title | escape }}</span>
+                            <span class="{{ set_card_class }}">
+                              <span class="{{ set_title_class }}">{{ custom_title | escape }}</span>
                               {%- if show_subtitles -%}
                                 <span class="set-option__subtitle text-subdued text-sm">{{ custom_subtitle | escape }}</span>
                               {%- endif -%}
