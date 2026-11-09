@@ -754,14 +754,14 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 }
 
 /* Thin-lined pills on the product page, for both the set picker and the theme's variant picker (Eliza, 9 Nov 2026):
-   85 x 32, hairline outline, 10px text as in the Figma. Colour swatches are not .block-swatch, so they're unaffected. */
+   85 x 32, hairline outline as in the Figma; 14px text (Figma 10px read too small, Eliza 9 Nov). Colour swatches are not .block-swatch, so they're unaffected. */
 .product-info .block-swatch {
   --swatch-padding: .25rem 1rem;
   --swatch-border-size: .5px;
   min-width: 5.3125rem;
   min-height: 2rem;
   border-color: rgb(var(--text-color));
-  font-size: .625rem;
+  font-size: .875rem;
 }
 
 .product-info .block-swatch.is-disabled {
