@@ -542,7 +542,7 @@
         }
 
         restoreState() {
-          const saved = this.form && SetQuantity.state[this.form.id];
+          const saved = this.form && SetQuantity.state[this.form.getAttribute('id')];
           if (!saved) return;
           const radio = this.querySelector('[data-set-size][value="' + saved.choice + '"]');
           if (!radio) return;
@@ -640,13 +640,14 @@
           if (this.labelEl) this.labelEl.textContent = (this.config.sizePrefix || '') + qty;
           if (this.totalEl) {
             const price = this.config.variants[this.getVariantId()];
-            const look = this.form && document.querySelector('complete-the-look[form="' + this.form.id + '"]');
+            // getAttribute: the form's <input name="id"> shadows form.id
+            const look = this.form && document.querySelector('complete-the-look[form="' + this.form.getAttribute('id') + '"]');
             const extra = look && typeof look.extraCents === 'function' ? look.extraCents() : 0;
             this.totalEl.textContent = this.formatMoney((price != null ? price : this.config.defaultPrice) * qty + extra);
           }
 
           const checked = this.querySelector('[data-set-size]:checked');
-          if (this.form && checked) SetQuantity.state[this.form.id] = { choice: checked.value, qty };
+          if (this.form && checked) SetQuantity.state[this.form.getAttribute('id')] = { choice: checked.value, qty };
 
           // SET: let the "Complete the set" suggestions follow the chosen set size.
           if (silent === true) return;
