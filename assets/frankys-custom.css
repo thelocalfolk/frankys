@@ -958,11 +958,6 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   display: none;
 }
 
-.complete-the-look__summary {
-  margin: 0;
-  opacity: .8;
-}
-
 .complete-the-look__sub {
   margin: .25rem 0 0;
   font-size: var(--text-xs);
@@ -1008,17 +1003,6 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 .complete-the-look__swatch:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
-}
-
-.complete-the-look__mix {
-  display: inline-block;
-  padding: 0 .3rem;
-  border-radius: 4px;
-  background: rgb(var(--text-color) / .08);
-  font-size: .625rem;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  vertical-align: .1em;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------
