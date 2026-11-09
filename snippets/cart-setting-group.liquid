@@ -1,0 +1,14 @@
+{%- doc -%}
+  FRANKY'S (TLF) P1 — Build Your Setting.
+  Heading shown in the cart above the lines that belong to one built setting.
+  The builder (assets/frankys-setting-builder.js) adds every piece with the same hidden
+  line item property "_setting" (e.g. "Sweden setting · Sage Green · 4 settings"), so
+  the cart loops in sections/cart-drawer.liquid and sections/main-cart.liquid print this
+  once whenever a new _setting value starts.
+
+  @param {string} name - the _setting property value
+{%- enddoc -%}
+<div class="cart-setting-group">
+  <p class="cart-setting-group__label text-xxs text-subdued">{{ 'cart.setting_group.label' | t }}</p>
+  <p class="cart-setting-group__title subheading">{{ 'cart.setting_group.title' | t: name: name }}</p>
+</div>

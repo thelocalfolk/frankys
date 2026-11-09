@@ -158,8 +158,15 @@
 
             {%- comment -%}LINE ITEMS{%- endcomment -%}
 
+            {%- comment -%}FRANKY'S (TLF) P1: pieces added together by Build your setting share a hidden _setting property and are shown as one group.{%- endcomment -%}
+            {%- assign previous_setting = '' -%}
             {%- for line_item in cart.items -%}
-              {%- render 'line-item', line_item: line_item, show_line_price: true, hide_unit_price: true, show_quantity_selector: true, show_low_stock: true -%}
+              {%- assign current_setting = line_item.properties['_setting'] | default: '' -%}
+              {%- if current_setting != blank and current_setting != previous_setting -%}
+                {%- render 'cart-setting-group', name: current_setting -%}
+              {%- endif -%}
+              {%- assign previous_setting = current_setting -%}
+              {%- render 'line-item', line_item: line_item, show_line_price: true, hide_unit_price: true, show_quantity_selector: true, show_low_stock: true, in_setting_group: current_setting -%}
             {%- endfor -%}
 
             {%- comment -%}MATCHING-ROW (below line items, above cross-sell){%- endcomment -%}

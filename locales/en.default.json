@@ -390,6 +390,11 @@
       "we_accept": "We accept",
       "offers": "Offers"
     },
+    "setting_group": {
+      "label": "Table setting",
+      "title": "{{ name }}",
+      "info": "Built with Build your setting"
+    },
     "order": {
       "product": "Product",
       "total": "Total",

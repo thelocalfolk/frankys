@@ -126,6 +126,26 @@
   background: currentColor;
 }
 
+/* --- P1: Cart — a built setting's pieces shown as one group ------------
+   Heading from snippets/cart-setting-group.liquid; lines carry .line-item--in-setting. */
+.cart-setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: .125rem;
+  padding-block-start: .25rem;
+}
+
+.cart-setting-group__label {
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+/* Everything in the group hangs off one thin rule so it reads as a set. */
+.line-item--in-setting {
+  padding-inline-start: .75rem;
+  border-inline-start: 1px solid rgb(var(--border-color));
+}
+
 /* --- P4: Shop by Colour (templates/collection.colour.json) ---------------
    Switcher: sections/frankys-colour-switcher.liquid
    Heading:  sections/frankys-colour-heading.liquid
