@@ -145,6 +145,11 @@
         if (!keys.length && ranges[this.heroRange]) keys = [this.heroRange];
         if (keys.length) Object.keys(ranges).forEach((key) => { if (!keys.includes(key)) delete ranges[key]; });
         row.ownRange = keys.length > 0;
+        // Name the piece in the row title, since there's no Range picker to show it ("Lorient Coasters")
+        const nameEl = el.querySelector('.complete-the-look__name');
+        if (keys.length === 1 && nameEl && this.config.strings.ownRange) {
+          nameEl.textContent = this.config.strings.ownRange.replace('__range__', ranges[keys[0]].name).replace('__item__', nameEl.textContent.trim());
+        }
       }
 
       this.applyDefaults(row);

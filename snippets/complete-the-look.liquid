@@ -152,7 +152,8 @@
           "sets": {{ 'product.complete_the_look.sets' | t: count: '__count__' | json }},
           "oneSet": {{ 'product.complete_the_look.one_set' | t | json }},
           "one": {{ 'product.complete_the_look.one' | t | json }},
-          "two": {{ 'product.complete_the_look.two' | t | json }}
+          "two": {{ 'product.complete_the_look.two' | t | json }},
+          "ownRange": {{ 'product.complete_the_look.own_range' | t: range: '__range__', item: '__item__' | json }}
         }
       }
     </script>
