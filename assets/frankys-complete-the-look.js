@@ -137,6 +137,16 @@
         selected: false, units: 1, manualUnits: false, range: null, colour: null
       };
 
+      // FRANKY'S (TLF) PDP "Own range only" mode (alternate template): keep just the product's partner range(s) in this
+      // row, so there's no Range picker. Partners: the product's Matching product metafield, else the same range by name.
+      if (this.dataset.rangeMode === 'own') {
+        const partners = (this.dataset.partners || '').split(',').filter(Boolean);
+        let keys = [...new Set(data.products.filter((p) => partners.includes(p.handle)).map(rangeOf))].filter((k) => ranges[k]);
+        if (!keys.length && ranges[this.heroRange]) keys = [this.heroRange];
+        if (keys.length) Object.keys(ranges).forEach((key) => { if (!keys.includes(key)) delete ranges[key]; });
+        row.ownRange = keys.length > 0;
+      }
+
       this.applyDefaults(row);
 
       const previous = saved[this.formId][row.index];
@@ -156,7 +166,7 @@
       const heroColour = this.heroColour;
       let pick = null;
 
-      const own = row.ranges[this.heroRange];
+      const own = row.ranges[this.heroRange] || (row.ownRange ? ranges[0] : null);
       if (own && own.colours[heroColour]) pick = { range: own, colour: heroColour };
 
       if (!pick) {

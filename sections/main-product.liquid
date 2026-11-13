@@ -375,6 +375,17 @@ document.addEventListener('variant:change', function(event) {
           "default": "Complete the look:"
         },
         {
+          "type": "select",
+          "id": "range_mode",
+          "label": "Ranges",
+          "options": [
+            { "value": "any", "label": "Any range (shopper can switch)" },
+            { "value": "own", "label": "Own range only, when there is one" }
+          ],
+          "default": "any",
+          "info": "Own range: rows with a piece from the product's range (or its \"Matching product\" metafield) show only that range, with no Range picker. Rows without one keep the picker."
+        },
+        {
           "type": "collection_list",
           "id": "range_collections",
           "label": "Range collections",

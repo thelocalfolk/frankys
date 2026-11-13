@@ -12,6 +12,10 @@
     - Quantity options come from how many place settings one piece covers: the row's "Covers" setting, a "Set of N"
       in the product name, or the product metafield custom.builder_covers_settings (same as the table builder).
   Rows whose collection holds the current product are hidden (no "Placemats" row on a placemat).
+  Block setting "Ranges" = "Own range only" (alternate template product.upsell-same-range, to compare with the client):
+  a row that has the product's partner pieces shows only those, with no Range picker. Partners are the product's
+  custom.matching_product metafield (e.g. Norway Placemat -> Peru Coaster), else the same range by name. Rows with no
+  partner keep the Range picker.
 
   @param {object} product - the product whose page this is
   @param {object} block - the complete_the_look block
@@ -133,6 +137,8 @@
     data-hero-range="{{ hero_range | escape }}"
     data-hero-colour="{{ hero_colour | escape }}"
     data-hero-swatch="{{ hero_swatch | strip | escape }}"
+    data-range-mode="{{ block.settings.range_mode | default: 'any' }}"
+    data-partners="{{ product.metafields.custom.matching_product.value | map: 'handle' | join: ',' }}"
     {{ block.shopify_attributes }}
   >
     <script type="application/json" data-look-config>
