@@ -818,8 +818,8 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 
 .complete-the-look__shape {
   flex: none;
-  width: 1.375rem;
-  height: .875rem;
+  width: 1.75rem;
+  height: 1.125rem;
   background-color: currentColor;
   opacity: .75;
   -webkit-mask: var(--shape) center / contain no-repeat;
