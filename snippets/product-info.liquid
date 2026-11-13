@@ -424,6 +424,7 @@ no need to manually pass the section as it is globally available)
             -%}
 
             {%- if set_sizes != blank or product.template_suffix == 'upsell' -%}
+              {%- comment -%} FRANKY'S (TLF) PDP: set pills plus an always-visible stepper (stepper: true, 9 Nov 2026) {%- endcomment -%}
               {%- render 'buy-buttons-set',
                   product: product,
                   form_id: product_form_id,

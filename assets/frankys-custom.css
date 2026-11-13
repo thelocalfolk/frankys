@@ -753,7 +753,7 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   border-radius: var(--input-border-radius);
 }
 
-/* Stepper under the set pills (stepper mode): any number, including 1, with the pills' hairline outline */
+/* Stepper under the set pills (stepper mode, PR #28): any number, including 1, with the pills' hairline outline */
 .set-quantity--pills .set-quantity__stepper {
   align-self: flex-start;
   border: .5px solid rgb(var(--text-color));
