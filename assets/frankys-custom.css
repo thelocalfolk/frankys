@@ -753,16 +753,25 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   border-radius: var(--input-border-radius);
 }
 
-/* Stepper under the set pills (stepper mode, PR #28): any number, including 1, with the pills' hairline outline */
+/* Stepper on the same row as the set pills (stepper mode, PR #28): the pills' 32px height, hairline outline and 12px text */
 .set-quantity--pills .set-quantity__stepper {
-  align-self: flex-start;
-  justify-self: start;
-  width: max-content;
+  align-items: center;
+  gap: 0;
+  height: 2rem;
+  padding: 0;
   border: .5px solid rgb(var(--text-color));
+  border-radius: var(--input-border-radius);
+}
+
+.set-quantity--pills .set-quantity__step {
+  width: 2rem;
+  height: 100%;
+  font-size: .875rem;
 }
 
 .set-quantity--pills .set-quantity__custom-input {
-  font-size: .875rem;
+  width: 1.75rem;
+  font-size: .75rem;
 }
 
 /* Thin-lined pills on the product page, for both the set picker and the theme's variant picker (Eliza, 9 Nov 2026):

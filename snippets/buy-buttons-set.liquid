@@ -355,7 +355,6 @@
                     <div class="set-quantity__options">
                       {{ set_preset_cards }}
                       <input type="radio" class="set-option__input" data-set-size name="{{ set_radio_name }}" form="{{ set_radio_form }}" value="custom" hidden>
-                    </div>
                     <div class="set-quantity__stepper" role="group" aria-label="{{ 'product.quantity.label' | t | escape }}">
                       <button type="button" class="set-quantity__step" data-set-step="-1" aria-label="{{ 'product.quantity.decrease_quantity' | t | escape }}">&minus;</button>
                       <input class="set-quantity__custom-input" type="number" inputmode="numeric"
@@ -366,6 +365,7 @@
                              value="{{ default_set }}"
                              aria-label="{{ 'product.quantity.label' | t | escape }}" data-set-custom-input>
                       <button type="button" class="set-quantity__step" data-set-step="1" aria-label="{{ 'product.quantity.increase_quantity' | t | escape }}">+</button>
+                    </div>
                     </div>
                   {%- elsif show_custom -%}
                     <div class="set-quantity__stack" data-set-switch data-mode="presets">
