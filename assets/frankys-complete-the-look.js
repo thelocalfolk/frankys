@@ -111,6 +111,7 @@
         const key = rangeOf(product);
         const covers = coversOf(product, data.covers);
         const range = ranges[key] || (ranges[key] = { key, name: titleCase(key), colours: {} });
+        if (product.shape && !range.shape) range.shape = product.shape;
         product.variants.forEach((variant) => {
           if (!variant.available) return;
           const colour = variant.colour;
@@ -260,7 +261,8 @@
       const ranges = Object.values(row.ranges).sort((a, b) => a.name.localeCompare(b.name));
       const rangePills = ranges.length > 1 ? pills('range', ranges.map((r) => ({
         value: r.key, on: r.key === row.range,
-        html: this.escape(r.name)
+        // FRANKY'S (TLF) PDP: the range's placemat shape beside its name (product metafield custom.placemat_shape)
+        html: (r.shape ? `<span class="complete-the-look__shape" style="--shape: url('${this.escape(r.shape)}')" aria-hidden="true"></span>` : '') + this.escape(r.name)
       }))) : '';
 
       const swatches = Object.values(range.colours).map((c) =>

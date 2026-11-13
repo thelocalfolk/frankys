@@ -3,6 +3,7 @@
   Outputs one product as JSON for assets/frankys-setting-builder.js.
   The colour is read from the option named "Colour"/"Color" (falls back to the first option).
   Optional per-product override: metafield custom.builder_covers_settings (integer) — how many place settings one unit covers.
+  Optional: metafield custom.placemat_shape (e.g. "lorient") — the range's shape icon, assets/frankys-shape-<shape>.svg.
 
   @param {object} product
   @param {number} [covers] - default number of settings one unit covers (0 = one per table)
@@ -31,6 +32,7 @@
   "url": {{ product.url | json }},
   "image": {% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
   "covers": {% if covers_value != blank %}{{ covers_value | json }}{% else %}null{% endif %},
+  "shape": {% if product.metafields.custom.placemat_shape != blank %}{{ 'frankys-shape-' | append: product.metafields.custom.placemat_shape.value | append: '.svg' | asset_url | json }}{% else %}null{% endif %},
   "swatches": {
     {%- for value in colour_option.values -%}
       {%- capture swatch_css -%}{%- render 'setting-builder-swatch', value: value -%}{%- endcapture -%}
