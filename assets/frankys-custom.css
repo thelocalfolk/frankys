@@ -763,6 +763,15 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   border-radius: var(--input-border-radius);
 }
 
+/* A little more room so the stepper reads as its own control, and Complete the Look as its own section (Eliza 13 Nov) */
+.set-quantity--pills .set-quantity__stepper {
+  margin-inline-start: .75rem;
+}
+
+.set-quantity .complete-the-look {
+  margin-block-start: 1rem;
+}
+
 .set-quantity--pills .set-quantity__step {
   width: 2rem;
   height: 100%;
@@ -809,6 +818,10 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 
   .set-quantity--pills .set-quantity__step {
     width: 1.75rem;
+  }
+
+  .set-quantity--pills .set-quantity__stepper {
+    margin-inline-start: .5rem;
   }
 }
 
