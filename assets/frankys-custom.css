@@ -759,8 +759,17 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   gap: 0;
   height: 2rem;
   padding: 0;
-  border: .5px solid rgb(var(--text-color));
+  border: .5px solid rgb(var(--text-color) / .35);
   border-radius: var(--input-border-radius);
+  color: rgb(var(--text-color) / .65);
+  transition: border-color .15s ease, color .15s ease;
+}
+
+/* Selected only when the number isn't one of the set pills (then no pill is highlighted) */
+.set-quantity--pills .set-quantity__stepper.is-selected {
+  border-color: rgb(var(--text-color));
+  box-shadow: inset 0 0 0 .5px rgb(var(--text-color));
+  color: rgb(var(--text-color));
 }
 
 /* A little more room so the stepper reads as its own control, and Complete the Look as its own section (Eliza 13 Nov) */
