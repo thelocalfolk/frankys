@@ -3,7 +3,7 @@
   Outputs one product as JSON for assets/frankys-setting-builder.js.
   The colour is read from the option named "Colour"/"Color" (falls back to the first option).
   Optional per-product override: metafield custom.builder_covers_settings (integer) — how many place settings one unit covers.
-  Optional: metafield custom.placemat_shape (e.g. "lorient") — the range's shape icon, assets/frankys-shape-<shape>.svg. Falls back to the range name from the handle.
+  Optional: metafield custom.placemat_shape (e.g. "lorient") — the range's shape icon, assets/frankys-shape-<shape>.svg.
 
   Preview (live scene, 18 Nov 2026): "preview" is a neutral top-down cut-out the builder tints with the chosen colour —
   product metafield custom.builder_preview (file), else the preview_asset param, else (for placemats and coasters)
@@ -33,15 +33,12 @@
   endif
 
   comment
-    FRANKY'S (TLF) PDP/P1: shape icon key. The metafield wins; otherwise the range name from the handle
-    ("north-pole-placemat" -> north-pole, "lorient-placemat-plus" -> lorient) so a range with no metafield yet still
-    shows its icon when a matching assets/frankys-shape-<key>.svg exists. A missing SVG simply renders nothing.
+    FRANKY'S (TLF) PDP/P1: shape icon key from the metafield only (every active placemat and coaster has it, checked
+    18 Nov 2026). The old fallback guessed it from the handle, which asked for files like
+    frankys-shape-prado-napkins.svg that don't exist: 13 failed requests on every product page with napkins or
+    tablecloths ticked. A new range just needs custom.placemat_shape set, plus its SVG in assets.
   endcomment
-  assign shape_key = product.metafields.custom.placemat_shape.value | default: shape_fallback
-  if shape_key == blank
-    assign shape_key = product.handle | split: '-placemat' | first | split: '-coaster' | first
-  endif
-  assign shape_key = shape_key | handle
+  assign shape_key = product.metafields.custom.placemat_shape.value | default: shape_fallback | handle
 
   assign preview_url = blank
   if product.metafields.custom.builder_preview != blank
