@@ -125,7 +125,6 @@
                 endif
                 assign range_key = block.settings.key | default: placemat.handle | remove: '-placemat' | handle
                 assign range_name = block.settings.label | default: placemat.title | remove: ' Placemat' | remove: ' placemat'
-                assign colour_count = placemat.options_with_values.first.values.size
               -%}
               <div class="sb__shape" {{ block.shopify_attributes }}>
                 <input class="sr-only" type="radio" name="sb-range-{{ section.id }}" id="sb-range-{{ section.id }}-{{ range_key }}" value="{{ range_key }}" data-range-input>
@@ -150,7 +149,6 @@
                   </span>
                   <span class="sb__shape-name">{{ range_name }}</span>
                   <span class="sb__shape-tick" aria-hidden="true"></span>
-                  <span class="sb__shape-meta text-xs text-subdued">{{ placemat.price_min | money_without_trailing_zeros }} · {{ colour_count }} colours</span>
                 </label>
               </div>
             {%- endfor -%}
