@@ -110,18 +110,12 @@
 
         {%- comment -%} Step 1 — shape {%- endcomment -%}
         {%- comment -%}
-          FRANKY'S (TLF) P1: steps 1–3 fold like Sheet Society's bed builder (Eliza, 18 Nov 2026): the head shows the
-          number, then a tick and the pick once chosen; the body opens for the current step or when the head is tapped.
+          FRANKY'S (TLF) P1: steps stay open and stack like Sheet Society's bed builder (Eliza, 18 Nov 2026): the shape
+          icons stay in their row with a tick on the chosen one, and each step's heading shows a tick and the pick once made.
         {%- endcomment -%}
-        <fieldset class="sb__step sb__step--fold" data-step="shape">
-          <legend class="sr-only">{{ section.settings.shape_heading }}</legend>
-          <button type="button" class="sb__step-head" data-step-toggle="shape" aria-expanded="true" aria-controls="sb-body-{{ section.id }}-shape">
-            <span class="sb__step-num">1</span>
-            <span class="sb__step-name">{{ section.settings.shape_heading }}</span>
-            <span class="sb__step-value text-subdued" data-step-value="shape"></span>
-            <span class="sb__step-chev" aria-hidden="true"></span>
-          </button>
-          <div class="sb__step-body" id="sb-body-{{ section.id }}-shape">
+        <fieldset class="sb__step" data-step="shape">
+          <legend class="sb__step-title"><span class="sb__step-num">1</span> {{ section.settings.shape_heading }} <span class="sb__step-value text-subdued" data-step-value="shape"></span></legend>
+          <div class="sb__step-body">
           <div class="sb__shapes">
             {%- for block in range_blocks -%}
               {%- liquid
@@ -155,6 +149,7 @@
                     {%- endif -%}
                   </span>
                   <span class="sb__shape-name">{{ range_name }}</span>
+                  <span class="sb__shape-tick" aria-hidden="true"></span>
                   <span class="sb__shape-meta text-xs text-subdued">{{ placemat.price_min | money_without_trailing_zeros }} · {{ colour_count }} colours</span>
                 </label>
               </div>
@@ -164,30 +159,18 @@
         </fieldset>
 
         {%- comment -%} Step 2 — colour (rendered by JS for the chosen shape) {%- endcomment -%}
-        <fieldset class="sb__step sb__step--fold" data-step="colour" disabled>
-          <legend class="sr-only">{{ section.settings.colour_heading }}</legend>
-          <button type="button" class="sb__step-head" data-step-toggle="colour" aria-expanded="false" aria-controls="sb-body-{{ section.id }}-colour">
-            <span class="sb__step-num">2</span>
-            <span class="sb__step-name">{{ section.settings.colour_heading }}</span>
-            <span class="sb__step-value text-subdued" data-step-value="colour"></span>
-            <span class="sb__step-chev" aria-hidden="true"></span>
-          </button>
-          <div class="sb__step-body" id="sb-body-{{ section.id }}-colour">
+        <fieldset class="sb__step" data-step="colour" disabled>
+          <legend class="sb__step-title"><span class="sb__step-num">2</span> {{ section.settings.colour_heading }} <span class="sb__step-value text-subdued" data-step-value="colour"></span></legend>
+          <div class="sb__step-body">
             <p class="sb__hint text-sm text-subdued" data-colour-hint>{{ section.settings.colour_hint }}</p>
             <div class="sb__swatches" data-colour-list></div>
           </div>
         </fieldset>
 
         {%- comment -%} Step 3 — how many settings {%- endcomment -%}
-        <fieldset class="sb__step sb__step--fold" data-step="settings" disabled>
-          <legend class="sr-only">{{ section.settings.settings_heading }}</legend>
-          <button type="button" class="sb__step-head" data-step-toggle="settings" aria-expanded="false" aria-controls="sb-body-{{ section.id }}-settings">
-            <span class="sb__step-num">3</span>
-            <span class="sb__step-name">{{ section.settings.settings_heading }}</span>
-            <span class="sb__step-value text-subdued" data-step-value="settings"></span>
-            <span class="sb__step-chev" aria-hidden="true"></span>
-          </button>
-          <div class="sb__step-body" id="sb-body-{{ section.id }}-settings">
+        <fieldset class="sb__step" data-step="settings" disabled>
+          <legend class="sb__step-title"><span class="sb__step-num">3</span> {{ section.settings.settings_heading }} <span class="sb__step-value text-subdued" data-step-value="settings"></span></legend>
+          <div class="sb__step-body">
           <div class="sb__counts">
             {%- for option in settings_options -%}
               {%- assign n = option | strip | plus: 0 -%}

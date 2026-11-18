@@ -60,7 +60,6 @@
       this.activeLook = null;
       this.cartSubtotal = 0;
       // Which folding step (shape / colour / settings) is open; null = all folded (Sheet Society style, 18 Nov 2026).
-      this.openStep = 'shape';
       this.openExtra = null; // which "Complete the table" item has its options open
       this.state = {
         range: null,
@@ -176,7 +175,6 @@
       if (!range.coaster) this.state.coaster.on = false;
       else if (firstPick) this.state.coaster.on = !!this.data.coastersOnByDefault;
       if (this.state.colour) this.syncExtraColours();
-      this.openStep = this.state.colour ? 'settings' : 'colour';
       if (!silent) this.track(firstPick ? 'builder_start' : 'builder_step', { step: 'shape', range: key });
     }
 
@@ -186,7 +184,7 @@
       if (!v || !v.available) return;
       this.state.colour = key;
       this.syncExtraColours(true);
-      if (!silent) { this.openStep = 'settings'; this.track('builder_step', { step: 'colour', range: this.state.range, colour: key }); }
+      if (!silent) { this.track('builder_step', { step: 'colour', range: this.state.range, colour: key }); }
     }
 
     setSettings(n, { custom } = {}) {
@@ -298,7 +296,6 @@
       look.pieces.forEach((piece) => this.turnOnPiece((p) => p.id === piece.product, piece.colour));
 
       this.activeLook = key;
-      this.openStep = null;
       this.openExtra = null;
       this.track('builder_start', { source: 'look', look: look.title });
       this.renderAll({ colours: true, extras: true });
@@ -317,7 +314,6 @@
       this.data.addons.forEach((a) => {
         this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false };
       });
-      this.openStep = 'shape';
       this.openExtra = null;
       this.track('builder_step', { step: 'reset' });
       this.renderAll({ colours: true, extras: true });
@@ -368,7 +364,6 @@
           } else {
             if (custom) custom.hidden = true;
             this.setSettings(t.value, { custom: false });
-            this.openStep = null; // count picked: fold it, the table rows are next
           }
           this.track('builder_step', { step: 'settings', settings: this.state.settings });
           this.renderAll({ extras: true });
@@ -411,12 +406,6 @@
           else this.loadLook(look.dataset.look);
         }
         if (event.target.closest('[data-reset]')) this.resetBuilder();
-        const stepHead = event.target.closest('[data-step-toggle]');
-        if (stepHead && !stepHead.closest('fieldset').disabled) {
-          const key = stepHead.dataset.stepToggle;
-          this.openStep = this.openStep === key ? null : key;
-          this.renderSteps();
-        }
         const tile = event.target.closest('[data-type]');
         const remove = event.target.closest('[data-type-remove]');
         if (tile || remove) {
@@ -488,7 +477,7 @@
       list.innerHTML = `<div class="sb__swatch-row">${this.swatchList(range.placemat, this.state.colour, `sb-colour-${this.uid}`, 'data-colour-input')}</div>${this.soldOutNote(range.placemat)}`;
     }
 
-    // Folding steps: done = ticked + the pick in the head; open = body shown. Only one open at a time.
+    // Step headings: a tick and the pick once made (steps stay open, Eliza 18 Nov 2026).
     renderSteps() {
       const range = this.range;
       const variant = range && this.variantFor(range.placemat, this.state.colour);
@@ -497,18 +486,12 @@
         colour: { done: !!variant, value: variant ? variant.colour : '' },
         settings: { done: !!variant, value: variant ? tpl(this.strings.settingsCount, { count: this.state.settings }) : '' }
       };
-      const firstTodo = Object.keys(steps).find((k) => !steps[k].done) || null;
-      if (this.openStep && this.$(`[data-step="${this.openStep}"]`)?.disabled) this.openStep = firstTodo;
       Object.entries(steps).forEach(([key, step]) => {
         const el = this.$(`[data-step="${key}"]`);
         if (!el) return;
-        const open = this.openStep === key;
         el.classList.toggle('is-done', step.done);
-        el.classList.toggle('is-open', open);
-        const head = el.querySelector('[data-step-toggle]');
-        if (head) head.setAttribute('aria-expanded', String(open));
         const value = el.querySelector('[data-step-value]');
-        if (value) value.textContent = step.value;
+        if (value) value.textContent = step.value ? `· ${step.value}` : '';
       });
     }
 
