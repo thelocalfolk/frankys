@@ -60,7 +60,7 @@
       this.activeLook = null;
       this.cartSubtotal = 0;
       // Which folding step (shape / colour / settings) is open; null = all folded (Sheet Society style, 18 Nov 2026).
-      this.openExtra = null; // which "Complete the table" item has its options open
+      this.openExtra = 'placemat'; // which piece has its options open: 'placemat', 'coaster' or an add-on key
       this.state = {
         range: null,
         colour: null,
@@ -296,7 +296,7 @@
       look.pieces.forEach((piece) => this.turnOnPiece((p) => p.id === piece.product, piece.colour));
 
       this.activeLook = key;
-      this.openExtra = null;
+      this.openExtra = 'placemat';
       this.track('builder_start', { source: 'look', look: look.title });
       this.renderAll({ colours: true, extras: true });
       const status = this.$('[data-look-status]');
@@ -314,7 +314,7 @@
       this.data.addons.forEach((a) => {
         this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false };
       });
-      this.openExtra = null;
+      this.openExtra = 'placemat';
       this.track('builder_step', { step: 'reset' });
       this.renderAll({ colours: true, extras: true });
       const status = this.$('[data-look-status]');
@@ -410,9 +410,14 @@
         const remove = event.target.closest('[data-type-remove]');
         if (tile || remove) {
           const key = tile ? tile.dataset.type : remove.dataset.typeRemove;
+          if (key === 'placemat') {
+            this.openExtra = 'placemat';
+            this.renderExtras();
+            return;
+          }
           const s = key === 'coaster' ? this.state.coaster : this.state.addons[key];
           this.clearLook();
-          if (remove || (s.on && this.openExtra === key)) { s.on = false; this.openExtra = null; }
+          if (remove || (s.on && this.openExtra === key)) { s.on = false; this.openExtra = 'placemat'; }
           else { s.on = true; this.openExtra = key; }
           this.track('builder_step', { step: 'extras', item: key, on: s.on });
           this.renderAll({ extras: true });
@@ -430,7 +435,6 @@
       this.$$('[data-reset]').forEach((b) => { b.hidden = !range; });
       this.$('[data-step="colour"]').disabled = !range;
       this.$('[data-step="settings"]').disabled = !hasColour;
-      this.$('[data-step="extras"]').disabled = !hasColour;
 
       if (colours) this.renderColours();
       this.renderSettings();
@@ -515,7 +519,7 @@
     extraIcon(key, product) {
       // url() inside a custom property resolves against the stylesheet, so the mask URL must be absolute
       const abs = (u) => new URL(u, location.href).href;
-      if (key === 'coaster' && product.shape) return `<span class="sb__type-icon" style="--icon:url('${esc(abs(product.shape))}')"></span>`;
+      if ((key === 'coaster' || key === 'placemat') && product.shape) return `<span class="sb__type-icon" style="--icon:url('${esc(abs(product.shape))}')"></span>`;
       const addon = this.data.addons.find((a) => a.key === key);
       if (product.preview && addon && addon.role !== 'tablecloth') return `<span class="sb__type-icon" style="--icon:url('${esc(abs(product.preview))}')"></span>`;
       if (addon && addon.role === 'tablecloth') return '<span class="sb__type-icon sb__type-icon--cloth"></span>';
@@ -523,10 +527,10 @@
       return thumb ? `<img class="sb__type-thumb" src="${esc(imgUrl(thumb, 120))}" alt="" width="48" height="48" loading="lazy">` : '<span class="sb__type-icon sb__type-icon--cloth"></span>';
     }
 
-    typeTile({ key, label, product, state }) {
+    typeTile({ key, label, product, state, disabled }) {
       const on = state.on;
       const open = this.openExtra === key;
-      return `<button type="button" class="sb__type ${on ? 'is-on' : ''} ${open ? 'is-open' : ''}" data-type="${esc(key)}" aria-pressed="${on}" aria-expanded="${open}" aria-controls="sb-type-panel-${this.uid}">
+      return `<button type="button" class="sb__type ${on ? 'is-on' : ''} ${open ? 'is-open' : ''}" data-type="${esc(key)}" aria-pressed="${on}" aria-expanded="${open}" ${disabled ? 'disabled' : ''}>
         ${this.extraIcon(key, product)}
         <span class="sb__type-name">${esc(label)}</span>
         <span class="sb__type-tick" aria-hidden="true"></span>
@@ -551,14 +555,20 @@
             return `<span class="sb__pill"><input class="sr-only" type="radio" name="sb-xp-${this.uid}-${key}" id="${id}" value="${i}" data-extra-product="${esc(key)}" ${i === productIndex ? 'checked' : ''}><label for="${id}">${esc(p.title)}</label></span>`;
           }).join('')}</div>`
         : '';
-      return `<div class="sb__type-panel" id="sb-type-panel-${this.uid}">
-        <div class="sb__type-panel-head">
-          <span class="sb__extra-name">${esc(label)}${variant ? ` · ${qty} × ${esc(product.title)} · ${this.money(variant.price * qty)}` : ''}</span>
-          <button type="button" class="link text-xs" data-type-remove="${esc(key)}">${esc(this.strings.remove)}</button>
+      const pick = variant ? `${qty} × ${product.title} · ${this.money(variant.price * qty)}` : '';
+      return `<div class="sb__type-panel">
+        <div class="sb__type-panel-inner">
+          <div class="sb__type-panel-head">
+            <span class="sb__step-title is-done"><span class="sb__step-num"></span> ${esc(label)} <span class="sb__step-value text-subdued">${pick ? `· ${esc(pick)}` : ''}</span></span>
+            <button type="button" class="link text-xs" data-type-remove="${esc(key)}">${esc(this.strings.remove)}</button>
+          </div>
+          ${productPicker}
         </div>
-        ${productPicker}
-        <div class="sb__swatch-row">${this.swatchList(product, state.colour, `sb-xc-${this.uid}-${key}`, `data-extra-colour="${esc(key)}"`, 'sb__swatch--sm')}</div>
-        ${note ? `<p class="sb__hint text-xs text-subdued">${esc(note)}</p>` : ''}
+        <div class="sb__type-panel-inner">
+          <span class="sb__step-title">${esc(this.strings.colour)}${variant ? ` <span class="sb__step-value text-subdued">· ${esc(variant.colour)}</span>` : ''}</span>
+          <div class="sb__swatch-row">${this.swatchList(product, state.colour, `sb-xc-${this.uid}-${key}`, `data-extra-colour="${esc(key)}"`, 'sb__swatch--sm')}</div>
+          ${note ? `<p class="sb__hint text-xs text-subdued">${esc(note)}</p>` : ''}
+        </div>
       </div>`;
     }
 
@@ -581,12 +591,28 @@
     }
 
     renderExtras() {
+      const row = this.$('[data-types-row]');
       const list = this.$('[data-extras-list]');
-      if (!this.range || !this.state.colour) { list.innerHTML = ''; return; }
-      const items = this.extraItems();
+      const placematPanel = this.$('[data-type-panel="placemat"]');
+      const ready = !!(this.range && this.state.colour);
+      const placemat = this.range ? this.range.placemat : (this.data.ranges[0] && this.data.ranges[0].placemat);
+      const tiles = [{ key: 'placemat', label: this.strings.placemats, product: placemat || {}, state: { on: !!this.range } }];
+      const items = ready ? this.extraItems() : [];
+      items.forEach((i) => tiles.push({ ...i, disabled: false }));
+      if (!ready) {
+        // Before a shape and colour are picked the other pieces show greyed, so the row reads as the full set
+        const coaster = this.coasterProduct() || this.coasters[0];
+        if (coaster) tiles.push({ key: 'coaster', label: this.strings.coasters, product: coaster, state: { on: false }, disabled: true });
+        this.data.addons.forEach((addon) => {
+          const product = addon.products[0];
+          if (product) tiles.push({ key: addon.key, label: addon.label, product, state: { on: false }, disabled: true });
+        });
+      }
       const open = items.find((i) => i.key === this.openExtra && i.state.on);
-      if (!open) this.openExtra = null;
-      list.innerHTML = `<div class="sb__types" role="group">${items.map((i) => this.typeTile(i)).join('')}</div>${open ? this.typePanel(open) : ''}`;
+      if (!open && this.openExtra !== 'placemat') this.openExtra = 'placemat';
+      if (row) row.innerHTML = tiles.map((t) => this.typeTile(t)).join('');
+      if (placematPanel) placematPanel.hidden = this.openExtra !== 'placemat';
+      list.innerHTML = open ? this.typePanel(open) : '';
     }
 
     renderSummary() {
