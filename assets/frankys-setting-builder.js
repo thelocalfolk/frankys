@@ -61,16 +61,17 @@
       this.cartSubtotal = 0;
       // Which folding step (shape / colour / settings) is open; null = all folded (Sheet Society style, 18 Nov 2026).
       this.openStep = 'shape';
+      this.openExtra = null; // which "Complete the table" item has its options open
       this.state = {
         range: null,
         colour: null,
         settings: this.data.defaultSettings || 4,
         customSettings: false,
-        coaster: { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null, expanded: false },
+        coaster: { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null },
         addons: {}
       };
       this.data.addons.forEach((a) => {
-        this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false, expanded: false };
+        this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false };
       });
 
       this.$ = (sel) => this.querySelector(sel);
@@ -257,7 +258,7 @@
     resetAddons() {
       this.data.addons.forEach((addon) => {
         const s = this.state.addons[addon.key];
-        s.on = false; s.product = 0; s.touched = false; s.expanded = false;
+        s.on = false; s.product = 0; s.touched = false;
         s.colour = this.pickColour(this.addonProduct(addon), this.state.colour);
       });
     }
@@ -298,7 +299,7 @@
 
       this.activeLook = key;
       this.openStep = null;
-      this.state.coaster.expanded = false;
+      this.openExtra = null;
       this.track('builder_start', { source: 'look', look: look.title });
       this.renderAll({ colours: true, extras: true });
       const status = this.$('[data-look-status]');
@@ -312,11 +313,12 @@
       this.state.colour = null;
       this.state.settings = this.data.defaultSettings || 4;
       this.state.customSettings = false;
-      this.state.coaster = { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null, expanded: false };
+      this.state.coaster = { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null };
       this.data.addons.forEach((a) => {
-        this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false, expanded: false };
+        this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false };
       });
       this.openStep = 'shape';
+      this.openExtra = null;
       this.track('builder_step', { step: 'reset' });
       this.renderAll({ colours: true, extras: true });
       const status = this.$('[data-look-status]');
@@ -370,13 +372,6 @@
           }
           this.track('builder_step', { step: 'settings', settings: this.state.settings });
           this.renderAll({ extras: true });
-        } else if (t.matches('[data-extra-toggle]')) {
-          const key = t.dataset.extraToggle;
-          const s = key === 'coaster' ? this.state.coaster : this.state.addons[key];
-          s.on = t.checked;
-          s.expanded = t.checked; // ticked by hand: open it to pick the shape and colour
-          this.track('builder_step', { step: 'extras', item: key, on: t.checked });
-          this.renderAll({ extras: true });
         } else if (t.matches('[data-extra-product]') && t.dataset.extraProduct === 'coaster') {
           const product = this.coasterOptions()[Number(t.value)];
           this.setCoasterProduct(product);
@@ -393,7 +388,6 @@
           const s = key === 'coaster' ? this.state.coaster : this.state.addons[key];
           s.colour = t.value;
           s.touched = true;
-          s.expanded = false; // colour picked: the row folds to its ticked summary
           this.renderAll({ extras: true });
         }
       });
@@ -423,11 +417,16 @@
           this.openStep = this.openStep === key ? null : key;
           this.renderSteps();
         }
-        const expand = event.target.closest('[data-extra-expand]');
-        if (expand) {
-          const key = expand.dataset.extraExpand;
+        const tile = event.target.closest('[data-type]');
+        const remove = event.target.closest('[data-type-remove]');
+        if (tile || remove) {
+          const key = tile ? tile.dataset.type : remove.dataset.typeRemove;
           const s = key === 'coaster' ? this.state.coaster : this.state.addons[key];
-          if (s.on) { s.expanded = !s.expanded; this.withFocus(() => this.renderExtras()); }
+          this.clearLook();
+          if (remove || (s.on && this.openExtra === key)) { s.on = false; this.openExtra = null; }
+          else { s.on = true; this.openExtra = key; }
+          this.track('builder_step', { step: 'extras', item: key, on: s.on });
+          this.renderAll({ extras: true });
         }
       });
     }
@@ -527,76 +526,88 @@
       }
     }
 
-    extraRow({ key, label, product, state, products = null, productIndex = 0 }) {
-      const toggleId = `sb-x-${this.uid}-${key}`;
+    /* "Complete the table" as an icon row (Sheet Society "Choose products", Eliza 18 Nov 2026): one tile per
+       item with its icon and a tick badge once it's in the setting; tapping a tile adds it and opens its options
+       (shape pills + colours) underneath. Tapping an open, ticked tile removes it. */
+    extraIcon(key, product) {
+      // url() inside a custom property resolves against the stylesheet, so the mask URL must be absolute
+      const abs = (u) => new URL(u, location.href).href;
+      if (key === 'coaster' && product.shape) return `<span class="sb__type-icon" style="--icon:url('${esc(abs(product.shape))}')"></span>`;
+      const addon = this.data.addons.find((a) => a.key === key);
+      if (product.preview && addon && addon.role !== 'tablecloth') return `<span class="sb__type-icon" style="--icon:url('${esc(abs(product.preview))}')"></span>`;
+      if (addon && addon.role === 'tablecloth') return '<span class="sb__type-icon sb__type-icon--cloth"></span>';
+      const thumb = product.image;
+      return thumb ? `<img class="sb__type-thumb" src="${esc(imgUrl(thumb, 120))}" alt="" width="48" height="48" loading="lazy">` : '<span class="sb__type-icon sb__type-icon--cloth"></span>';
+    }
+
+    typeTile({ key, label, product, state }) {
+      const on = state.on;
+      const open = this.openExtra === key;
       const qty = this.qtyFor(product);
       const variant = this.variantFor(product, state.colour);
-      const price = variant ? this.money(variant.price * qty) : '';
-      const thumb = (variant && variant.image) || product.image;
+      const meta = on && variant ? `${qty} × ${this.money(variant.price * qty)}` : `from ${this.money(Math.min(...product.variants.map((v) => v.price)))}`;
+      return `<button type="button" class="sb__type ${on ? 'is-on' : ''} ${open ? 'is-open' : ''}" data-type="${esc(key)}" aria-pressed="${on}" aria-expanded="${open}" aria-controls="sb-type-panel-${this.uid}">
+        ${this.extraIcon(key, product)}
+        <span class="sb__type-name">${esc(label)}</span>
+        <span class="sb__type-meta text-xs text-subdued">${meta}</span>
+        <span class="sb__type-tick" aria-hidden="true"></span>
+      </button>`;
+    }
+
+    typePanel({ key, label, product, state, products, productIndex }) {
+      const qty = this.qtyFor(product);
+      const variant = this.variantFor(product, state.colour);
       const covers = this.covers(product);
-
       let note = '';
-      if (state.on) {
-        if (covers === 0) note = this.strings.perTable;
-        else if (covers > 1) note = tpl(this.strings.packNote, { covers, units: qty, total: qty * covers });
-        const placemat = this.variantFor(this.range.placemat, this.state.colour);
-        if (!state.touched && placemat) {
-          const match = this.variantFor(product, this.state.colour);
-          if ((!match || !match.available) && variant) note = `${tpl(this.strings.noMatch, { colour: placemat.colour, picked: variant.colour })} ${note}`.trim();
-        }
+      if (covers === 0) note = this.strings.perTable;
+      else if (covers > 1) note = tpl(this.strings.packNote, { covers, units: qty, total: qty * covers });
+      const placemat = this.variantFor(this.range.placemat, this.state.colour);
+      if (!state.touched && placemat) {
+        const match = this.variantFor(product, this.state.colour);
+        if ((!match || !match.available) && variant) note = `${tpl(this.strings.noMatch, { colour: placemat.colour, picked: variant.colour })} ${note}`.trim();
       }
-
       const productPicker = products && products.length > 1
         ? `<div class="sb__pills" role="radiogroup" aria-label="${esc(label)}">${products.map((p, i) => {
             const id = `sb-xp-${this.uid}-${key}-${i}`;
             return `<span class="sb__pill"><input class="sr-only" type="radio" name="sb-xp-${this.uid}-${key}" id="${id}" value="${i}" data-extra-product="${esc(key)}" ${i === productIndex ? 'checked' : ''}><label for="${id}">${esc(p.title)}</label></span>`;
           }).join('')}</div>`
         : '';
-
-      const open = state.on && state.expanded;
-      const meta = state.on
-        ? `${qty} × ${esc(product.title)}${variant ? ` · ${esc(variant.colour)}` : ''} · ${price}`
-        : `from ${this.money(Math.min(...product.variants.map((v) => v.price)))}`;
-      // Ticked rows fold to a summary (Sheet Society style); the head reopens them. The checkbox is the only on/off.
-      return `<div class="sb__extra ${state.on ? 'is-on' : ''} ${open ? 'is-open' : ''}">
-        <div class="sb__extra-head">
-          <input type="checkbox" class="sb__check" id="${toggleId}" data-extra-toggle="${esc(key)}" aria-label="${esc(label)}" ${state.on ? 'checked' : ''}>
-          ${state.on
-            ? `<button type="button" class="sb__extra-main" data-extra-expand="${esc(key)}" aria-expanded="${open}">`
-            : `<label class="sb__extra-main" for="${toggleId}">`}
-            ${thumb ? `<img class="sb__extra-thumb" src="${esc(imgUrl(thumb, 120))}" alt="" width="48" height="48" loading="lazy">` : ''}
-            <span class="sb__extra-name">${esc(label)}</span>
-            <span class="sb__extra-meta text-xs text-subdued">${meta}</span>
-            ${state.on ? `<span class="sb__extra-change text-xs">${open ? '' : esc(this.strings.change)}</span>` : ''}
-          ${state.on ? '</button>' : '</label>'}
+      return `<div class="sb__type-panel" id="sb-type-panel-${this.uid}">
+        <div class="sb__type-panel-head">
+          <span class="sb__extra-name">${esc(label)}${variant ? ` · ${qty} × ${esc(product.title)} · ${this.money(variant.price * qty)}` : ''}</span>
+          <button type="button" class="link text-xs" data-type-remove="${esc(key)}">${esc(this.strings.remove)}</button>
         </div>
-        ${open ? `<div class="sb__extra-body">
-          ${productPicker}
-          <div class="sb__swatch-row">${this.swatchList(product, state.colour, `sb-xc-${this.uid}-${key}`, `data-extra-colour="${esc(key)}"`, 'sb__swatch--sm')}</div>
-          ${note ? `<p class="sb__hint text-xs text-subdued">${esc(note)}</p>` : ''}
-        </div>` : ''}
+        ${productPicker}
+        <div class="sb__swatch-row">${this.swatchList(product, state.colour, `sb-xc-${this.uid}-${key}`, `data-extra-colour="${esc(key)}"`, 'sb__swatch--sm')}</div>
+        ${note ? `<p class="sb__hint text-xs text-subdued">${esc(note)}</p>` : ''}
       </div>`;
     }
 
-    renderExtras() {
-      const list = this.$('[data-extras-list]');
+    extraItems() {
       const range = this.range;
-      if (!range || !this.state.colour) { list.innerHTML = ''; return; }
-      const rows = [];
+      const items = [];
       const coaster = this.coasterProduct();
       if (coaster) {
         const options = this.coasterOptions();
-        const label = range.coaster && coaster.id === range.coaster.id ? `Matching ${range.name} coasters` : `${coaster.title.replace(/ coasters?$/i, '')} coasters`;
-        rows.push(this.extraRow({ key: 'coaster', label, product: coaster, state: this.state.coaster, products: options, productIndex: options.findIndex((p) => p.id === coaster.id) }));
+        items.push({ key: 'coaster', label: this.strings.coasters, product: coaster, state: this.state.coaster, products: options, productIndex: options.findIndex((p) => p.id === coaster.id) });
       }
       this.data.addons.forEach((addon) => {
         const product = this.addonProduct(addon);
         if (!product) return;
         const s = this.state.addons[addon.key];
         if (!s.colour) s.colour = this.pickColour(product, this.state.colour);
-        rows.push(this.extraRow({ key: addon.key, label: addon.label, product, state: s, products: addon.products, productIndex: s.product }));
+        items.push({ key: addon.key, label: addon.label, product, state: s, products: addon.products, productIndex: s.product });
       });
-      list.innerHTML = rows.join('');
+      return items;
+    }
+
+    renderExtras() {
+      const list = this.$('[data-extras-list]');
+      if (!this.range || !this.state.colour) { list.innerHTML = ''; return; }
+      const items = this.extraItems();
+      const open = items.find((i) => i.key === this.openExtra && i.state.on);
+      if (!open) this.openExtra = null;
+      list.innerHTML = `<div class="sb__types" role="group">${items.map((i) => this.typeTile(i)).join('')}</div>${open ? this.typePanel(open) : ''}`;
     }
 
     renderSummary() {
