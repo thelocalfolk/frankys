@@ -627,9 +627,7 @@
     renderScene(range, placemat, lines) {
       const scene = this.$('[data-preview-scene]');
       const stage = this.$('.sb__stage');
-      const n = Math.max(1, this.state.settings);
-      const cols = n <= 3 ? n : Math.ceil(n / 2);
-      const rows = n <= 3 ? 1 : 2;
+      // One setting, drawn large, whatever the count (Eliza, 18 Nov 2026); the count is in the caption and summary.
       const byRole = (role) => lines.find((l) => l.role === role) || null;
       const addonRole = (role) => {
         const addon = this.data.addons.find((a) => a.role === role);
@@ -647,9 +645,7 @@
         cutlery ? `<span class="sb__piece sb__piece--cutlery" style="--c:${esc(this.solidColour(cutlery.product, cutlery.variant))}"><i></i><i></i></span>` : ''
       ].join('');
       const place = `<div class="sb__place">${mat}${extras}</div>`;
-      scene.style.setProperty('--cols', cols);
-      scene.style.setProperty('--rows', rows);
-      scene.innerHTML = Array.from({ length: n }, () => place).join('');
+      scene.innerHTML = place;
       stage.style.setProperty('--table', cloth ? this.solidColour(cloth.product, cloth.variant) : '');
       stage.classList.toggle('sb__stage--cloth', !!cloth);
       scene.hidden = false;

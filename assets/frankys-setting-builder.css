@@ -81,27 +81,23 @@
 .sb__stage--cloth { background: var(--table); box-shadow: inset 0 0 0 1px rgb(0 0 0 / .06); }
 .sb__scene {
   position: absolute;
-  inset: 6%;
+  inset: 12% 10%;
   display: grid;
-  grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
-  grid-auto-rows: max-content;
-  align-content: center;
-  justify-content: center;
-  gap: 6% 2%;
+  place-items: center;
 }
-.sb__place { position: relative; aspect-ratio: 4 / 3; align-self: center; isolation: isolate; }
+.sb__place { position: relative; width: 100%; max-width: 100%; aspect-ratio: 4 / 3; isolation: isolate; }
 .sb__piece { position: absolute; display: block; isolation: isolate; filter: drop-shadow(0 2px 3px rgb(0 0 0 / .14)); }
 .sb__piece img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .sb__piece--tint i { position: absolute; inset: 0; background: var(--c); -webkit-mask: var(--m) center / contain no-repeat; mask: var(--m) center / contain no-repeat; }
 .sb__piece--tint img { mix-blend-mode: multiply; }
 .sb__piece--mat { inset: 0; --scale: 1; transform: scale(var(--scale)); transform-origin: center; }
-.sb__piece--coaster { width: 26%; height: 26%; inset-inline-end: -4%; inset-block-start: -8%; z-index: 2; }
+.sb__piece--coaster { width: 22%; height: 22%; inset-inline-end: -2%; inset-block-start: -6%; z-index: 2; }
 .sb__piece--napkin { width: 40%; height: 40%; inset-inline-start: 8%; inset-block-start: 26%; z-index: 1; transform: rotate(-3deg); }
-.sb__piece--cutlery { width: 10%; height: 62%; inset-inline-end: 9%; inset-block-start: 19%; z-index: 1; display: flex; gap: 28%; justify-content: center; }
-.sb__piece--cutlery i { display: block; width: 14%; height: 100%; border-radius: 999px; background: var(--c, #b8b8b8); box-shadow: inset 0 0 0 1px rgb(0 0 0 / .1); }
+.sb__piece--cutlery { width: 8%; height: 58%; inset-inline-end: 10%; inset-block-start: 22%; z-index: 1; display: flex; gap: 30%; justify-content: center; }
+.sb__piece--cutlery i { display: block; width: 10%; height: 100%; border-radius: 999px; background: var(--c, #b8b8b8); box-shadow: inset 0 0 0 1px rgb(0 0 0 / .1); }
 .sb__piece--cutlery i:first-child { height: 92%; align-self: flex-end; }
 @media (max-width: 999px) {
-  .sb__scene { inset: 4%; }
+  .sb__scene { inset: 10% 8%; }
 }
 
 /* ---- panel + steps ---- */
