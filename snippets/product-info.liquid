@@ -414,7 +414,7 @@ no need to manually pass the section as it is globally available)
               assign set_button_label = 'product.general.add_to_cart_button' | t
 
               # FRANKY'S (TLF) P2: no Complete the Look in the quick buy copy. It sits in a <template> on every product page and
-              # doubled the add-on data (about 50 KB); quick buy leaves its own complete_the_look block out too (speed check 18 Nov 2026)
+              # doubled the add-on data (about 50 KB), and quick buy leaves its own complete_the_look block out too (speed check 18 Nov 2026)
               assign look_html = ''
               for look_block in section.blocks
                 if context == 'quick_buy'

@@ -41,7 +41,7 @@
           <img class="sb__stage-main" data-preview-main alt="" width="900" height="900" hidden>
           {%- liquid
             # FRANKY'S (TLF) P1: before a shape is picked, show a setting photo rather than an empty grey box,
-            # which filled the whole first screen on phones (mobile QA 18 Nov 2026). Section image, else the first look's image.
+            # which filled the whole first screen on phones (mobile QA, 18 Nov 2026). Section image, else the first look's image.
             assign empty_image = section.settings.preview_empty_image
             if empty_image == blank
               for look in preset_blocks
