@@ -73,6 +73,7 @@ the "image_filter" type is only used for filters.
       assign swatch_style = '--swatch-background: url(' | append: swatch_image | append: ')'
     elsif swatch.color != blank
       assign swatch_style = '--swatch-background: linear-gradient(to right, ' | append: swatch.color | append: ', ' | append: swatch.color | append: ')'
+      assign swatch_hex = swatch.color
     else
       # When color or image is not explicitly passed, we parse the config
       assign swatch_config = settings.color_swatch_config | newline_to_br | split: '<br />'
@@ -89,6 +90,7 @@ the "image_filter" type is only used for filters.
             assign swatch_style = '--swatch-background: ' | append: swatch_value
           elsif swatch_value contains '#'
             assign swatch_style = '--swatch-background: linear-gradient(to right, ' | append: swatch_value | append: ', ' | append: swatch_value | append: ')'
+            assign swatch_hex = swatch_value
           elsif images[swatch_value] != blank
             assign swatch_image = images[swatch_value] | image_url: width: 72
             assign swatch_style = '--swatch-background: url(' | append: swatch_image | append: ')'
@@ -97,6 +99,16 @@ the "image_filter" type is only used for filters.
           break
         endif
       endfor
+    endif
+
+    # FRANKY'S (TLF) P5: give near-white swatches (e.g. Milk) the theme's hairline outline, not only one named "White",
+    # so they don't vanish on the cream background (mobile QA 18 Nov 2026)
+    assign swatch_is_pale = false
+    if swatch_hex != blank
+      assign swatch_brightness = swatch_hex | color_brightness
+      if swatch_brightness > 230
+        assign swatch_is_pale = true
+      endif
     endif
   endif
 -%}
@@ -157,7 +169,7 @@ the "image_filter" type is only used for filters.
 
     <{{ option_value_tag }} {{ attributes }} class="block-swatch {% if style == 'fill' %}block-swatch--fill{% endif %} {% if disabled %}is-disabled{% endif %} {% if selected and option_value_tag == 'a' %}is-selected{% endif %}">
       {%- if show_swatch -%}
-        <span class="block-swatch__color {% if settings.color_swatch_shape == 'circle' %}rounded-full{% endif %} {% if white_label == downcase_label %}color-swatch--white{% endif %}" style="{{ swatch_style }}"></span>
+        <span class="block-swatch__color {% if settings.color_swatch_shape == 'circle' %}rounded-full{% endif %} {% if white_label == downcase_label or swatch_is_pale %}color-swatch--white{% endif %}" style="{{ swatch_style }}"></span>
       {%- endif -%}
 
       <span>{{ label | default: value }}</span>
@@ -173,7 +185,7 @@ the "image_filter" type is only used for filters.
       endif
     -%}
 
-    <{{ option_value_tag }} {{ attributes }} class="color-swatch color-swatch--{{ color_swatch_shape }} {% if show_tight %}color-swatch--tight{% endif %} {% if size == 'sm' %}color-swatch--sm{% endif %} {% if white_label == downcase_label %}color-swatch--white{% endif %} {% if disabled %}is-disabled{% endif %} {% if selected and option_value_tag == 'a' %}is-selected{% endif %}" {% if show_tooltip %}data-tooltip="{{ label | default: value | escape }}" data-tooltip-style="color"{% endif %} style="{{ swatch_style }}">
+    <{{ option_value_tag }} {{ attributes }} class="color-swatch color-swatch--{{ color_swatch_shape }} {% if show_tight %}color-swatch--tight{% endif %} {% if size == 'sm' %}color-swatch--sm{% endif %} {% if white_label == downcase_label or swatch_is_pale %}color-swatch--white{% endif %} {% if disabled %}is-disabled{% endif %} {% if selected and option_value_tag == 'a' %}is-selected{% endif %}" {% if show_tooltip %}data-tooltip="{{ label | default: value | escape }}" data-tooltip-style="color"{% endif %} style="{{ swatch_style }}">
       <span class="sr-only">{{ label | default: value }}</span>
 
       {%- if color_swatch_shape != 'circle' -%}
