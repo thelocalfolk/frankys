@@ -59,16 +59,18 @@
         .forEach((p) => { if (p && !this.coasters.some((c) => c.id === p.id)) this.coasters.push(p); });
       this.activeLook = null;
       this.cartSubtotal = 0;
+      // Which folding step (shape / colour / settings) is open; null = all folded (Sheet Society style, 18 Nov 2026).
+      this.openStep = 'shape';
       this.state = {
         range: null,
         colour: null,
         settings: this.data.defaultSettings || 4,
         customSettings: false,
-        coaster: { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null },
+        coaster: { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null, expanded: false },
         addons: {}
       };
       this.data.addons.forEach((a) => {
-        this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false };
+        this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false, expanded: false };
       });
 
       this.$ = (sel) => this.querySelector(sel);
@@ -173,6 +175,7 @@
       if (!range.coaster) this.state.coaster.on = false;
       else if (firstPick) this.state.coaster.on = !!this.data.coastersOnByDefault;
       if (this.state.colour) this.syncExtraColours();
+      this.openStep = this.state.colour ? 'settings' : 'colour';
       if (!silent) this.track(firstPick ? 'builder_start' : 'builder_step', { step: 'shape', range: key });
     }
 
@@ -182,7 +185,7 @@
       if (!v || !v.available) return;
       this.state.colour = key;
       this.syncExtraColours(true);
-      if (!silent) this.track('builder_step', { step: 'colour', range: this.state.range, colour: key });
+      if (!silent) { this.openStep = 'settings'; this.track('builder_step', { step: 'colour', range: this.state.range, colour: key }); }
     }
 
     setSettings(n, { custom } = {}) {
@@ -254,7 +257,7 @@
     resetAddons() {
       this.data.addons.forEach((addon) => {
         const s = this.state.addons[addon.key];
-        s.on = false; s.product = 0; s.touched = false;
+        s.on = false; s.product = 0; s.touched = false; s.expanded = false;
         s.colour = this.pickColour(this.addonProduct(addon), this.state.colour);
       });
     }
@@ -294,6 +297,8 @@
       look.pieces.forEach((piece) => this.turnOnPiece((p) => p.id === piece.product, piece.colour));
 
       this.activeLook = key;
+      this.openStep = null;
+      this.state.coaster.expanded = false;
       this.track('builder_start', { source: 'look', look: look.title });
       this.renderAll({ colours: true, extras: true });
       const status = this.$('[data-look-status]');
@@ -307,10 +312,11 @@
       this.state.colour = null;
       this.state.settings = this.data.defaultSettings || 4;
       this.state.customSettings = false;
-      this.state.coaster = { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null };
+      this.state.coaster = { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null, expanded: false };
       this.data.addons.forEach((a) => {
-        this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false };
+        this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false, expanded: false };
       });
+      this.openStep = 'shape';
       this.track('builder_step', { step: 'reset' });
       this.renderAll({ colours: true, extras: true });
       const status = this.$('[data-look-status]');
@@ -360,13 +366,15 @@
           } else {
             if (custom) custom.hidden = true;
             this.setSettings(t.value, { custom: false });
+            this.openStep = null; // count picked: fold it, the table rows are next
           }
           this.track('builder_step', { step: 'settings', settings: this.state.settings });
           this.renderAll({ extras: true });
         } else if (t.matches('[data-extra-toggle]')) {
           const key = t.dataset.extraToggle;
-          if (key === 'coaster') this.state.coaster.on = t.checked;
-          else this.state.addons[key].on = t.checked;
+          const s = key === 'coaster' ? this.state.coaster : this.state.addons[key];
+          s.on = t.checked;
+          s.expanded = t.checked; // ticked by hand: open it to pick the shape and colour
           this.track('builder_step', { step: 'extras', item: key, on: t.checked });
           this.renderAll({ extras: true });
         } else if (t.matches('[data-extra-product]') && t.dataset.extraProduct === 'coaster') {
@@ -385,6 +393,7 @@
           const s = key === 'coaster' ? this.state.coaster : this.state.addons[key];
           s.colour = t.value;
           s.touched = true;
+          s.expanded = false; // colour picked: the row folds to its ticked summary
           this.renderAll({ extras: true });
         }
       });
@@ -408,6 +417,18 @@
           else this.loadLook(look.dataset.look);
         }
         if (event.target.closest('[data-reset]')) this.resetBuilder();
+        const stepHead = event.target.closest('[data-step-toggle]');
+        if (stepHead && !stepHead.closest('fieldset').disabled) {
+          const key = stepHead.dataset.stepToggle;
+          this.openStep = this.openStep === key ? null : key;
+          this.renderSteps();
+        }
+        const expand = event.target.closest('[data-extra-expand]');
+        if (expand) {
+          const key = expand.dataset.extraExpand;
+          const s = key === 'coaster' ? this.state.coaster : this.state.addons[key];
+          if (s.on) { s.expanded = !s.expanded; this.withFocus(() => this.renderExtras()); }
+        }
       });
     }
 
@@ -425,6 +446,7 @@
 
       if (colours) this.renderColours();
       this.renderSettings();
+      this.renderSteps();
       if (extras) this.withFocus(() => this.renderExtras());
       this.renderSummary();
       this.renderPreview();
@@ -467,9 +489,31 @@
       list.innerHTML = `<div class="sb__swatch-row">${this.swatchList(range.placemat, this.state.colour, `sb-colour-${this.uid}`, 'data-colour-input')}</div>${this.soldOutNote(range.placemat)}`;
     }
 
+    // Folding steps: done = ticked + the pick in the head; open = body shown. Only one open at a time.
+    renderSteps() {
+      const range = this.range;
+      const variant = range && this.variantFor(range.placemat, this.state.colour);
+      const steps = {
+        shape: { done: !!range, value: range ? range.name : '' },
+        colour: { done: !!variant, value: variant ? variant.colour : '' },
+        settings: { done: !!variant, value: variant ? tpl(this.strings.settingsCount, { count: this.state.settings }) : '' }
+      };
+      const firstTodo = Object.keys(steps).find((k) => !steps[k].done) || null;
+      if (this.openStep && this.$(`[data-step="${this.openStep}"]`)?.disabled) this.openStep = firstTodo;
+      Object.entries(steps).forEach(([key, step]) => {
+        const el = this.$(`[data-step="${key}"]`);
+        if (!el) return;
+        const open = this.openStep === key;
+        el.classList.toggle('is-done', step.done);
+        el.classList.toggle('is-open', open);
+        const head = el.querySelector('[data-step-toggle]');
+        if (head) head.setAttribute('aria-expanded', String(open));
+        const value = el.querySelector('[data-step-value]');
+        if (value) value.textContent = step.value;
+      });
+    }
+
     renderSettings() {
-      const variant = this.range && this.variantFor(this.range.placemat, this.state.colour);
-      this.$('[data-colour-name]').textContent = variant ? `· ${variant.colour}` : '';
       const inputs = this.$$('[data-settings-input]');
       const custom = this.$('[data-settings-custom]');
       const match = this.state.customSettings && custom ? null : inputs.find((i) => i.value === String(this.state.settings));
@@ -509,16 +553,24 @@
           }).join('')}</div>`
         : '';
 
-      return `<div class="sb__extra ${state.on ? 'is-on' : ''}">
+      const open = state.on && state.expanded;
+      const meta = state.on
+        ? `${qty} × ${esc(product.title)}${variant ? ` · ${esc(variant.colour)}` : ''} · ${price}`
+        : `from ${this.money(Math.min(...product.variants.map((v) => v.price)))}`;
+      // Ticked rows fold to a summary (Sheet Society style); the head reopens them. The checkbox is the only on/off.
+      return `<div class="sb__extra ${state.on ? 'is-on' : ''} ${open ? 'is-open' : ''}">
         <div class="sb__extra-head">
-          <input type="checkbox" class="sb__check" id="${toggleId}" data-extra-toggle="${esc(key)}" ${state.on ? 'checked' : ''}>
-          <label for="${toggleId}">
+          <input type="checkbox" class="sb__check" id="${toggleId}" data-extra-toggle="${esc(key)}" aria-label="${esc(label)}" ${state.on ? 'checked' : ''}>
+          ${state.on
+            ? `<button type="button" class="sb__extra-main" data-extra-expand="${esc(key)}" aria-expanded="${open}">`
+            : `<label class="sb__extra-main" for="${toggleId}">`}
             ${thumb ? `<img class="sb__extra-thumb" src="${esc(imgUrl(thumb, 120))}" alt="" width="48" height="48" loading="lazy">` : ''}
             <span class="sb__extra-name">${esc(label)}</span>
-            <span class="sb__extra-meta text-xs text-subdued">${state.on ? `${qty} × ${esc(product.title)} · ${price}` : `from ${this.money(Math.min(...product.variants.map((v) => v.price)))}`}</span>
-          </label>
+            <span class="sb__extra-meta text-xs text-subdued">${meta}</span>
+            ${state.on ? `<span class="sb__extra-change text-xs">${open ? '' : esc(this.strings.change)}</span>` : ''}
+          ${state.on ? '</button>' : '</label>'}
         </div>
-        ${state.on ? `<div class="sb__extra-body">
+        ${open ? `<div class="sb__extra-body">
           ${productPicker}
           <div class="sb__swatch-row">${this.swatchList(product, state.colour, `sb-xc-${this.uid}-${key}`, `data-extra-colour="${esc(key)}"`, 'sb__swatch--sm')}</div>
           ${note ? `<p class="sb__hint text-xs text-subdued">${esc(note)}</p>` : ''}
