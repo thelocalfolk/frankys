@@ -21,6 +21,7 @@
   @param {object} product - the product whose page this is
   @param {object} block - the complete_the_look block
   @param {string} form_id - id of the product form the pieces are added with
+  @param {boolean} [show_total] - show a Total line (products without the set picker)
 {%- enddoc -%}
 
 {%- liquid
@@ -183,6 +184,17 @@
         {{- rows -}}
       </ul>
     </fieldset>
+
+    {%- comment -%}
+      FRANKY'S (TLF) P2: products without the set picker (Bondi, Madrid, napkins...) get the same Total line, kept in
+      view while ticked rows are open (Eliza, 18 Nov 2026). With the set picker its own Total is used instead.
+    {%- endcomment -%}
+    {%- if show_total -%}
+      <div class="set-quantity__total complete-the-look__total">
+        <span>{{ 'cart.general.total' | t }}</span>
+        <span data-look-total aria-live="polite">{{ current_variant.price | money }}</span>
+      </div>
+    {%- endif -%}
   </complete-the-look>
 
   <script src="{{ 'frankys-complete-the-look.js' | asset_url }}" defer></script>

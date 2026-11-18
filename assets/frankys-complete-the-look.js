@@ -64,8 +64,9 @@
       this.heroRange = this.dataset.heroRange;
       this.heroColour = this.dataset.heroColour;
       this.heroSwatch = this.dataset.heroSwatch;
-      this.setSize = this.readSetSize();
       saved[this.formId] = saved[this.formId] || {};
+      this.restoreQuantity();
+      this.setSize = this.readSetSize();
 
       this.rows = Array.from(this.querySelectorAll('[data-row]')).map((el) => this.setUpRow(el)).filter(Boolean);
 
@@ -87,9 +88,11 @@
 
       // Products without the set picker: follow the theme's quantity box and the chosen variant
       ['change', 'input'].forEach((type) => document.addEventListener(type, (event) => {
-        if (event.target.name === 'quantity' && this.form && event.target.form === this.form) this.onSetSize(this.readSetSize());
+        if (event.target.name !== 'quantity' || !this.form || event.target.form !== this.form) return;
+        if (!this.restoring) saved[this.formId].quantity = event.target.value;
+        this.onSetSize(this.readSetSize());
       }, { signal }));
-      if (this.form) this.form.addEventListener('variant:change', () => setTimeout(() => this.onSetSize(this.readSetSize()), 50), { signal });
+      if (this.form) this.form.addEventListener('variant:change', () => setTimeout(() => { this.restoreQuantity(); this.onSetSize(this.readSetSize()); this.refreshTotal(); }, 50), { signal });
 
       // Before the theme's own submit handler (capture on an ancestor), so one items[] add carries everything.
       if (this.form) {
@@ -349,6 +352,34 @@
     refreshTotal() {
       const setQuantity = this.form && this.form.querySelector('set-quantity');
       if (setQuantity && typeof setQuantity.update === 'function') setQuantity.update(true);
+
+      // Products without the set picker: our own Total = chosen variant x quantity box + ticked rows
+      const totalEl = this.querySelector('[data-look-total]');
+      if (!totalEl || !this.form) return;
+      const quantity = this.form.elements.namedItem('quantity');
+      const qty = Math.max(1, parseInt(quantity && quantity.value, 10) || 1);
+      const price = this.variantPrice();
+      if (price == null) return;
+      totalEl.textContent = this.formatMoney(price * qty + this.extraCents());
+    }
+
+    variantPrice() {
+      const variantJson = document.querySelector(`variant-picker[form-id="${this.formId}"] [data-variant]`);
+      try { if (variantJson) return Number(JSON.parse(variantJson.textContent).price); } catch (e) { /* fall through */ }
+      return null;
+    }
+
+    // Products without the set picker: a quantity typed in the box survives the re-render a colour change
+    // triggers (Bondi, 18 Nov 2026). Set picker products keep their own count.
+    restoreQuantity() {
+      if (!this.form || this.form.querySelector('[data-set-quantity]')) return;
+      const quantity = this.form.elements.namedItem('quantity');
+      const wanted = saved[this.formId].quantity;
+      if (!quantity || wanted == null || String(quantity.value) === String(wanted)) return;
+      this.restoring = true;
+      quantity.value = wanted;
+      quantity.dispatchEvent(new Event('change', { bubbles: true }));
+      this.restoring = false;
     }
 
     beforeSubmit(event) {

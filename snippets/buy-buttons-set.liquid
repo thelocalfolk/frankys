@@ -424,6 +424,8 @@
                 {%- endcomment -%}
                 {{- after_picker -}}
 
+                {%- comment -%} FRANKY'S (TLF) P2: Total + add to cart stay in view while Complete the Look rows are open (18 Nov 2026) {%- endcomment -%}
+                <div class="set-quantity__checkout">
                 {%- if show_total -%}
                   <div class="set-quantity__total">
                     <span>{{ 'cart.general.total' | t }}</span>
@@ -433,6 +435,7 @@
 
                 <div class="h-stack custom__buy_button gap-2">
                   {%- render 'button', content: button_content, type: 'submit', disabled: button_disabled, secondary: show_payment_button, style: atc_button_style, background: atc_button_background, text_color: atc_button_text_color, stretch: true -%}
+                </div>
                 </div>
               </set-quantity>
 
