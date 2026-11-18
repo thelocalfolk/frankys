@@ -113,9 +113,7 @@
                   {%- endcomment -%}
                   {%- liquid
                     assign shape_key = placemat.metafields.custom.placemat_shape.value | default: block.settings.icon_shape
-                    if shape_key == 'none'
-                      assign shape_key = blank
-                    endif
+                    assign shape_key = shape_key | handle
                   -%}
                   <span class="sb__shape-icon" aria-hidden="true">
                     {%- if block.settings.icon -%}
@@ -348,15 +346,7 @@
         { "type": "text", "id": "label", "label": "Name", "info": "Defaults to the placemat title without \"Placemat\"." },
         { "type": "text", "id": "key", "label": "Link key", "info": "Used in links, e.g. ?range=sweden. Defaults to the placemat handle without -placemat." },
         { "type": "image_picker", "id": "icon", "label": "Line icon", "info": "Steph's shape icon. Otherwise the placemat's custom.placemat_shape metafield is used, then the placeholder below, then the placemat image." },
-        { "type": "select", "id": "icon_shape", "label": "Placeholder shape icon", "default": "none", "info": "Stand-in until the real icon is added, e.g. Lorient for Lorient+ and Lorient Grande.", "options": [
-          { "value": "none", "label": "None" },
-          { "value": "lorient", "label": "Lorient" },
-          { "value": "milan", "label": "Milan" },
-          { "value": "norway", "label": "Norway" },
-          { "value": "peru", "label": "Peru" },
-          { "value": "seville", "label": "Seville" },
-          { "value": "sweden", "label": "Sweden" }
-        ] }
+        { "type": "text", "id": "icon_shape", "label": "Placeholder shape icon", "info": "Stand-in until the real icon is added: the key of a shape SVG in the theme assets (frankys-shape-<key>.svg), e.g. lorient for Lorient+ and Lorient Grande." }
       ]
     },
     {
