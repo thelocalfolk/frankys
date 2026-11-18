@@ -160,37 +160,37 @@
 .sb__preset:focus-visible .sb__preset-media { outline-color: var(--sb-selected); }
 .sb__preset-title { display: block; }
 
-/* ---- shapes (step 1) ---- */
+/* ---- shapes (step 1): one compact row of icons like Sheet Society's product tabs (Eliza, 18 Nov 2026) ---- */
 .sb__shapes {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
-  gap: .5rem;
+  display: flex; gap: .25rem;
+  overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
+  margin-inline: -.25rem; padding-inline: .25rem;
 }
+.sb__shapes::-webkit-scrollbar { display: none; }
+.sb__shape { flex: 0 0 auto; scroll-snap-align: start; }
 .sb__shape label {
   position: relative;
-  display: grid; justify-items: center; gap: .25rem;
-  padding: 1rem .25rem .625rem;
-  border: 1px solid transparent;
+  display: grid; justify-items: center; gap: .125rem;
+  width: 76px; padding: .875rem .125rem .375rem;
   border-radius: .5rem;
   text-align: center;
   cursor: pointer;
   min-height: var(--sb-tap);
 }
-.sb__shape-icon { width: 56px; height: 44px; display: grid; place-items: center; }
+.sb__shape-icon { width: 48px; height: 38px; display: grid; place-items: center; }
 .sb__shape-icon img, .sb__shape-icon svg { max-width: 100%; max-height: 100%; object-fit: contain; }
-.sb__shape-name { font-size: .8125rem; }
-.sb__shape-meta { line-height: 1.2; }
+.sb__shape-name { font-size: .75rem; line-height: 1.2; }
+.sb__shape-meta { display: none; }
 .sb__shape-tick {
-  position: absolute; inset-inline-end: .375rem; inset-block-start: .375rem;
-  width: 22px; height: 22px; border-radius: 50%;
+  position: absolute; inset-inline-end: .25rem; inset-block-start: .25rem;
+  width: 20px; height: 20px; border-radius: 50%;
   background: var(--sb-selected); color: rgb(var(--background));
-  display: none; place-items: center; font-size: .75rem;
+  display: none; place-items: center; font-size: .6875rem;
 }
 .sb__shape-tick::before { content: "✓"; }
 .sb__shape input:checked + label .sb__shape-tick { display: grid; }
 .sb__shapes:has(:checked) .sb__shape input:not(:checked) + label { color: var(--sb-muted); }
-.sb__shape label:hover { border-color: var(--sb-border); }
-.sb__shape input:checked + label { border-color: var(--sb-selected); }
+.sb__shape label:hover { color: rgb(var(--text-color)); }
 .sb__shape input:focus-visible + label,
 .sb__count input:focus-visible + label,
 .sb__pill input:focus-visible + label,
@@ -243,29 +243,29 @@
 .sb__count--custom { display: flex; gap: .5rem; align-items: center; }
 .sb__count-input { width: 5rem; min-height: var(--sb-tap); text-align: center; }
 
-/* ---- complete the table (step 4): icon tiles with a tick badge, options panel under them ---- */
+/* ---- complete the table (step 4): same compact icon row, tick badge when chosen, options panel under it ---- */
 .sb__extras { display: grid; gap: .75rem; }
-.sb__types { display: grid; grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); gap: .5rem; }
+.sb__types { display: flex; gap: .25rem; overflow-x: auto; scrollbar-width: none; margin-inline: -.25rem; padding-inline: .25rem; }
+.sb__types::-webkit-scrollbar { display: none; }
 .sb__type {
-  position: relative;
-  appearance: none; background: none; border: 1px solid transparent; border-radius: .5rem; color: inherit; font: inherit;
-  display: grid; justify-items: center; gap: .25rem; padding: 1rem .25rem .5rem; min-height: var(--sb-tap);
+  position: relative; flex: 0 0 auto;
+  appearance: none; background: none; border: 0; border-radius: .5rem; font: inherit;
+  display: grid; justify-items: center; gap: .125rem; width: 76px; padding: .875rem .125rem .375rem; min-height: var(--sb-tap);
   cursor: pointer; color: var(--sb-muted);
 }
-.sb__type:hover { border-color: var(--sb-border); }
+.sb__type:hover { color: rgb(var(--text-color)); }
 .sb__type:focus-visible { outline: 2px solid var(--sb-selected); outline-offset: 2px; }
 .sb__type.is-on { color: rgb(var(--text-color)); }
-.sb__type.is-open { border-color: var(--sb-selected); background: rgb(var(--text-color) / .03); }
-.sb__type-icon { width: 56px; height: 44px; background: currentColor; -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
-.sb__type-icon--cloth { width: 52px; height: 40px; border-radius: 3px; -webkit-mask: none; mask: none; }
-.sb__type-thumb { width: 48px; height: 44px; object-fit: contain; }
-.sb__type-name { font-size: .8125rem; font-weight: 600; text-align: center; line-height: 1.2; }
-.sb__type-meta { text-align: center; }
+.sb__type.is-open::after { content: ""; width: 24px; height: 2px; background: var(--sb-selected); margin-top: .125rem; }
+.sb__type-icon { width: 48px; height: 38px; background: currentColor; -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
+.sb__type-icon--cloth { width: 44px; height: 34px; border-radius: 3px; -webkit-mask: none; mask: none; }
+.sb__type-thumb { width: 44px; height: 38px; object-fit: contain; }
+.sb__type-name { font-size: .75rem; text-align: center; line-height: 1.2; }
 .sb__type-tick {
-  position: absolute; inset-inline-end: .375rem; inset-block-start: .375rem;
-  width: 22px; height: 22px; border-radius: 50%;
+  position: absolute; inset-inline-end: .25rem; inset-block-start: .25rem;
+  width: 20px; height: 20px; border-radius: 50%;
   background: var(--sb-selected); color: rgb(var(--background));
-  display: none; place-items: center; font-size: .75rem;
+  display: none; place-items: center; font-size: .6875rem;
 }
 .sb__type-tick::before { content: "✓"; }
 .sb__type.is-on .sb__type-tick { display: grid; }

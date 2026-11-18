@@ -526,13 +526,9 @@
     typeTile({ key, label, product, state }) {
       const on = state.on;
       const open = this.openExtra === key;
-      const qty = this.qtyFor(product);
-      const variant = this.variantFor(product, state.colour);
-      const meta = on && variant ? `${qty} × ${this.money(variant.price * qty)}` : `from ${this.money(Math.min(...product.variants.map((v) => v.price)))}`;
       return `<button type="button" class="sb__type ${on ? 'is-on' : ''} ${open ? 'is-open' : ''}" data-type="${esc(key)}" aria-pressed="${on}" aria-expanded="${open}" aria-controls="sb-type-panel-${this.uid}">
         ${this.extraIcon(key, product)}
         <span class="sb__type-name">${esc(label)}</span>
-        <span class="sb__type-meta text-xs text-subdued">${meta}</span>
         <span class="sb__type-tick" aria-hidden="true"></span>
       </button>`;
     }
