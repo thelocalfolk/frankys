@@ -1233,10 +1233,12 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 }
 
 
-/* FRANKY'S (TLF) PDP: stepper sits under the set pills and only shows once "Custom" is picked (Eliza 18 Nov 2026) */
-.set-quantity--pills .set-quantity__stepper { margin-inline-start: 0 !important; }
-.product-info .option-stepper { margin-inline-start: 0 !important; flex-basis: 100%; }
+/* FRANKY'S (TLF) PDP: the "Custom" pill turns into the stepper in the same spot (Eliza 18 Nov 2026) */
+.set-quantity--pills .set-quantity__stepper,
+.product-info .option-stepper { margin-inline-start: 0 !important; }
+.set-quantity--pills .set-quantity__stepper { min-width: 5.3125rem; justify-content: space-between; }
 .product-info .option-stepper .quantity-selector { width: max-content; }
 .set-quantity--pills .set-quantity__stepper[hidden],
-.product-info .option-stepper[hidden] { display: none !important; }
-.set-quantity--pills .set-quantity__stepper { margin-block-start: .25rem; justify-self: start; align-self: flex-start; width: max-content; }
+.set-quantity--pills .set-option[hidden],
+.product-info .option-stepper[hidden],
+.product-info [data-option-custom][hidden] { display: none !important; }

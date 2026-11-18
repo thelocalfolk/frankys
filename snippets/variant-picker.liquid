@@ -181,7 +181,7 @@ Render the variant picker option selectors.
                 {%- render 'quantity-selector', variant: product.selected_or_first_available_variant, form: form_id -%}
               </div>
               <script>
-                /* "Custom" shows the quantity stepper under the buttons (Eliza 18 Nov 2026). Delegated, so it still works
+                /* "Custom" turns into the quantity stepper in the same spot (Eliza 18 Nov 2026). Delegated, so it still works
                    after the theme re-renders this block on a colour change; picking a variant re-renders it closed. */
                 if (!window.frankysOptionCustom) {
                   window.frankysOptionCustom = true;
@@ -191,7 +191,13 @@ Render the variant picker option selectors.
                     var stepper = button.parentElement.querySelector('.option-stepper');
                     var open = button.getAttribute('aria-expanded') !== 'true';
                     button.setAttribute('aria-expanded', String(open));
-                    button.classList.toggle('is-selected', open);
+                    if (stepper) {
+                      button.hidden = true;
+                      stepper.hidden = false;
+                      var focusInput = stepper.querySelector('input');
+                      if (focusInput) focusInput.focus({ preventScroll: true });
+                      return;
+                    }
                     if (stepper) {
                       stepper.hidden = !open;
                       var input = stepper.querySelector('input');

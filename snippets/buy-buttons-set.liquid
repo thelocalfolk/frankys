@@ -354,7 +354,7 @@
                   {%- if stepper -%}
                     {%- comment -%}
                       FRANKY'S (TLF) PDP: set pills plus a "Custom" pill, as in Figma. The stepper (any number, including 1)
-                      only shows once Custom is picked, under the pills; picking a set hides it again (Eliza 18 Nov 2026).
+                      takes the Custom pill's place once Custom is picked; picking a set turns it back (Eliza 18 Nov 2026).
                     {%- endcomment -%}
                     <div class="set-quantity__options">
                       {{ set_preset_cards }}
@@ -362,7 +362,6 @@
                         <input type="radio" class="set-option__input" data-set-size name="{{ set_radio_name }}" form="{{ set_radio_form }}" value="custom">
                         <span class="{{ set_card_class }}"><span class="{{ set_title_class }}">{{ 'product.quantity.custom' | t }}</span></span>
                       </label>
-                    </div>
                     <div class="set-quantity__stepper" role="group" aria-label="{{ 'product.quantity.label' | t | escape }}" hidden>
                       <button type="button" class="set-quantity__step" data-set-step="-1" aria-label="{{ 'product.quantity.decrease_quantity' | t | escape }}">&minus;</button>
                       <input class="set-quantity__custom-input" type="number" inputmode="numeric"
@@ -373,6 +372,7 @@
                              value="{{ default_set }}"
                              aria-label="{{ 'product.quantity.label' | t | escape }}" data-set-custom-input>
                       <button type="button" class="set-quantity__step" data-set-step="1" aria-label="{{ 'product.quantity.increase_quantity' | t | escape }}">+</button>
+                    </div>
                     </div>
                   {%- elsif show_custom -%}
                     <div class="set-quantity__stack" data-set-switch data-mode="presets">
@@ -698,6 +698,10 @@
           if (this.config.stepper) {
             const stepperEl = this.querySelector('.set-quantity__stepper');
             if (stepperEl) { stepperEl.classList.toggle('is-selected', isCustom); stepperEl.hidden = !isCustom; }
+            // The Custom pill turns into the stepper in the same spot
+            const customRadio = this.querySelector('[data-set-size][value="custom"]');
+            const customPill = customRadio && customRadio.closest('label');
+            if (customPill) customPill.hidden = isCustom;
           }
           if (this.labelEl) this.labelEl.textContent = isCustom
             ? String(this.config.customLabel || '__count__').replace('__count__', qty)
