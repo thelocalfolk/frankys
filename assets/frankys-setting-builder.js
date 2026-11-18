@@ -642,7 +642,7 @@
       const extras = [
         coaster ? this.piece('sb__piece--coaster', coaster.product, coaster.variant) : '',
         napkin ? this.piece('sb__piece--napkin', napkin.product, napkin.variant) : '',
-        cutlery ? `<span class="sb__piece sb__piece--cutlery" style="--c:${esc(this.solidColour(cutlery.product, cutlery.variant))}"><i></i><i></i></span>` : ''
+        cutlery ? (this.piece('sb__piece--cutlery', cutlery.product, cutlery.variant) || `<span class="sb__piece sb__piece--cutlery sb__piece--bars" style="--c:${esc(this.solidColour(cutlery.product, cutlery.variant))}"><i></i><i></i></span>`) : ''
       ].join('');
       const place = `<div class="sb__place">${mat}${extras}</div>`;
       scene.innerHTML = place;
