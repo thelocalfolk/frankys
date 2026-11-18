@@ -290,7 +290,10 @@
 
       row.el.classList.toggle('is-selected', row.selected);
       row.options.hidden = !row.selected;
-      row.price.innerHTML = row.selected ? this.formatMoney(option.price * row.units) : row.fromHtml;
+      // FRANKY'S (TLF) PDP: the price shown is what ticking adds right now (the matching piece at the suggested
+      // quantity), not the cheapest single piece in the collection, which often isn't an option (Eliza, 18 Nov 2026)
+      const shownUnits = row.selected || row.manualUnits ? row.units : this.defaultUnits(row);
+      row.price.innerHTML = this.formatMoney(option.price * shownUnits);
       if (!row.selected) { row.options.innerHTML = ''; return; }
 
       const range = row.ranges[row.range];
