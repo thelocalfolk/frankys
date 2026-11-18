@@ -169,6 +169,17 @@ Render the variant picker option selectors.
                 endcase
               endfor
             %}
+
+            {%- comment -%}
+              FRANKY'S (TLF) PDP: products sold as "Set of 4" / "1pc" variants (option "Set", e.g. Bondi, Portsea) get the
+              quantity stepper on the same row as those buttons, styled like the set picker's. The buy buttons then hide
+              their own quantity box (product-info.liquid). Products with custom.set_sizes use the set picker instead.
+            {%- endcomment -%}
+            {%- if is_main_product and option_downcase == 'set' and product.metafields.custom.set_sizes == blank and product.available -%}
+              <div class="option-stepper">
+                {%- render 'quantity-selector', variant: product.selected_or_first_available_variant, form: form_id -%}
+              </div>
+            {%- endif -%}
           </div>
         {%- endif -%}
       </fieldset>

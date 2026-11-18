@@ -1187,3 +1187,26 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
     line-height: 1.2;
   }
 }
+
+
+/* FRANKY'S (TLF) PDP: quantity stepper beside "Set of 4" / "1pc" variant buttons (Bondi, Portsea), sized like the
+   set picker's stepper (Eliza approved 18 Nov 2026) */
+.product-info .option-stepper {
+  margin-inline-start: .75rem;
+  display: flex;
+  align-items: center;
+}
+.product-info .option-stepper .quantity-selector {
+  height: 2rem;
+  min-height: 0;
+  border: .5px solid rgb(var(--text-color));
+  border-radius: var(--input-border-radius);
+  box-shadow: none;
+  font-size: .75rem;
+}
+.product-info .option-stepper .quantity-selector__button { width: 2rem; height: 100%; padding: 0; }
+.product-info .option-stepper .quantity-selector__input { width: 1.75rem; font-size: .75rem; padding: 0; }
+@media screen and (max-width: 699px) {
+  .product-info .option-stepper { margin-inline-start: .5rem; }
+  .product-info .option-stepper .quantity-selector__button { width: 1.75rem; }
+}

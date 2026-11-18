@@ -446,10 +446,18 @@ no need to manually pass the section as it is globally available)
                   after_picker: look_html
               -%}
             {%- else -%}
+            {%- liquid
+              # FRANKY'S (TLF) PDP: "Set" option products show their stepper beside the variant buttons (variant-picker.liquid)
+              assign show_buy_quantity = block.settings.show_quantity_selector
+              assign option_names_down = product.options | join: ',' | downcase | split: ','
+              if option_names_down contains 'set'
+                assign show_buy_quantity = false
+              endif
+            -%}
             {%- render 'buy-buttons',
                 product: product,
                 form_id: product_form_id,
-                show_quantity_selector: block.settings.show_quantity_selector,
+                show_quantity_selector: show_buy_quantity,
                 add_quantity_selector_spacing: block.settings.add_quantity_selector_spacing,
                 show_payment_button: block.settings.show_payment_button,
                 show_gift_card_recipient: block.settings.show_gift_card_recipient,
