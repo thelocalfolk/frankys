@@ -562,6 +562,7 @@
 
       const totalText = this.money(total);
       this.$('[data-summary-total]').textContent = totalText;
+      this.renderSetSaving(total);
       this.$$('[data-add-to-cart]').forEach((b) => { b.disabled = !ready; });
       const atcLabel = this.$('[data-atc-label]');
       if (atcLabel) atcLabel.textContent = ready ? `${this.strings.atc} · ${totalText}` : this.strings.atc;
@@ -572,6 +573,19 @@
 
       this.renderShipping(total);
       this.updateStickyBar();
+    }
+
+    // FRANKY'S (TLF) P1: while a look is untouched and its Setting product is cheaper than the pieces,
+    // say so and link to it. Any change by hand clears the look, which hides this again.
+    renderSetSaving(total) {
+      const el = this.$('[data-set-saving]');
+      if (!el) return;
+      const look = this.activeLook && this.looks.get(this.activeLook);
+      const set = look && look.set;
+      const saving = set ? total - set.price : 0;
+      if (!set || saving <= 0 || !this.strings.setSaving) { el.hidden = true; el.innerHTML = ''; return; }
+      el.innerHTML = `<a href="${esc(set.url)}" class="link">${esc(tpl(this.strings.setSaving, { amount: this.money(saving) }))}</a>`;
+      el.hidden = false;
     }
 
     renderShipping(total) {

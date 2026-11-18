@@ -107,9 +107,22 @@
               <div class="sb__shape" {{ block.shopify_attributes }}>
                 <input class="sr-only" type="radio" name="sb-range-{{ section.id }}" id="sb-range-{{ section.id }}-{{ range_key }}" value="{{ range_key }}" data-range-input>
                 <label for="sb-range-{{ section.id }}-{{ range_key }}">
+                  {%- comment -%}
+                    FRANKY'S (TLF) P1: shape icon. Steph's upload → the placemat's custom.placemat_shape
+                    metafield (same SVGs as the product page) → the block's placeholder shape → placemat photo.
+                  {%- endcomment -%}
+                  {%- liquid
+                    assign shape_key = placemat.metafields.custom.placemat_shape.value | default: block.settings.icon_shape
+                    if shape_key == 'none'
+                      assign shape_key = blank
+                    endif
+                  -%}
                   <span class="sb__shape-icon" aria-hidden="true">
                     {%- if block.settings.icon -%}
                       {{ block.settings.icon | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}
+                    {%- elsif shape_key != blank -%}
+                      {%- assign shape_file = 'frankys-shape-' | append: shape_key | append: '.svg' -%}
+                      {{- shape_file | inline_asset_content -}}
                     {%- elsif placemat.featured_image -%}
                       {{ placemat.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}
                     {%- endif -%}
@@ -172,6 +185,11 @@
             <span>Total</span>
             <span class="sb__total-price" data-summary-total aria-live="polite">{{ 0 | money }}</span>
           </div>
+          {%- comment -%}
+            FRANKY'S (TLF) P1: a look bought as separate pieces costs more than its "Table Setting" product.
+            While the look is untouched, point to the set (decision sheet item 1, 18 Nov 2026). No discounting here.
+          {%- endcomment -%}
+          <p class="sb__saving text-xs" data-set-saving hidden></p>
           <div class="sb__shipping text-xs" data-shipping hidden>
             <span data-shipping-text></span>
             <span class="sb__shipping-bar" aria-hidden="true"><span data-shipping-bar></span></span>
@@ -217,7 +235,8 @@
         "chooseColour": "Pick a colour.",
         "lookLoaded": "{look} loaded — change or remove any piece below, or tap it again to clear.",
         "cleared": "Cleared — pick a look or start with a shape.",
-        "settingName": "{range} setting · {colour} · {count} settings"
+        "settingName": "{range} setting · {colour} · {count} settings",
+        "setSaving": {{ section.settings.set_saving_text | json }}
       },
       "ranges": [
         {%- assign json_count = 0 -%}
@@ -251,6 +270,7 @@
             "key": {{ block.id | json }},
             "title": {{ look_title | json }},
             "settings": {{ block.settings.settings_count | json }},
+            "set": {% if block.settings.product != blank and block.settings.product.available %}{ "price": {{ block.settings.product.price | json }}, "url": {{ block.settings.product.url | json }}, "title": {{ block.settings.product.title | json }} }{% else %}null{% endif %},
             "placemat": {{ block.settings.placemat.id | json }},
             "colour": {{ block.settings.placemat_colour | handle | json }},
             "coaster": {% if block.settings.coaster != blank %}{ "colour": {{ block.settings.coaster_colour | default: block.settings.placemat_colour | handle | json }}, "product": {%- render 'setting-builder-product-json', product: block.settings.coaster, covers: 1 -%} }{% else %}null{% endif %},
@@ -315,7 +335,8 @@
     { "type": "checkbox", "id": "coasters_default_on", "label": "Tick matching coasters by default", "default": true },
     { "type": "text", "id": "summary_heading", "label": "Summary heading", "default": "Your setting" },
     { "type": "text", "id": "summary_empty_text", "label": "Summary text before a shape is picked", "default": "Nothing added yet." },
-    { "type": "text", "id": "atc_label", "label": "Add to cart label", "default": "Add to cart" }
+    { "type": "text", "id": "atc_label", "label": "Add to cart label", "default": "Add to cart" },
+    { "type": "text", "id": "set_saving_text", "label": "Set saving text", "default": "Save {amount} by buying this look as a set", "info": "Shown under the total while a look is unchanged and its Setting product is cheaper than the pieces. {amount} is the difference; the text links to the set product." }
   ],
   "blocks": [
     {
@@ -326,7 +347,16 @@
         { "type": "product", "id": "coaster", "label": "Matching coaster", "info": "Leave empty if this shape has no coaster — the coaster row is hidden." },
         { "type": "text", "id": "label", "label": "Name", "info": "Defaults to the placemat title without \"Placemat\"." },
         { "type": "text", "id": "key", "label": "Link key", "info": "Used in links, e.g. ?range=sweden. Defaults to the placemat handle without -placemat." },
-        { "type": "image_picker", "id": "icon", "label": "Line icon", "info": "Steph's shape icon. Defaults to the placemat image." }
+        { "type": "image_picker", "id": "icon", "label": "Line icon", "info": "Steph's shape icon. Otherwise the placemat's custom.placemat_shape metafield is used, then the placeholder below, then the placemat image." },
+        { "type": "select", "id": "icon_shape", "label": "Placeholder shape icon", "default": "none", "info": "Stand-in until the real icon is added, e.g. Lorient for Lorient+ and Lorient Grande.", "options": [
+          { "value": "none", "label": "None" },
+          { "value": "lorient", "label": "Lorient" },
+          { "value": "milan", "label": "Milan" },
+          { "value": "norway", "label": "Norway" },
+          { "value": "peru", "label": "Peru" },
+          { "value": "seville", "label": "Seville" },
+          { "value": "sweden", "label": "Sweden" }
+        ] }
       ]
     },
     {
@@ -346,7 +376,7 @@
         { "type": "paragraph", "content": "Tapping this look loads every piece below into the builder. Pieces must also be in a \"Complete the table item\" block so the shopper can change them." },
         { "type": "image_picker", "id": "image", "label": "Image", "info": "Defaults to the setting product's image." },
         { "type": "text", "id": "title", "label": "Title", "info": "Defaults to the setting product's title." },
-        { "type": "product", "id": "product", "label": "Setting product (optional)", "info": "Only used for the default image and title." },
+        { "type": "product", "id": "product", "label": "Setting product (optional)", "info": "Used for the default image and title, and for the \"Save {amount} as a set\" line when its price is lower than the pieces." },
         { "type": "range", "id": "settings_count", "label": "Number of settings", "min": 1, "max": 12, "step": 1, "default": 4 },
         { "type": "header", "content": "Placemats and coasters" },
         { "type": "product", "id": "placemat", "label": "Placemat", "info": "Must match one of the Shape blocks." },
