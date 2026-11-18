@@ -11,7 +11,8 @@
     - Ranges are the first word of the product name, so the three Peru Cutlery Set products are one range.
     - Quantity options come from how many place settings one piece covers: the row's "Covers" setting, a "Set of N"
       in the product name, or the product metafield custom.builder_covers_settings (same as the table builder).
-  Rows whose collection holds the current product are hidden (no "Placemats" row on a placemat).
+  Rows whose collection holds the current product are hidden (no "Placemats" row on a placemat). The whole block only
+  shows on products that are in at least one row's collection (table products).
   Block setting "Ranges" = "Own range only" (alternate template product.upsell-same-range, to compare with the client):
   a row that has the product's partner pieces shows only those, with no Range picker. Partners are the product's
   custom.matching_product metafield (e.g. Norway Placemat -> Peru Coaster), else the same range by name. Rows with no
@@ -49,6 +50,20 @@
 {%- capture hero_swatch -%}
   {%- if hero_value != nil -%}{%- render 'setting-builder-swatch', value: hero_value -%}{%- endif -%}
 {%- endcapture -%}
+
+{%- liquid
+  # FRANKY'S (TLF) PDP: only on table products, i.e. products in one of the rows' own collections (placemats, coasters,
+  # napkins, tablecloths, cutlery). Tea towels, bath and bedding aren't in those, so no upsell there (Eliza, 18 Nov 2026).
+  assign is_table_product = false
+  for i in (1..5)
+    assign collection_key = 'item_' | append: i | append: '_collection'
+    assign row_collection = block.settings[collection_key]
+    if row_collection != blank and product_collection_handles contains row_collection.handle
+      assign is_table_product = true
+      break
+    endif
+  endfor
+-%}
 
 {%- capture rows -%}
   {%- for i in (1..5) -%}
@@ -130,6 +145,7 @@
 {%- endcapture -%}
 
 {%- assign rows = rows | strip -%}
+{%- unless is_table_product -%}{%- assign rows = '' -%}{%- endunless -%}
 {%- if rows != blank -%}
   <complete-the-look
     class="complete-the-look"
