@@ -352,3 +352,8 @@ only way to do it on Shopify right now.
     </div>
   {%- endif -%}
 </product-gallery>
+
+{%- if desktop_layout contains 'grid' -%}
+  {%- comment -%} FRANKY'S (TLF) PDP: picking a colour puts its image first instead of scrolling the page {%- endcomment -%}
+  <script src="{{ 'frankys-gallery-colour.js' | asset_url }}" defer></script>
+{%- endif -%}

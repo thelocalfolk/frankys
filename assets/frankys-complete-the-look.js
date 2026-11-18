@@ -277,7 +277,8 @@
       const rangePills = ranges.length > 1 ? pills('range', ranges.map((r) => ({
         value: r.key, on: r.key === row.range,
         // FRANKY'S (TLF) PDP: the range's placemat shape beside its name (product metafield custom.placemat_shape)
-        html: (r.shape ? `<span class="complete-the-look__shape" style="--shape: url('${this.escape(r.shape)}')" aria-hidden="true"></span>` : '') + this.escape(r.name)
+        // Only once the SVG has loaded, so a range without an icon is a plain centred pill (Eliza, 18 Nov 2026)
+        html: (r.shape && this.shapeLoaded(r.shape, row) ? `<span class="complete-the-look__shape" style="--shape: url('${this.escape(r.shape)}')" aria-hidden="true"></span>` : '') + this.escape(r.name)
       }))) : '';
 
       const swatches = Object.values(range.colours).map((c) =>
@@ -290,6 +291,19 @@
         ${rangePills ? `<p class="complete-the-look__sub">${this.escape(s.range)}</p><div class="complete-the-look__group" role="group" aria-label="${this.escape(s.range)}">${rangePills}</div>` : ''}
         <p class="complete-the-look__sub">${this.escape(s.colour)}: ${this.escape(option.colour)}</p>
         <div class="complete-the-look__group" role="group" aria-label="${this.escape(s.colour)}">${swatches}</div>`;
+    }
+
+    // true once the icon file has loaded; a missing file (no icon for that range yet) stays false
+    shapeLoaded(url, row) {
+      const cache = CompleteTheLook.shapes || (CompleteTheLook.shapes = {});
+      if (!(url in cache)) {
+        cache[url] = null;
+        const img = new Image();
+        img.onload = () => { cache[url] = true; this.rows.forEach((r) => { if (r.selected) this.renderRow(r); }); };
+        img.onerror = () => { cache[url] = false; };
+        img.src = url;
+      }
+      return cache[url] === true;
     }
 
     selectedLines() {
