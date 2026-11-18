@@ -1215,3 +1215,12 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   .product-info .option-stepper { margin-inline-start: .5rem; }
   .product-info .option-stepper .quantity-selector__button { width: 1.75rem; }
 }
+
+/* FRANKY'S (TLF) PDP: gallery and buy column sit close together like the Figma product page (about 24px apart).
+   The theme centred a narrow info column in its half, leaving a wide gap on big screens (Eliza, 18 Nov 2026). */
+@media screen and (min-width: 1000px) {
+  .product > .product-info {
+    margin-inline-start: 0;
+    padding-inline-start: 1.5rem;
+  }
+}
