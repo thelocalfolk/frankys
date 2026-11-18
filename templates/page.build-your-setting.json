@@ -118,15 +118,17 @@
           "type": "range",
           "settings": {
             "placemat": "lorient-placemat-plus",
-            "coaster": "",
-            "label": "Lorient+"
+            "coaster": "lorient-coaster",
+            "label": "Lorient+",
+            "icon_shape": "lorient"
           }
         },
         "range_lorient_grande": {
           "type": "range",
           "settings": {
             "placemat": "lorient-grande-placemat",
-            "coaster": ""
+            "coaster": "lorient-coaster",
+            "icon_shape": "lorient"
           }
         },
         "range_peru": {
