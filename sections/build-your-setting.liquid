@@ -38,6 +38,7 @@
       {%- comment -%} Preview — images swap with the shopper's picks. Top-down composition waits on the photography decision (plan a6). {%- endcomment -%}
       <div class="sb__preview">
         <div class="sb__stage">
+          <button type="button" class="sb__stage-reset text-xs" data-reset hidden>Start again</button>
           <img class="sb__stage-main" data-preview-main alt="" width="900" height="900" hidden>
           {%- liquid
             # FRANKY'S (TLF) P1: before a shape is picked, show a setting photo rather than an empty grey box,
@@ -108,11 +109,18 @@
           </section>
         {%- endif -%}
 
-        {%- comment -%} Step 1 — shape {%- endcomment -%}
         {%- comment -%}
-          FRANKY'S (TLF) P1: steps stay open and stack like Sheet Society's bed builder (Eliza, 18 Nov 2026): the shape
-          icons stay in their row with a tick on the chosen one, and each step's heading shows a tick and the pick once made.
+          FRANKY'S (TLF) P1: the pieces row is the main selector, like Sheet Society's "Choose products" (Eliza, 18 Nov
+          2026): Placemats, Coasters, Napkins, Tablecloth, Cutlery as icons with a tick once in the setting. The chosen
+          piece's options open underneath — for placemats that's shape, colour and number of settings (the fieldsets
+          below); for the rest the JS renders the product pills and colours into [data-extras-list].
         {%- endcomment -%}
+        <fieldset class="sb__step sb__pieces" data-step="pieces">
+          <legend class="sb__step-title">{{ section.settings.pieces_heading }}</legend>
+          <div class="sb__types" role="group" data-types-row></div>
+          <div class="sb__type-panel sb__type-panel--placemat" data-type-panel="placemat">
+
+        {%- comment -%} Step 1 — shape {%- endcomment -%}
         <fieldset class="sb__step" data-step="shape">
           <legend class="sb__step-title"><span class="sb__step-num">1</span> {{ section.settings.shape_heading }} <span class="sb__step-value text-subdued" data-step-value="shape"></span></legend>
           <div class="sb__step-body">
@@ -192,15 +200,14 @@
         </fieldset>
 
         {%- comment -%} Step 4 — complete the table (coasters + add-ons, rendered by JS) {%- endcomment -%}
-        <fieldset class="sb__step" data-step="extras" disabled>
-          <legend class="sb__step-title"><span class="sb__step-num">4</span> {{ section.settings.extras_heading }}</legend>
+          </div>
           <div class="sb__extras" data-extras-list></div>
         </fieldset>
 
         {%- comment -%} Step 5 — summary + add to cart {%- endcomment -%}
         <section class="sb__step sb__summary" aria-labelledby="sb-summary-{{ section.id }}">
           <div class="sb__summary-head">
-            <h2 class="sb__step-title" id="sb-summary-{{ section.id }}"><span class="sb__step-num">5</span> {{ section.settings.summary_heading }}</h2>
+            <h2 class="sb__step-title" id="sb-summary-{{ section.id }}">{{ section.settings.summary_heading }}</h2>
             <button type="button" class="link text-xs" data-reset hidden>Start again</button>
           </div>
           <ul class="sb__lines unstyled-list text-sm" data-summary-lines>
@@ -263,6 +270,8 @@
         "settingName": "{range} setting · {colour} · {count} settings",
         "settingsCount": "{count} settings",
         "coasters": "Coasters",
+        "placemats": "Placemats",
+        "colour": "Colour",
         "remove": "Remove",
         "setSaving": {{ section.settings.set_saving_text | json }}
       },
@@ -375,7 +384,7 @@
     { "type": "range", "id": "default_settings", "label": "Default number of settings", "min": 1, "max": 12, "step": 1, "default": 4 },
     { "type": "checkbox", "id": "allow_custom_settings", "label": "Allow a custom number", "default": true },
     { "type": "range", "id": "max_settings", "label": "Maximum custom number", "min": 4, "max": 30, "step": 1, "default": 16 },
-    { "type": "text", "id": "extras_heading", "label": "Complete the table heading", "default": "Complete the table" },
+    { "type": "text", "id": "pieces_heading", "label": "Pieces heading", "default": "Choose your pieces" },
     { "type": "checkbox", "id": "coasters_default_on", "label": "Tick matching coasters by default", "default": true },
     { "type": "text", "id": "summary_heading", "label": "Summary heading", "default": "Your setting" },
     { "type": "text", "id": "summary_empty_text", "label": "Summary text before a shape is picked", "default": "Nothing added yet." },
