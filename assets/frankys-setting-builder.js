@@ -106,16 +106,15 @@
     }
 
     // The coaster in use: a look's override, else the range's own coaster.
+    // Any coaster the builder knows can go with any placemat (Eliza, 18 Nov 2026): the range's own first,
+    // then every other range's. A range with no coaster of its own still gets the row, unticked.
     coasterProduct() {
-      return this.state.coaster.product || (this.range && this.range.coaster) || null;
+      return this.state.coaster.product || (this.range && this.range.coaster) || this.coasters[0] || null;
     }
 
     coasterOptions() {
-      const list = [];
-      if (this.range && this.range.coaster) list.push(this.range.coaster);
-      const override = this.state.coaster.product;
-      if (override && !list.some((p) => p.id === override.id)) list.push(override);
-      return list;
+      const own = this.range && this.range.coaster;
+      return [...(own ? [own] : []), ...this.coasters.filter((p) => !own || p.id !== own.id)];
     }
 
     setCoasterProduct(product) {
@@ -170,6 +169,9 @@
       if (!current || !current.available) this.state.colour = null;
       this.state.coaster.touched = false;
       this.state.coaster.product = null;
+      // No coaster of its own: don't pre-tick someone else's shape.
+      if (!range.coaster) this.state.coaster.on = false;
+      else if (firstPick) this.state.coaster.on = !!this.data.coastersOnByDefault;
       if (this.state.colour) this.syncExtraColours();
       if (!silent) this.track(firstPick ? 'builder_start' : 'builder_step', { step: 'shape', range: key });
     }
@@ -532,7 +534,7 @@
       const coaster = this.coasterProduct();
       if (coaster) {
         const options = this.coasterOptions();
-        const label = range.coaster && coaster.id === range.coaster.id ? `Matching ${range.name} coasters` : 'Coasters';
+        const label = range.coaster && coaster.id === range.coaster.id ? `Matching ${range.name} coasters` : `${coaster.title.replace(/ coasters?$/i, '')} coasters`;
         rows.push(this.extraRow({ key: 'coaster', label, product: coaster, state: this.state.coaster, products: options, productIndex: options.findIndex((p) => p.id === coaster.id) }));
       }
       this.data.addons.forEach((addon) => {
