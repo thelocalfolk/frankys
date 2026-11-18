@@ -93,6 +93,13 @@
         this.onSetSize(this.readSetSize());
       }, { signal }));
       if (this.form) this.form.addEventListener('variant:change', () => setTimeout(() => { this.restoreQuantity(); this.onSetSize(this.readSetSize()); this.refreshTotal(); }, 50), { signal });
+      // The theme swaps in a fresh quantity box when it re-renders the variant picker; put the shopper's number back
+      const picker = document.querySelector(`variant-picker[form-id="${this.formId}"]`);
+      if (picker && !this.querySelector('[data-set-quantity]') && 'MutationObserver' in window) {
+        const observer = new MutationObserver(() => { this.restoreQuantity(); this.refreshTotal(); });
+        observer.observe(picker, { childList: true, subtree: true });
+        signal.addEventListener('abort', () => observer.disconnect());
+      }
 
       // Before the theme's own submit handler (capture on an ancestor), so one items[] add carries everything.
       if (this.form) {
@@ -380,6 +387,13 @@
       quantity.value = wanted;
       quantity.dispatchEvent(new Event('change', { bubbles: true }));
       this.restoring = false;
+      // Products with a "Custom" button (Bondi): show the stepper again rather than the closed button
+      const stepper = quantity.closest('.option-stepper');
+      if (stepper && stepper.hidden && Number(wanted) > 1) {
+        stepper.hidden = false;
+        const custom = stepper.parentElement.querySelector('[data-option-custom]');
+        if (custom) custom.hidden = true;
+      }
     }
 
     beforeSubmit(event) {
