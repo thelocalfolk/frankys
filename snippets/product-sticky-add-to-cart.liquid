@@ -36,7 +36,8 @@ This component is used to render the sticky add to cart.
           assign disabled = true
         endif
 
-        render 'button', type: 'submit', form: product_form_id, content: button_label, disabled: disabled, style: 'outline', class: 'sm-max:hidden'
+        # FRANKY'S (TLF) PDP: solid on desktop too, like the main add to cart (Eliza, 18 Nov 2026)
+        render 'button', type: 'submit', form: product_form_id, content: button_label, disabled: disabled, style: 'solid', class: 'sm-max:hidden'
         render 'button', type: 'submit', form: product_form_id, content: button_label, disabled: disabled, style: 'solid', class: 'sm:hidden'
       -%}
     </product-rerender>
