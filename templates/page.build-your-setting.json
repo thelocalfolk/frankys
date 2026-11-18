@@ -223,7 +223,9 @@
         "addon_tablecloth",
         "addon_cutlery"
       ],
-      "settings": {}
+      "settings": {
+        "text": "<p>Ready to set your dream table? We’ve got everything you need to bring it to life. Pick a shape that feels just right, mix and match colours that inspire, and layer on the little details that make all the difference.</p>"
+      }
     }
   },
   "order": [
