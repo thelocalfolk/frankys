@@ -1203,6 +1203,11 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   border-radius: var(--input-border-radius);
   box-shadow: none;
   font-size: .75rem;
+  grid-template-columns: 2rem 1.75rem 2rem;
+  --quantity-selector-input-width: 1.75rem;
+}
+@media screen and (max-width: 699px) {
+  .product-info .option-stepper .quantity-selector { grid-template-columns: 1.75rem 1.75rem 1.75rem; }
 }
 .product-info .option-stepper .quantity-selector__button { width: 2rem; height: 100%; padding: 0; }
 .product-info .option-stepper .quantity-selector__input { width: 1.75rem; font-size: .75rem; padding: 0; }
