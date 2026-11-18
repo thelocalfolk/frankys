@@ -102,7 +102,7 @@ the "image_filter" type is only used for filters.
     endif
 
     # FRANKY'S (TLF) P5: give near-white swatches (e.g. Milk) the theme's hairline outline, not only one named "White",
-    # so they don't vanish on the cream background (mobile QA 18 Nov 2026)
+    # so they don't vanish on the cream background (mobile QA, 18 Nov 2026)
     assign swatch_is_pale = false
     if swatch_hex != blank
       assign swatch_brightness = swatch_hex | color_brightness
