@@ -60,13 +60,13 @@
       this.activeLook = null;
       this.cartSubtotal = 0;
       // Which folding step (shape / colour / settings) is open; null = all folded (Sheet Society style, 18 Nov 2026).
-      this.openExtra = 'placemat'; // which piece has its options open: 'placemat', 'coaster' or an add-on key
+      this.openExtra = null; // which piece has its options open: 'placemat', 'coaster' or an add-on key; null = just the row (Eliza, 18 Nov 2026)
       this.state = {
         range: null,
         colour: null,
         settings: this.data.defaultSettings || 4,
         customSettings: false,
-        coaster: { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null },
+        coaster: { on: false, colour: null, touched: false, product: null }, // ticked by default once a shape is picked (setRange)
         addons: {}
       };
       this.data.addons.forEach((a) => {
@@ -130,10 +130,11 @@
     }
 
     lines() {
+      // Any piece can be the starting point (Eliza, 18 Nov 2026): placemats are a line only once shape + colour
+      // are picked; coasters and add-ons count on their own.
       const range = this.range;
-      if (!range || !this.state.colour) return [];
       const out = [];
-      const placematVariant = this.variantFor(range.placemat, this.state.colour);
+      const placematVariant = range && this.state.colour ? this.variantFor(range.placemat, this.state.colour) : null;
       if (placematVariant) out.push({ product: range.placemat, variant: placematVariant, qty: this.state.settings, role: 'placemat' });
 
       const coaster = this.coasterProduct();
@@ -169,11 +170,12 @@
       const range = this.range;
       const current = this.variantFor(range.placemat, this.state.colour);
       if (!current || !current.available) this.state.colour = null;
+      const keptByHand = firstPick && this.state.coaster.on; // coasters picked before a shape stay as chosen
       this.state.coaster.touched = false;
-      this.state.coaster.product = null;
+      if (!keptByHand) this.state.coaster.product = null;
       // No coaster of its own: don't pre-tick someone else's shape.
-      if (!range.coaster) this.state.coaster.on = false;
-      else if (firstPick) this.state.coaster.on = !!this.data.coastersOnByDefault;
+      if (!range.coaster) { if (!keptByHand) this.state.coaster.on = false; }
+      else if (firstPick && !keptByHand) this.state.coaster.on = !!this.data.coastersOnByDefault;
       if (this.state.colour) this.syncExtraColours();
       if (!silent) this.track(firstPick ? 'builder_start' : 'builder_step', { step: 'shape', range: key });
     }
@@ -199,7 +201,7 @@
     syncExtraColours(resetTouched = false) {
       const range = this.range;
       const coaster = this.coasterProduct();
-      if (range && coaster && (resetTouched || !this.state.coaster.touched)) {
+      if (coaster && (resetTouched || !this.state.coaster.touched)) {
         this.state.coaster.colour = this.pickColour(coaster, this.state.colour);
         this.state.coaster.touched = false;
       }
@@ -225,9 +227,10 @@
       if (range && this.ranges.has(range)) {
         this.setRange(range, { silent: true });
         if (colour) this.setColour(colour, { silent: true });
-        if (this.state.colour) this.applyPieces({ coaster: params.get('coaster'), add: params.get('add') });
-        this.track('builder_prefill_source', { source: this.source, range, colour: this.state.colour });
+        this.openExtra = 'placemat';
       }
+      if (params.get('coaster') || params.get('add')) this.applyPieces({ coaster: params.get('coaster'), add: params.get('add') });
+      if (this.range || params.get('add') || params.get('coaster')) this.track('builder_prefill_source', { source: this.source, range, colour: this.state.colour });
     }
 
     // coaster = "<handle>.<colour>" or "none"; add = "<handle>.<colour>,<handle>.<colour>"
@@ -310,11 +313,11 @@
       this.state.colour = null;
       this.state.settings = this.data.defaultSettings || 4;
       this.state.customSettings = false;
-      this.state.coaster = { on: !!this.data.coastersOnByDefault, colour: null, touched: false, product: null };
+      this.state.coaster = { on: false, colour: null, touched: false, product: null };
       this.data.addons.forEach((a) => {
         this.state.addons[a.key] = { on: !!a.on, product: 0, colour: null, touched: false };
       });
-      this.openExtra = 'placemat';
+      this.openExtra = null;
       this.track('builder_step', { step: 'reset' });
       this.renderAll({ colours: true, extras: true });
       const status = this.$('[data-look-status]');
@@ -337,11 +340,12 @@
       set('settings', this.state.range ? String(this.state.settings) : null);
       const ready = this.state.range && this.state.colour;
       const coaster = this.coasterProduct();
-      set('coaster', ready && coaster ? (this.state.coaster.on ? `${coaster.handle}.${this.state.coaster.colour}` : 'none') : null);
+      if (this.state.coaster.on && coaster) set('coaster', `${coaster.handle}.${this.state.coaster.colour}`);
+      else set('coaster', ready && coaster ? 'none' : null);
       const add = this.data.addons
         .filter((a) => this.state.addons[a.key].on && this.addonProduct(a))
         .map((a) => `${this.addonProduct(a).handle}.${this.state.addons[a.key].colour}`);
-      if (ready) url.searchParams.set('add', add.join(',')); else url.searchParams.delete('add');
+      if (ready || add.length) url.searchParams.set('add', add.join(',')); else url.searchParams.delete('add');
       window.history.replaceState(window.history.state, '', url.toString());
     }
 
@@ -411,13 +415,13 @@
         if (tile || remove) {
           const key = tile ? tile.dataset.type : remove.dataset.typeRemove;
           if (key === 'placemat') {
-            this.openExtra = 'placemat';
+            this.openExtra = this.openExtra === 'placemat' ? null : 'placemat';
             this.renderExtras();
             return;
           }
           const s = key === 'coaster' ? this.state.coaster : this.state.addons[key];
           this.clearLook();
-          if (remove || (s.on && this.openExtra === key)) { s.on = false; this.openExtra = 'placemat'; }
+          if (remove || (s.on && this.openExtra === key)) { s.on = false; this.openExtra = null; }
           else { s.on = true; this.openExtra = key; }
           this.track('builder_step', { step: 'extras', item: key, on: s.on });
           this.renderAll({ extras: true });
@@ -544,7 +548,7 @@
       let note = '';
       if (covers === 0) note = this.strings.perTable;
       else if (covers > 1) note = tpl(this.strings.packNote, { covers, units: qty, total: qty * covers });
-      const placemat = this.variantFor(this.range.placemat, this.state.colour);
+      const placemat = this.range && this.state.colour ? this.variantFor(this.range.placemat, this.state.colour) : null;
       if (!state.touched && placemat) {
         const match = this.variantFor(product, this.state.colour);
         if ((!match || !match.available) && variant) note = `${tpl(this.strings.noMatch, { colour: placemat.colour, picked: variant.colour })} ${note}`.trim();
@@ -577,6 +581,7 @@
       const items = [];
       const coaster = this.coasterProduct();
       if (coaster) {
+        if (!this.state.coaster.colour) this.state.coaster.colour = this.pickColour(coaster, this.state.colour);
         const options = this.coasterOptions();
         items.push({ key: 'coaster', label: this.strings.coasters, product: coaster, state: this.state.coaster, products: options, productIndex: options.findIndex((p) => p.id === coaster.id) });
       }
@@ -594,22 +599,12 @@
       const row = this.$('[data-types-row]');
       const list = this.$('[data-extras-list]');
       const placematPanel = this.$('[data-type-panel="placemat"]');
-      const ready = !!(this.range && this.state.colour);
       const placemat = this.range ? this.range.placemat : (this.data.ranges[0] && this.data.ranges[0].placemat);
-      const tiles = [{ key: 'placemat', label: this.strings.placemats, product: placemat || {}, state: { on: !!this.range } }];
-      const items = ready ? this.extraItems() : [];
-      items.forEach((i) => tiles.push({ ...i, disabled: false }));
-      if (!ready) {
-        // Before a shape and colour are picked the other pieces show greyed, so the row reads as the full set
-        const coaster = this.coasterProduct() || this.coasters[0];
-        if (coaster) tiles.push({ key: 'coaster', label: this.strings.coasters, product: coaster, state: { on: false }, disabled: true });
-        this.data.addons.forEach((addon) => {
-          const product = addon.products[0];
-          if (product) tiles.push({ key: addon.key, label: addon.label, product, state: { on: false }, disabled: true });
-        });
-      }
+      const tiles = [{ key: 'placemat', label: this.strings.placemats, product: placemat || {}, state: { on: !!(this.range && this.state.colour) } }];
+      const items = this.extraItems();
+      items.forEach((i) => tiles.push(i));
       const open = items.find((i) => i.key === this.openExtra && i.state.on);
-      if (!open && this.openExtra !== 'placemat') this.openExtra = 'placemat';
+      if (!open && this.openExtra !== 'placemat') this.openExtra = null;
       if (row) row.innerHTML = tiles.map((t) => this.typeTile(t)).join('');
       if (placematPanel) placematPanel.hidden = this.openExtra !== 'placemat';
       list.innerHTML = open ? this.typePanel(open) : '';
@@ -637,7 +632,7 @@
       const atcLabel = this.$('[data-atc-label]');
       if (atcLabel) atcLabel.textContent = ready ? `${this.strings.atc} · ${totalText}` : this.strings.atc;
       const barLabel = this.$('[data-bar-label]');
-      if (barLabel) barLabel.textContent = this.settingName();
+      if (barLabel) barLabel.textContent = this.settingName() || (lines.length ? lines.map((l) => l.product.title).join(' · ') : '');
       const barTotal = this.$('[data-bar-total]');
       if (barTotal) barTotal.textContent = totalText;
 
