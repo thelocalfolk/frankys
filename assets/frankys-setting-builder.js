@@ -601,30 +601,95 @@
       this.$('[data-shipping-bar]').style.width = `${Math.min(100, (reached / threshold) * 100)}%`;
     }
 
+    /* ---------- preview ----------
+       FRANKY'S (TLF) P1 live scene (18 Nov 2026): the table from above, built from the pieces' neutral
+       cut-outs (product.preview) tinted with the chosen colour in CSS (mask + multiply), like a bed builder.
+       A variant's own cut-out (variant.preview) is shown as photographed. Falls back to the placemat photo
+       when the range has no cut-out. */
+    solidColour(product, variant) {
+      const css = (product.swatches && product.swatches[variant.colour]) || '';
+      const m = String(css).match(/#[0-9a-f]{3,8}|rgba?\([^)]*\)|hsla?\([^)]*\)/i);
+      if (m) return m[0];
+      return /^url\(/i.test(css) ? '#c9c2b8' : (css || variant.colour.toLowerCase());
+    }
+
+    piece(cls, product, variant, scale = 1) {
+      // Absolute URL: a url() inside a custom property resolves against the stylesheet, not the page.
+      const abs = (src) => { try { return new URL(src, window.location.href).href; } catch (e) { return src; } };
+      const style = scale !== 1 ? ` style="--scale:${scale}"` : '';
+      if (variant.preview) return `<span class="sb__piece ${cls}"${style}><img src="${esc(abs(variant.preview))}" alt="" loading="lazy" decoding="async"></span>`;
+      if (!product.preview) return '';
+      const src = abs(product.preview);
+      const colour = this.solidColour(product, variant);
+      return `<span class="sb__piece sb__piece--tint ${cls}" style="--c:${esc(colour)};--m:url('${esc(src)}')${scale !== 1 ? `;--scale:${scale}` : ''}"><i></i><img src="${esc(src)}" alt="" loading="lazy" decoding="async"></span>`;
+    }
+
+    renderScene(range, placemat, lines) {
+      const scene = this.$('[data-preview-scene]');
+      const stage = this.$('.sb__stage');
+      const n = Math.max(1, this.state.settings);
+      const cols = n <= 3 ? n : Math.ceil(n / 2);
+      const rows = n <= 3 ? 1 : 2;
+      const byRole = (role) => lines.find((l) => l.role === role) || null;
+      const addonRole = (role) => {
+        const addon = this.data.addons.find((a) => a.role === role);
+        return addon ? byRole(addon.key) : null;
+      };
+      const coaster = byRole('coaster');
+      const napkin = addonRole('napkin');
+      const cutlery = addonRole('cutlery');
+      const cloth = addonRole('tablecloth');
+
+      const mat = this.piece('sb__piece--mat', range.placemat, placemat, range.previewScale || 1);
+      const extras = [
+        coaster ? this.piece('sb__piece--coaster', coaster.product, coaster.variant) : '',
+        napkin ? this.piece('sb__piece--napkin', napkin.product, napkin.variant) : '',
+        cutlery ? `<span class="sb__piece sb__piece--cutlery" style="--c:${esc(this.solidColour(cutlery.product, cutlery.variant))}"><i></i><i></i></span>` : ''
+      ].join('');
+      const place = `<div class="sb__place">${mat}${extras}</div>`;
+      scene.style.setProperty('--cols', cols);
+      scene.style.setProperty('--rows', rows);
+      scene.innerHTML = Array.from({ length: n }, () => place).join('');
+      stage.style.setProperty('--table', cloth ? this.solidColour(cloth.product, cloth.variant) : '');
+      stage.classList.toggle('sb__stage--cloth', !!cloth);
+      scene.hidden = false;
+    }
+
     renderPreview() {
       const range = this.range;
       const img = this.$('[data-preview-main]');
       const empty = this.$('[data-preview-empty]');
+      const scene = this.$('[data-preview-scene]');
       const extras = this.$('[data-preview-extras]');
       const caption = this.$('[data-preview-caption]');
+      const stage = this.$('.sb__stage');
+      const clearScene = () => { scene.hidden = true; scene.innerHTML = ''; stage.classList.remove('sb__stage--cloth'); stage.style.removeProperty('--table'); };
       if (!range) {
         img.hidden = true; empty.hidden = false; extras.innerHTML = ''; caption.textContent = '';
+        clearScene();
         return;
       }
       const placemat = this.variantFor(range.placemat, this.state.colour);
-      const src = (placemat && placemat.image) || range.placemat.image;
-      if (src) {
-        img.src = imgUrl(src, 900);
-        img.srcset = [600, 900, 1200].map((w) => `${imgUrl(src, w)} ${w}w`).join(', ');
-        img.sizes = '(min-width: 1000px) 50vw, 100vw';
-        img.alt = placemat ? `${range.placemat.title} in ${placemat.colour}` : range.placemat.title;
-        img.hidden = false; empty.hidden = true;
+      const lines = this.lines();
+      if (placemat && (placemat.preview || range.placemat.preview)) {
+        this.renderScene(range, placemat, lines);
+        img.hidden = true; empty.hidden = true; extras.innerHTML = '';
+      } else {
+        clearScene();
+        const src = (placemat && placemat.image) || range.placemat.image;
+        if (src) {
+          img.src = imgUrl(src, 900);
+          img.srcset = [600, 900, 1200].map((w) => `${imgUrl(src, w)} ${w}w`).join(', ');
+          img.sizes = '(min-width: 1000px) 50vw, 100vw';
+          img.alt = placemat ? `${range.placemat.title} in ${placemat.colour}` : range.placemat.title;
+          img.hidden = false; empty.hidden = true;
+        }
+        extras.innerHTML = lines.filter((l) => l.role !== 'placemat').map((l) => {
+          const s = l.variant.image || l.product.image;
+          return s ? `<li><img src="${esc(imgUrl(s, 200))}" alt="" width="100" height="100" loading="lazy"></li>` : '';
+        }).join('');
       }
-      extras.innerHTML = this.lines().filter((l) => l.role !== 'placemat').map((l) => {
-        const s = l.variant.image || l.product.image;
-        return s ? `<li><img src="${esc(imgUrl(s, 200))}" alt="" width="100" height="100" loading="lazy"></li>` : '';
-      }).join('');
-      caption.textContent = placemat ? `${range.name} · ${placemat.colour}` : range.name;
+      caption.textContent = placemat ? this.settingName() : range.name;
     }
 
     /* ---------- sticky mobile bar ---------- */

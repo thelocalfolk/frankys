@@ -5,8 +5,15 @@
   Optional per-product override: metafield custom.builder_covers_settings (integer) — how many place settings one unit covers.
   Optional: metafield custom.placemat_shape (e.g. "lorient") — the range's shape icon, assets/frankys-shape-<shape>.svg. Falls back to the range name from the handle.
 
+  Preview (live scene, 18 Nov 2026): "preview" is a neutral top-down cut-out the builder tints with the chosen colour —
+  product metafield custom.builder_preview (file), else the preview_asset param, else (for placemats and coasters)
+  assets/frankys-preview-<shape>.webp. A variant's own custom.builder_preview is used as-is (prints, linens), untinted.
+
   @param {object} product
   @param {number} [covers] - default number of settings one unit covers (0 = one per table)
+  @param {string} [shape_fallback] - shape key to use when the product has no custom.placemat_shape (e.g. lorient for Lorient+)
+  @param {string} [preview_asset] - theme asset filename for the neutral preview cut-out, when the product is not a placemat/coaster
+  @param {boolean} [preview_by_shape] - true for placemats and coasters: look for assets/frankys-preview-<shape>.webp
 {%- enddoc -%}
 {%- liquid
   assign colour_index = 0
@@ -30,11 +37,20 @@
     ("north-pole-placemat" -> north-pole, "lorient-placemat-plus" -> lorient) so a range with no metafield yet still
     shows its icon when a matching assets/frankys-shape-<key>.svg exists. A missing SVG simply renders nothing.
   endcomment
-  assign shape_key = product.metafields.custom.placemat_shape.value
+  assign shape_key = product.metafields.custom.placemat_shape.value | default: shape_fallback
   if shape_key == blank
-    assign shape_key = product.handle | split: '-placemat' | first
+    assign shape_key = product.handle | split: '-placemat' | first | split: '-coaster' | first
   endif
   assign shape_key = shape_key | handle
+
+  assign preview_url = blank
+  if product.metafields.custom.builder_preview != blank
+    assign preview_url = product.metafields.custom.builder_preview | image_url: width: 600
+  elsif preview_asset != blank
+    assign preview_url = preview_asset | asset_url
+  elsif preview_by_shape and shape_key != blank
+    assign preview_url = 'frankys-preview-' | append: shape_key | append: '.webp' | asset_url
+  endif
 -%}
 {
   "id": {{ product.id }},
@@ -44,6 +60,7 @@
   "image": {% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
   "covers": {% if covers_value != blank %}{{ covers_value | json }}{% else %}null{% endif %},
   "shape": {% if shape_key != blank %}{{ 'frankys-shape-' | append: shape_key | append: '.svg' | asset_url | json }}{% else %}null{% endif %},
+  "preview": {% if preview_url != blank %}{{ preview_url | json }}{% else %}null{% endif %},
   "swatches": {
     {%- for value in colour_option.values -%}
       {%- capture swatch_css -%}{%- render 'setting-builder-swatch', value: value -%}{%- endcapture -%}
@@ -58,7 +75,8 @@
         "key": {{ variant.options[colour_index] | handle | json }},
         "available": {{ variant.available | json }},
         "price": {{ variant.price | json }},
-        "image": {% if variant.featured_image %}{{ variant.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %}
+        "image": {% if variant.featured_image %}{{ variant.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},
+        "preview": {% if variant.metafields.custom.builder_preview != blank %}{{ variant.metafields.custom.builder_preview | image_url: width: 600 | json }}{% else %}null{% endif %}
       }{% unless forloop.last %},{% endunless %}
     {%- endfor -%}
   ]

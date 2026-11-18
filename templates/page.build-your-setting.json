@@ -120,7 +120,8 @@
             "placemat": "lorient-placemat-plus",
             "coaster": "lorient-coaster",
             "label": "Lorient+",
-            "icon_shape": "lorient"
+            "icon_shape": "lorient",
+            "preview_scale": 110
           }
         },
         "range_lorient_grande": {
@@ -128,7 +129,8 @@
           "settings": {
             "placemat": "lorient-grande-placemat",
             "coaster": "lorient-coaster",
-            "icon_shape": "lorient"
+            "icon_shape": "lorient",
+            "preview_scale": 120
           }
         },
         "range_peru": {
@@ -165,7 +167,8 @@
               "messina-linen-napkins"
             ],
             "covers": 4,
-            "default_on": false
+            "default_on": false,
+            "preview_role": "napkin"
           }
         },
         "addon_tablecloth": {
@@ -181,7 +184,8 @@
               "messina-stripe-linen-tablecloth"
             ],
             "covers": 0,
-            "default_on": false
+            "default_on": false,
+            "preview_role": "tablecloth"
           }
         },
         "addon_cutlery": {
@@ -195,7 +199,8 @@
               "moroccan-cutlery-set"
             ],
             "covers": 4,
-            "default_on": false
+            "default_on": false,
+            "preview_role": "cutlery"
           }
         }
       },
