@@ -352,11 +352,18 @@
                   {%- endif -%}
 
                   {%- if stepper -%}
-                    {%- comment -%} FRANKY'S (TLF) PDP: pills, then a stepper that's always there (any number, including 1; Eliza 9 Nov 2026) {%- endcomment -%}
+                    {%- comment -%}
+                      FRANKY'S (TLF) PDP: set pills plus a "Custom" pill, as in Figma. The stepper (any number, including 1)
+                      only shows once Custom is picked, under the pills; picking a set hides it again (Eliza 18 Nov 2026).
+                    {%- endcomment -%}
                     <div class="set-quantity__options">
                       {{ set_preset_cards }}
-                      <input type="radio" class="set-option__input" data-set-size name="{{ set_radio_name }}" form="{{ set_radio_form }}" value="custom" hidden>
-                    <div class="set-quantity__stepper" role="group" aria-label="{{ 'product.quantity.label' | t | escape }}">
+                      <label class="set-option">
+                        <input type="radio" class="set-option__input" data-set-size name="{{ set_radio_name }}" form="{{ set_radio_form }}" value="custom">
+                        <span class="{{ set_card_class }}"><span class="{{ set_title_class }}">{{ 'product.quantity.custom' | t }}</span></span>
+                      </label>
+                    </div>
+                    <div class="set-quantity__stepper" role="group" aria-label="{{ 'product.quantity.label' | t | escape }}" hidden>
                       <button type="button" class="set-quantity__step" data-set-step="-1" aria-label="{{ 'product.quantity.decrease_quantity' | t | escape }}">&minus;</button>
                       <input class="set-quantity__custom-input" type="number" inputmode="numeric"
                              form="{{ set_radio_form }}"
@@ -366,7 +373,6 @@
                              value="{{ default_set }}"
                              aria-label="{{ 'product.quantity.label' | t | escape }}" data-set-custom-input>
                       <button type="button" class="set-quantity__step" data-set-step="1" aria-label="{{ 'product.quantity.increase_quantity' | t | escape }}">+</button>
-                    </div>
                     </div>
                   {%- elsif show_custom -%}
                     <div class="set-quantity__stack" data-set-switch data-mode="presets">
@@ -644,10 +650,10 @@
           this.update();
         }
         // FRANKY'S (TLF) PDP stepper mode: highlight the pill matching the stepper's number, or none
+        // The stepper only shows with Custom picked, so stepping or typing keeps Custom selected (Eliza 18 Nov 2026)
         matchPreset() {
-          if (!this.config.stepper || !this.customInput) return;
-          const n = String(this.clampQty(this.customInput.value));
-          const radio = this.querySelector('[data-set-size][value="' + n + '"]') || this.querySelector('[data-set-size][value="custom"]');
+          if (!this.config.stepper) return;
+          const radio = this.querySelector('[data-set-size][value="custom"]');
           if (radio) radio.checked = true;
         }
         onSetChange() {
@@ -691,7 +697,7 @@
           const isCustom = !!(this.config.stepper && preset && preset.value === 'custom');
           if (this.config.stepper) {
             const stepperEl = this.querySelector('.set-quantity__stepper');
-            if (stepperEl) stepperEl.classList.toggle('is-selected', isCustom);
+            if (stepperEl) { stepperEl.classList.toggle('is-selected', isCustom); stepperEl.hidden = !isCustom; }
           }
           if (this.labelEl) this.labelEl.textContent = isCustom
             ? String(this.config.customLabel || '__count__').replace('__count__', qty)
