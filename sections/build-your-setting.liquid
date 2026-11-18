@@ -39,7 +39,23 @@
       <div class="sb__preview">
         <div class="sb__stage">
           <img class="sb__stage-main" data-preview-main alt="" width="900" height="900" hidden>
-          <div class="sb__stage-empty" data-preview-empty>
+          {%- liquid
+            # FRANKY'S (TLF) P1: before a shape is picked, show a setting photo rather than an empty grey box,
+            # which filled the whole first screen on phones (mobile QA 18 Nov 2026). Section image, else the first look's image.
+            assign empty_image = section.settings.preview_empty_image
+            if empty_image == blank
+              for look in preset_blocks
+                if look.settings.placemat != blank
+                  assign empty_image = look.settings.image | default: look.settings.product.featured_image | default: look.settings.placemat.featured_image
+                  break
+                endif
+              endfor
+            endif
+          -%}
+          <div class="sb__stage-empty{% if empty_image != blank %} sb__stage-empty--image{% endif %}" data-preview-empty>
+            {%- if empty_image != blank -%}
+              {{- empty_image | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 1000px) 50vw, 100vw', widths: '600,900,1200', alt: '', class: 'sb__stage-empty-image' -}}
+            {%- endif -%}
             <p class="text-subdued">{{ section.settings.preview_empty_text }}</p>
           </div>
           <ul class="sb__stage-extras unstyled-list" data-preview-extras aria-hidden="true"></ul>
@@ -318,6 +334,7 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "Build your own table" },
     { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Made from durable, leather-look material that's easy to wipe clean, with a soft, refined finish. Available in a range of shapes and colours to mix, match and make your own.</p>" },
     { "type": "text", "id": "preview_empty_text", "label": "Preview text before a shape is picked", "default": "Pick a shape and colour to see your setting." },
+    { "type": "image_picker", "id": "preview_empty_image", "label": "Preview image before a shape is picked", "info": "Defaults to the first look's image." },
     { "type": "header", "content": "Steps" },
     { "type": "text", "id": "presets_heading", "label": "Pre-built settings heading", "default": "Be inspired by our favourite settings" },
     { "type": "text", "id": "shape_heading", "label": "Shape heading", "default": "Choose your shape" },
