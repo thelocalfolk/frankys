@@ -477,7 +477,7 @@ no need to manually pass the section as it is globally available)
           {%- when 'complete_the_look' -%}
             {%- comment -%} On products with the set picker this renders inside it, between the pills and the Total {%- endcomment -%}
             {%- if product.metafields.custom.set_sizes == blank and product.template_suffix != 'upsell' -%}
-              {%- render 'complete-the-look', product: product, block: block, form_id: product_form_id -%}
+              {%- render 'complete-the-look', product: product, block: block, form_id: product_form_id, show_total: true -%}
             {%- endif -%}
 
           {%- when 'features' -%}

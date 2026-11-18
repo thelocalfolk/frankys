@@ -1233,3 +1233,20 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
    care...) instead of leaving an empty band between two lines (Eliza, 18 Nov 2026) */
 .product-info__block-item[data-block-type="features"]:has(+ .accordion-group) { margin-block-end: 0; }
 .product-info__block-item[data-block-type="features"] + .accordion-group { margin-block-start: 0; }
+
+
+/* FRANKY'S (TLF) P2: running total. While a Complete the Look row is ticked, the Total (and with the set picker, the
+   add to cart) sticks to the bottom of the screen as the open rows scroll past, then settles back in place
+   (Eliza, 18 Nov 2026). */
+.product-info:has(complete-the-look [data-row-toggle]:checked) :is(.set-quantity__checkout, .complete-the-look__total) {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 2;
+  padding-block: .75rem;
+  background: rgb(var(--background));
+  box-shadow: 0 -1px 0 rgb(var(--border-color));
+}
+.set-quantity__checkout {
+  display: grid;
+  gap: 1rem;
+}
