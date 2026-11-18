@@ -82,10 +82,14 @@
 
       document.addEventListener('set:change', (event) => {
         if (!this.form || !this.form.contains(event.target)) return;
-        this.setSize = event.detail.quantity;
-        this.rows.forEach((row) => { if (!row.manualUnits && row.selected) row.units = this.defaultUnits(row); this.renderRow(row); });
-        this.refreshTotal();
+        this.onSetSize(event.detail.quantity);
       }, { signal });
+
+      // Products without the set picker: follow the theme's quantity box and the chosen variant
+      ['change', 'input'].forEach((type) => document.addEventListener(type, (event) => {
+        if (event.target.name === 'quantity' && this.form && event.target.form === this.form) this.onSetSize(this.readSetSize());
+      }, { signal }));
+      if (this.form) this.form.addEventListener('variant:change', () => setTimeout(() => this.onSetSize(this.readSetSize()), 50), { signal });
 
       // Before the theme's own submit handler (capture on an ancestor), so one items[] add carries everything.
       if (this.form) {
@@ -96,9 +100,27 @@
       this.refreshTotal();
     }
 
+    // Place settings the product covers. With the set picker that's its count. Otherwise (Bondi, Madrid, napkins...)
+    // it's the quantity box times the "Set of N" in the chosen variant or product name, so two sets of 4 placemats
+    // suggest 8 coasters (18 Nov 2026).
     readSetSize() {
-      const input = this.form && this.form.querySelector('[data-set-quantity]');
-      return input ? parseInt(input.value, 10) || 1 : 1;
+      if (!this.form) return 1;
+      const input = this.form.querySelector('[data-set-quantity]');
+      if (input) return parseInt(input.value, 10) || 1;
+      const quantity = this.form.elements.namedItem('quantity');
+      const qty = Math.max(1, parseInt(quantity && quantity.value, 10) || 1);
+      let title = this.dataset.productTitle || '';
+      const variantJson = document.querySelector(`variant-picker[form-id="${this.formId}"] [data-variant]`);
+      try { if (variantJson) title = JSON.parse(variantJson.textContent).title + ' ' + title; } catch (e) { /* keep product title */ }
+      const match = /set of (\d+)/i.exec(title);
+      return qty * (match ? parseInt(match[1], 10) : 1);
+    }
+
+    onSetSize(size) {
+      if (size === this.setSize) return;
+      this.setSize = size;
+      this.rows.forEach((row) => { if (!row.manualUnits && row.selected) row.units = this.defaultUnits(row); this.renderRow(row); });
+      this.refreshTotal();
     }
 
     setUpRow(el) {
@@ -307,7 +329,7 @@
     }
 
     selectedLines() {
-      return this.rows.filter((row) => row.selected).map((row) => ({ id: this.current(row).id, quantity: row.units, price: this.current(row).price }));
+      return (this.rows || []).filter((row) => row.selected).map((row) => ({ id: this.current(row).id, quantity: row.units, price: this.current(row).price }));
     }
 
     // Added to the set picker's Total
