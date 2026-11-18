@@ -180,6 +180,10 @@
       if (previous) {
         row.selected = previous.selected;
         if (previous.manualUnits) { row.units = previous.units; row.manualUnits = true; }
+        // A range or colour picked by hand survives the re-render a product colour change triggers
+        if (previous.manualPick && row.ranges[previous.range] && row.ranges[previous.range].colours[previous.colour]) {
+          row.range = previous.range; row.colour = previous.colour; row.manualPick = true;
+        }
       }
       if (row.selected) row.units = row.manualUnits ? row.units : this.defaultUnits(row);
       row.toggle.checked = row.selected;
@@ -264,6 +268,7 @@
         row.manualUnits = true;
       } else if (kind === 'range') {
         row.range = value;
+        row.manualPick = true;
         const colours = row.ranges[value].colours;
         if (!colours[row.colour]) {
           row.colour = Object.values(colours).sort((a, b) => distance(a.swatch, this.heroSwatch) - distance(b.swatch, this.heroSwatch))[0].colour;
@@ -271,6 +276,7 @@
         if (!row.manualUnits) row.units = this.defaultUnits(row);
       } else if (kind === 'colour') {
         row.colour = value;
+        row.manualPick = true;
       }
 
       this.renderRow(row);
@@ -280,7 +286,7 @@
     renderRow(row) {
       const s = this.config.strings;
       const option = this.current(row);
-      saved[this.formId][row.index] = { selected: row.selected, units: row.units, manualUnits: row.manualUnits };
+      saved[this.formId][row.index] = { selected: row.selected, units: row.units, manualUnits: row.manualUnits, manualPick: row.manualPick, range: row.range, colour: row.colour };
 
       row.el.classList.toggle('is-selected', row.selected);
       row.options.hidden = !row.selected;
