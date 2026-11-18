@@ -315,7 +315,7 @@
 
       // FRANKY'S (TLF) PDP: no "closest colour" / "Mix" explanation shown (Eliza, 9 Nov 2026); the matching is unchanged
       row.options.innerHTML = `
-        <div class="complete-the-look__group" role="group" aria-label="${this.escape(s.quantity)}">${quantity}</div>
+        ${option.covers === 0 ? '' : `<div class="complete-the-look__group" role="group" aria-label="${this.escape(s.quantity)}">${quantity}</div>`}
         ${rangePills ? `<p class="complete-the-look__sub">${this.escape(s.range)}</p><div class="complete-the-look__group" role="group" aria-label="${this.escape(s.range)}">${rangePills}</div>` : ''}
         <p class="complete-the-look__sub">${this.escape(s.colour)}: ${this.escape(option.colour)}</p>
         <div class="complete-the-look__group" role="group" aria-label="${this.escape(s.colour)}">${swatches}</div>`;
