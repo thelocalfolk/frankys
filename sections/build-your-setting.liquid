@@ -322,6 +322,8 @@
                   assign preview_asset = blank
                 elsif block.settings.preview_role == 'napkin'
                   assign preview_asset = 'frankys-preview-napkin.webp'
+                elsif block.settings.preview_role == 'cutlery'
+                  assign preview_asset = 'frankys-preview-cutlery.webp'
                 endif
               -%}
               {%- for p in block.settings.products -%}
@@ -397,7 +399,7 @@
           { "value": "tablecloth", "label": "Tablecloth under the table" },
           { "value": "cutlery", "label": "Cutlery beside each placemat" }
         ] },
-        { "type": "image_picker", "id": "preview_image", "label": "Neutral cut-out", "info": "Top-down cut-out on a transparent background, tinted with the chosen colour. Napkins default to the theme file frankys-preview-napkin.webp. A product's custom.builder_preview metafield overrides this; a variant's own custom.builder_preview is shown untinted (prints)." }
+        { "type": "image_picker", "id": "preview_image", "label": "Neutral cut-out", "info": "Top-down cut-out on a transparent background, tinted with the chosen colour. Napkins default to the theme file frankys-preview-napkin.webp, cutlery to frankys-preview-cutlery.webp (fork and knife). A product's custom.builder_preview metafield overrides this; a variant's own custom.builder_preview is shown untinted (prints)." }
       ]
     },
     {
