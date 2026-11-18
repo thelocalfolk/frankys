@@ -46,7 +46,7 @@
 }
 .sb__stage-main { width: 100%; height: 100%; object-fit: cover; }
 .sb__stage-empty { padding: 2rem; text-align: center; }
-/* Photo before a shape is picked, with the prompt on a pill over it (mobile QA 18 Nov 2026) */
+/* Photo before a shape is picked, with the prompt on a pill over it (mobile QA, 18 Nov 2026) */
 .sb__stage-empty--image { position: absolute; inset: 0; padding: 0; }
 .sb__stage-empty-image { width: 100%; height: 100%; object-fit: cover; }
 .sb__stage-empty--image p {
