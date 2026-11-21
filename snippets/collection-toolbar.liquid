@@ -18,10 +18,20 @@ access to filters.
   {%- endif -%}
 
   {%- comment -%} FRANKY'S (TLF): sub-category pills live inline in the toolbar row.
-    Flexible middle item, so placement follows whatever settings leave visible:
-    desktop -> [count][pills][card toggle | Filter & sort]; mobile -> [Filter & sort][pills][card toggle].
-    Reuses the metafield-driven source; banner copy is gated off via show_pills_in_banner. {%- endcomment -%}
-  {%- render 'collection-pills', placement: 'toolbar', scroll_classes: 'scroll-area sm:unbleed' -%}
+    Source order (same as the banner): the collection's own custom.collection_pills
+    metafield -> its custom.parent_collection's list -> this section's "Default
+    collection pills" fallback setting. Flexible middle item, so placement follows
+    whatever the settings leave visible. {%- endcomment -%}
+  {%- liquid
+    assign pill_collections = collection.metafields.custom.collection_pills.value
+    if pill_collections == blank
+      assign pill_collections = collection.metafields.custom.parent_collection.value.metafields.custom.collection_pills.value
+    endif
+    if pill_collections == blank
+      assign pill_collections = section.settings.collection_pills
+    endif
+  -%}
+  {%- render 'collection-pills', collections: pill_collections, placement: 'toolbar', scroll_classes: 'scroll-area sm:unbleed' -%}
 
   {%- if section.settings.quick_links_menu.links.size > 0 -%}
     {%- assign menu = section.settings.quick_links_menu -%}
