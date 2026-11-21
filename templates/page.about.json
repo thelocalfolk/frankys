@@ -45,6 +45,7 @@
         },
         "rich_text_hU6QCz": {
           "type": "rich-text",
+          "disabled": true,
           "settings": {
             "text": "<p>Created for the people who notice the little things — the way a table is set, the weight of a good napkin, the quiet pause before dinner begins.</p><p>Because here's the frank truth: the best moments at home rarely announce themselves. They happen over long lunches and late nights, over shared plates and the third glass nobody planned on. We make the details that make those moments — and your home — feel like yours.</p><p>Our pieces are made to be&nbsp;<em>used</em>, not saved for guests. Beautiful enough to notice, tough enough to wipe clean, and in enough colours that you'll be back for another. Because decor is never done, and nice things are for now.</p><p>Have a look around — and find your perfect 'mat‑ch'.</p><p>With love,<br/>FRANKY'S</p>",
             "content_width": "md"
@@ -61,7 +62,7 @@
       "settings": {
         "color_scheme": "",
         "allow_transparent_header": false,
-        "image_size": "md",
+        "image_size": "sm",
         "image": "shopify://shop_images/beige-hero.jpg",
         "image_asset": "",
         "mobile_image_asset": "",
@@ -71,6 +72,48 @@
         "content_width": "md",
         "desktop_text_position": "sm:place-self-center",
         "mobile_text_position": "place-self-center"
+      }
+    },
+    "rich_text_HPHCzD": {
+      "type": "rich-text",
+      "blocks": {
+        "subheading_Y3BefX": {
+          "type": "subheading",
+          "disabled": true,
+          "settings": {
+            "text": "Subheading"
+          }
+        },
+        "heading_4FTkbn": {
+          "type": "heading",
+          "disabled": true,
+          "settings": {
+            "text": "Heading",
+            "heading_tag": "h1",
+            "html_tag": "p",
+            "indent": "none",
+            "highlight_effect": "default",
+            "highlight_accent_color": "",
+            "highlight_text_color": ""
+          }
+        },
+        "richtext_tnG3EC": {
+          "type": "richtext",
+          "settings": {
+            "text": "<p>Created for the people who notice the little things — the way a table is set, the weight of a good napkin, the quiet pause before dinner begins.</p><p>Because here's the frank truth: the best moments at home rarely announce themselves. They happen over long lunches and late nights, over shared plates and the third glass nobody planned on. We make the details that make those moments — and your home — feel like yours.</p><p>Our pieces are made to be&nbsp;<em>used</em>, not saved for guests. Beautiful enough to notice, tough enough to wipe clean, and in enough colours that you'll be back for another. Because decor is never done, and nice things are for now.</p><p>Have a look around — and find your perfect 'mat‑ch'.</p><p>With love,<br/>FRANKY'S</p>"
+          }
+        }
+      },
+      "block_order": [
+        "subheading_Y3BefX",
+        "heading_4FTkbn",
+        "richtext_tnG3EC"
+      ],
+      "name": "t:sections.rich_text.name",
+      "settings": {
+        "color_scheme": "",
+        "content_width": "md",
+        "text_alignment": "center"
       }
     },
     "media_blocks_mfD9ya": {
@@ -334,6 +377,7 @@
   "order": [
     "main",
     "image_with_text_overlay_6iwFeR",
+    "rich_text_HPHCzD",
     "media_blocks_mfD9ya",
     "1764909344ccead6d9",
     "text_with_media_NC3qtG",
