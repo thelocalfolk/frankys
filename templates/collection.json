@@ -52,7 +52,7 @@
         "products_per_page": 36,
         "products_per_row_mobile": 2,
         "products_per_row_desktop": 4,
-        "show_product_card_size_selector": false,
+        "show_product_card_size_selector": true,
         "quick_links_menu": "",
         "filter_layout": "drawer",
         "show_sort_by": true,
