@@ -1253,8 +1253,10 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 
 /* ============================================================================
    FRANKY'S — collection pills inside the toolbar row (+ Filter & Sort as a
-   matching pill). Scoped to .collection__toolbar; uses the theme's own colour
-   tokens so it tracks every colour scheme.
+   matching pill). Scoped to .collection__toolbar; uses the theme's colour tokens.
+   NOTE: the Filter & Sort rule deliberately does NOT set `display`, so the
+   theme's responsive hiding (.sm:hidden / .sm-max:hidden) still hides the
+   off-context copy of the button.
    ============================================================================ */
 
 /* --- pills take the flexible middle of the row ---------------------------- */
@@ -1272,9 +1274,8 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   margin: 0;
 }
 
-/* --- shared pill shape: category pills + the Filter & Sort button ---------- */
-.collection__toolbar .collection-quick-navigation__item,
-.collection__toolbar button[aria-controls="facets-drawer"] {
+/* --- category pill (the <a> needs its own display) ------------------------ */
+.collection__toolbar .collection-quick-navigation__item {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -1288,18 +1289,27 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   text-decoration: none;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
-
-.collection__toolbar .collection-quick-navigation__item .subheading,
-.collection__toolbar button[aria-controls="facets-drawer"] .subheading {
-  font-size: 0.8125rem;       /* 13px */
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  text-transform: none;        /* drop if your .subheading is meant to be uppercased */
+.collection__toolbar .collection-quick-navigation__item.is-selected {
+  background: rgb(var(--text-color));
+  border-color: rgb(var(--text-color));
+  color: rgb(var(--background));
 }
 
-/* the Filter & Sort button shouldn't grow or wrap, and its icon stays small */
+/* --- Filter & Sort button: SAME pill box, but no `display` (the button keeps
+       its own .h-stack display; .sm:hidden / .sm-max:hidden keep hiding the
+       off-context copy, so it never doubles up) ----------------------------- */
 .collection__toolbar button[aria-controls="facets-drawer"] {
   flex: 0 0 auto;
+  gap: 0.4rem;
+  white-space: nowrap;
+  padding: 0.44rem 0.9rem;
+  line-height: 1;
+  border: 1px solid rgb(var(--text-color) / 0.16);
+  border-radius: var(--rounded-full, 999px);
+  color: rgb(var(--text-color));
+  background: transparent;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 .collection__toolbar button[aria-controls="facets-drawer"] svg {
   width: 0.9rem;
@@ -1307,11 +1317,13 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   flex: 0 0 auto;
 }
 
-/* active category pill = filled inverse ("you are here") */
-.collection__toolbar .collection-quick-navigation__item.is-selected {
-  background: rgb(var(--text-color));
-  border-color: rgb(var(--text-color));
-  color: rgb(var(--background));
+/* shared label sizing */
+.collection__toolbar .collection-quick-navigation__item .subheading,
+.collection__toolbar button[aria-controls="facets-drawer"] .subheading {
+  font-size: 0.8125rem;        /* 13px */
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-transform: none;         /* drop if your .subheading is meant to be uppercased */
 }
 
 @media (hover: hover) {
@@ -1321,7 +1333,7 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   }
 }
 
-/* the pill stands on its own, so the desktop divider before it isn't needed */
+/* the pill stands alone, so the desktop divider before it isn't needed */
 .collection__toolbar .vertically-separated-list hr.divider { display: none; }
 
 /* keep the right-hand controls from being squeezed by the growing pills */
