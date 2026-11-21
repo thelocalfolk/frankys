@@ -1252,7 +1252,7 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
 }
 
 /* ============================================================================
-   FRANKY'S — collection pills inside the toolbar row (+ Filter & Sort as a
+   FRANKY'S - collection pills inside the toolbar row (+ Filter & Sort as a
    matching pill). Scoped to .collection__toolbar; uses the theme's colour tokens.
    NOTE: the Filter & Sort rule deliberately does NOT set `display`, so the
    theme's responsive hiding (.sm:hidden / .sm-max:hidden) still hides the
@@ -1333,7 +1333,7 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   }
 }
 
-/* visible keyboard focus (WCAG 2.4.7) — explicit ring since the pills carry a
+/* visible keyboard focus (WCAG 2.4.7) - explicit ring since the pills carry a
    custom border/background that could otherwise mute the browser default */
 .collection__toolbar .collection-quick-navigation__item:focus-visible,
 .collection__toolbar button[aria-controls="facets-drawer"]:focus-visible {
