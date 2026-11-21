@@ -30,17 +30,7 @@
         "background_color_scheme": "",
         "image_size": "auto",
         "quick_navigation_menu": "",
-        "quick_navigation_collections": [
-          "placemats",
-          "napkins",
-          "tablecloths",
-          "cutlery",
-          "baking-cooking-tools",
-          "tea-towels",
-          "cushions",
-          "throws",
-          "bath"
-        ]
+        "quick_navigation_collections": []
       }
     },
     "main": {
