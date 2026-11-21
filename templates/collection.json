@@ -44,6 +44,7 @@
         "products_per_row_desktop": 4,
         "show_product_card_size_selector": false,
         "quick_links_menu": "",
+        "collection_pills": "{{ collection.metafields.custom.collection_pills.value }}",
         "filter_layout": "drawer",
         "show_sort_by": true,
         "show_filters": true,
