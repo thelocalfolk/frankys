@@ -1,0 +1,38 @@
+{%- doc -%}
+  FRANKY'S — collection sub-category pills (shared).
+  Extracted from collection-banner.liquid so the pills can render inside the
+  collection toolbar row instead of on the banner. Same metafield-driven source:
+  the collection's own custom.collection_pills -> its custom.parent_collection's list.
+
+  @param {string} [placement]      - styling-context modifier, e.g. 'toolbar'
+  @param {string} [scroll_classes] - scroll utilities on the <ul>. Default keeps the
+                                      original banner behaviour ('scroll-area bleed').
+                                      In the toolbar pass 'scroll-area sm:unbleed' so it
+                                      only bleeds to the edge on mobile, not inside the row.
+{%- enddoc -%}
+
+{%- liquid
+  assign scroll_classes = scroll_classes | default: 'scroll-area bleed'
+  assign pill_collections = collection.metafields.custom.collection_pills.value
+  if pill_collections == blank
+    assign pill_collections = collection.metafields.custom.parent_collection.value.metafields.custom.collection_pills.value
+  endif
+-%}
+
+{%- if pill_collections != blank -%}
+  <nav aria-label="Shop by range" class="collection-pills{% if placement %} collection-pills--{{ placement }}{% endif %}">
+    <ul class="collection-quick-navigation collection-quick-navigation--pills unstyled-list {{ scroll_classes }}">
+      {%- for pill_collection in pill_collections -%}
+        {%- assign pill_is_current = false -%}
+        {%- if pill_collection.handle == collection.handle -%}
+          {%- assign pill_is_current = true -%}
+        {%- endif -%}
+        <li>
+          <a href="{{ pill_collection.url }}" class="collection-quick-navigation__item{% if pill_is_current %} is-selected{% endif %}"{% if pill_is_current %} aria-current="page"{% endif %}>
+            <span class="subheading">{{- pill_collection.title -}}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+{%- endif -%}
