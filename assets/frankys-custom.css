@@ -1250,3 +1250,78 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   display: grid;
   gap: 1rem;
 }
+
+/* ============================================================================
+   FRANKY'S — collection pills live INSIDE the toolbar row.
+   They sit as a flexible middle item between the product count (left) and the
+   .vertically-separated-list controls (card-size toggle + Filter & Sort, right),
+   so their position follows whatever the theme settings leave visible:
+     - product count hidden (e.g. mobile)  -> pills are the left-most item
+     - product count shown (desktop)       -> pills sit right after it
+     - card toggle / Filter & Sort on/off  -> pills simply fill the space that's left
+   Scoped to .collection__toolbar so the banner is untouched. Uses theme tokens.
+   ============================================================================ */
+
+/* the pills are the item that grows; min-width:0 lets scroll-area actually scroll
+   instead of stretching the row wider than its container */
+.collection__toolbar .collection-pills--toolbar {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+/* one line; neutralise any inherited bleed so it stays within the row on desktop
+   (mobile edge-bleed, if wanted, comes from `sm:unbleed` passed to the snippet) */
+.collection__toolbar .collection-pills--toolbar .collection-quick-navigation--pills {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+/* compact pill */
+.collection__toolbar .collection-quick-navigation__item {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  padding: 0.44rem 0.9rem;
+  line-height: 1;
+  border: 1px solid rgb(var(--text-color) / 0.16);
+  border-radius: var(--rounded-full, 999px);
+  color: rgb(var(--text-color));
+  background: transparent;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.collection__toolbar .collection-quick-navigation__item .subheading {
+  font-size: 0.8125rem;      /* 13px */
+  letter-spacing: 0.02em;
+  text-transform: none;       /* drop this line if your .subheading is meant to be uppercased */
+}
+
+/* active = filled inverse: the "you are here" cue */
+.collection__toolbar .collection-quick-navigation__item.is-selected {
+  background: rgb(var(--text-color));
+  border-color: rgb(var(--text-color));
+  color: rgb(var(--background));
+}
+
+@media (hover: hover) {
+  .collection__toolbar .collection-quick-navigation__item:hover {
+    border-color: rgb(var(--text-color) / 0.5);
+  }
+}
+
+/* keep the right-hand controls from shrinking when pills fill the row */
+.collection__toolbar .vertically-separated-list { flex: 0 0 auto; }
+
+/* soft right-edge fade to hint "more" when the pills overflow */
+.collection__toolbar .collection-pills--toolbar { position: relative; }
+.collection__toolbar .collection-pills--toolbar::after {
+  content: "";
+  position: absolute; inset-block: 0; inset-inline-end: 0;
+  width: 1.75rem; pointer-events: none;
+  background: linear-gradient(to right, rgb(var(--background) / 0), rgb(var(--background)));
+}
