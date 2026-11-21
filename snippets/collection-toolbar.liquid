@@ -17,6 +17,12 @@ access to filters.
     {%- render 'collection-faceting-button', data_source: collection, filter_layout: section.settings.filter_layout, show_count: true, class: 'sm:hidden', context: 'mobile' -%}
   {%- endif -%}
 
+  {%- comment -%} FRANKY'S (TLF): sub-category pills live inline in the toolbar row.
+    Flexible middle item, so placement follows whatever settings leave visible:
+    desktop -> [count][pills][card toggle | Filter & sort]; mobile -> [Filter & sort][pills][card toggle].
+    Reuses the metafield-driven source; banner copy is gated off via show_pills_in_banner. {%- endcomment -%}
+  {%- render 'collection-pills', placement: 'toolbar', scroll_classes: 'scroll-area sm:unbleed' -%}
+
   {%- if section.settings.quick_links_menu.links.size > 0 -%}
     {%- assign menu = section.settings.quick_links_menu -%}
     
