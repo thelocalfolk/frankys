@@ -21,25 +21,24 @@
     "image_with_text_overlay_6iwFeR": {
       "type": "image-with-text-overlay",
       "blocks": {
-        "subheading_XqFgKF": {
-          "type": "subheading",
-          "disabled": true,
-          "settings": {
-            "text": "Subheading"
-          },
-          "blocks": {}
-        },
         "heading_rwFACQ": {
           "type": "heading",
           "name": "t:blocks.heading.name",
           "settings": {
-            "text": "Who are we?",
+            "text": "For people who notice the little things.",
             "heading_size": "h3",
             "html_tag": "h1",
             "indent": "none",
             "highlight_effect": "default",
             "highlight_accent_color": "",
             "highlight_text_color": ""
+          },
+          "blocks": {}
+        },
+        "subheading_XqFgKF": {
+          "type": "subheading",
+          "settings": {
+            "text": "FRANKY'S makes the details that make a home feel like yours — good design, well made, and designed to be used, not saved for guests."
           },
           "blocks": {}
         },
@@ -54,8 +53,8 @@
         }
       },
       "block_order": [
-        "subheading_XqFgKF",
         "heading_rwFACQ",
+        "subheading_XqFgKF",
         "rich_text_hU6QCz"
       ],
       "name": "t:sections.image_with_text_overlay.name",
@@ -63,7 +62,7 @@
         "color_scheme": "",
         "allow_transparent_header": false,
         "image_size": "sm",
-        "image": "shopify://shop_images/beige-hero.jpg",
+        "image": "shopify://shop_images/frankys-pdp-story-foundation.jpg",
         "image_asset": "",
         "mobile_image_asset": "",
         "overlay_color": "#000000",
