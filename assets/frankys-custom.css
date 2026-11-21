@@ -1333,6 +1333,14 @@ frankys-ugc-video[playing] .ugc-videos__toggle .play-button {
   }
 }
 
+/* visible keyboard focus (WCAG 2.4.7) — explicit ring since the pills carry a
+   custom border/background that could otherwise mute the browser default */
+.collection__toolbar .collection-quick-navigation__item:focus-visible,
+.collection__toolbar button[aria-controls="facets-drawer"]:focus-visible {
+  outline: 2px solid rgb(var(--text-color));
+  outline-offset: 2px;
+}
+
 /* the pill stands alone, so the desktop divider before it isn't needed */
 .collection__toolbar .vertically-separated-list hr.divider { display: none; }
 
