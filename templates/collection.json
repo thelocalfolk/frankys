@@ -25,12 +25,11 @@
         "allow_transparent_header": false,
         "layout": "plain",
         "show_description": false,
-        "collection_title_size": "h5",
-        "content_position": "place-self-center",
+        "collection_title_size": "h4",
+        "content_position": "place-self-center-start",
         "background_color_scheme": "",
         "image_size": "auto",
-        "quick_navigation_menu": "",
-        "quick_navigation_collections": []
+        "quick_navigation_menu": ""
       }
     },
     "main": {
