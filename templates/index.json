@@ -14,7 +14,6 @@
       "blocks": {
         "heading": {
           "type": "heading",
-          "disabled": true,
           "settings": {
             "text": "A Good Day Starts With A Good Night",
             "heading_size": "h3",
@@ -28,7 +27,6 @@
         },
         "text": {
           "type": "rich-text",
-          "disabled": true,
           "settings": {
             "text": "<p>Colours to wake up to, and a very good reason to stay a little longer.<br/><br/>Turns out a considered home needs a place to lie down.</p>",
             "content_width": "md"
@@ -37,7 +35,6 @@
         },
         "button": {
           "type": "button",
-          "disabled": true,
           "settings": {
             "text": "Shop Now",
             "url": "shopify://collections/bedding",
@@ -58,8 +55,7 @@
         "color_scheme": "scheme-3",
         "allow_transparent_header": true,
         "image_size": "lg",
-        "image": "shopify://shop_images/BFCM26-Hero2-Desktop_7b14e1b3-d5b8-4819-9631-a8c6f14f4b04.jpg",
-        "mobile_image": "shopify://shop_images/BFCM26-Hero2-Mobile_56859682-e978-417b-8895-5bc0fb370adf.jpg",
+        "image": "shopify://shop_images/2026-10-Hero1-Landscape.jpg",
         "image_asset": "frankys-home-hero-bedding.jpg",
         "mobile_image_asset": "frankys-home-hero-bedding-mobile.jpg",
         "overlay_color": "#000000",
