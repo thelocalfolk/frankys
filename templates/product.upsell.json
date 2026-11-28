@@ -468,6 +468,19 @@
         "logo_background": "",
         "logo_border": ""
       }
+    },
+    "product_reviews_JBUQ7q": {
+      "type": "product-reviews",
+      "name": "Product reviews",
+      "settings": {
+        "color_scheme": "",
+        "star_color": "#C56A3F",
+        "subheading": "Reviews",
+        "heading": "Loved by our customers",
+        "heading_size": "h3",
+        "heading_alignment": "center",
+        "content_max_width": 1000
+      }
     }
   },
   "order": [
@@ -476,6 +489,7 @@
     "product_stories_fx",
     "related-products",
     "1762911832b39546d2",
-    "logo_list_yNczWc"
+    "logo_list_yNczWc",
+    "product_reviews_JBUQ7q"
   ]
 }
